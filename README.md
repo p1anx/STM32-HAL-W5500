@@ -1,2 +1,9 @@
 # STM32-HAL-W5500
-ARM-MDK
+- STM32F103ZET6(野火STM32霸道开发板)
+- MDK-ARM
+- HAL库
+# GPIO Config
+|W5500_CS | `PG9` |
+|:---:|:----:|
+W5500_RST:
+
