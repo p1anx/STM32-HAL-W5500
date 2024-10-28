@@ -101,7 +101,7 @@ int main(void)
   /* USER CODE BEGIN 2 */
 	printf("Starting W5500\n");
 
-	UDPinit();
+	W5500_Init();
 	//socket_buf_init(txsize, rxsize);
 	
 
