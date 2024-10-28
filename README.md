@@ -3,7 +3,8 @@
 - MDK-ARM
 - HAL库
 # GPIO Config
-|W5500_CS | `PG9` |
+|W5500_CS |`PG9`|
 |:---:|:----:|
-W5500_RST:
+|W5500_RST|`PG8`|
+|W5500_INT|`PG15`|
 
