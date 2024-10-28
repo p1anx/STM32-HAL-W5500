@@ -1,17 +1,17 @@
-# STM32-HAL-W5500
+# 1 STM32-HAL-W5500
 - STM32F103ZET6(野火STM32霸道开发板)
 - MDK-ARM
 - HAL库
-# GPIO and SPI Config
-## GPIO
+# 2 GPIO and SPI Config
+## 2.1 GPIO
 |W5500_CS|`PG9`|
 |:---:|:----:|
 |W5500_RST|`PG8`|
 |W5500_INT|`PG15`|
-## SPI
+## 2.2 SPI
 NOTE:`SPI2`
-# Crucial function
-## W5500 Read and Write function
+# 3 Crucial function
+## 3.1 W5500 Read and Write function
 ```c
 //片选
 void W5500_Select(void) {
@@ -45,7 +45,7 @@ void W5500_WriteByte(uint8_t byte) {
     W5500_WriteBuff(&byte, sizeof(byte));
 }
 ```
-## W5500 Init function
+## 3.2 W5500 Init function
 ```c
 void W5500_Init(void)
 {
@@ -73,7 +73,7 @@ void W5500_Init(void)
 }
 
 ```
-## UDP
+## 3.3 UDP
 ```c
 void do_udp(void)
 {                                                              
@@ -104,7 +104,7 @@ void do_udp(void)
 
 }
 ```
-## TCP Server
+## 3.4TCP Server
 ```c
 void do_tcp_server(void)
 {                                                              
@@ -142,7 +142,7 @@ void do_tcp_server(void)
 
 }
 ```
-## TCP Client
+## 3.5 TCP Client
 ```c
 void do_tcp_client(void)
 {                                                              
