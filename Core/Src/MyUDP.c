@@ -78,7 +78,7 @@ uint8_t validSetNetInfoResult(wiz_NetInfo* _set, wiz_NetInfo* _get)
 }
 
 
-void UDPinit(void)
+void W5500_Init(void)
 {
 
 	W5500_Restart();  // hardware restart through RESET pin
