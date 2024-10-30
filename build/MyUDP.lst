@@ -1,0 +1,2191 @@
+ARM GAS  /tmp/ccVlYndZ.s 			page 1
+
+
+   1              		.cpu cortex-m3
+   2              		.arch armv7-m
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"MyUDP.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.file 1 "BSP/MyUDP.c"
+  18              		.section	.text.W5500_Select,"ax",%progbits
+  19              		.align	1
+  20              		.global	W5500_Select
+  21              		.syntax unified
+  22              		.thumb
+  23              		.thumb_func
+  25              	W5500_Select:
+  26              	.LFB65:
+   1:BSP/MyUDP.c   **** #include "MyUDP.h"
+   2:BSP/MyUDP.c   **** #include "main.h"
+   3:BSP/MyUDP.c   **** #include "w5500.h"
+   4:BSP/MyUDP.c   **** #include "socket.h"
+   5:BSP/MyUDP.c   **** #include "wizchip_conf.h"
+   6:BSP/MyUDP.c   **** #include "spi.h"
+   7:BSP/MyUDP.c   **** #include <string.h>  // memcmp
+   8:BSP/MyUDP.c   **** #include "usart.h"
+   9:BSP/MyUDP.c   **** 
+  10:BSP/MyUDP.c   **** uint8_t buff[128];  
+  11:BSP/MyUDP.c   **** uint8_t UDP_send_buff[128]; 
+  12:BSP/MyUDP.c   ****                                                     
+  13:BSP/MyUDP.c   **** uint8_t remote_ip[4] = {192, 168, 1, 22}; //远程IP地址
+  14:BSP/MyUDP.c   **** uint16_t remote_port = 5002; //远程端口号
+  15:BSP/MyUDP.c   **** uint16_t local_port = 5001; //local端口号
+  16:BSP/MyUDP.c   **** 
+  17:BSP/MyUDP.c   **** //片选
+  18:BSP/MyUDP.c   **** void W5500_Select(void) {
+  27              		.loc 1 18 25 view -0
+  28              		.cfi_startproc
+  29              		@ args = 0, pretend = 0, frame = 0
+  30              		@ frame_needed = 0, uses_anonymous_args = 0
+  31 0000 08B5     		push	{r3, lr}
+  32              	.LCFI0:
+  33              		.cfi_def_cfa_offset 8
+  34              		.cfi_offset 3, -8
+  35              		.cfi_offset 14, -4
+  19:BSP/MyUDP.c   ****     HAL_GPIO_WritePin(W5500_CS_GPIO_Port, W5500_CS_Pin, GPIO_PIN_RESET);
+  36              		.loc 1 19 5 view .LVU1
+  37 0002 0022     		movs	r2, #0
+  38 0004 4FF40071 		mov	r1, #512
+  39 0008 0148     		ldr	r0, .L3
+ARM GAS  /tmp/ccVlYndZ.s 			page 2
+
+
+  40 000a FFF7FEFF 		bl	HAL_GPIO_WritePin
+  41              	.LVL0:
+  20:BSP/MyUDP.c   **** }
+  42              		.loc 1 20 1 is_stmt 0 view .LVU2
+  43 000e 08BD     		pop	{r3, pc}
+  44              	.L4:
+  45              		.align	2
+  46              	.L3:
+  47 0010 00200140 		.word	1073815552
+  48              		.cfi_endproc
+  49              	.LFE65:
+  51              		.section	.text.W5500_Unselect,"ax",%progbits
+  52              		.align	1
+  53              		.global	W5500_Unselect
+  54              		.syntax unified
+  55              		.thumb
+  56              		.thumb_func
+  58              	W5500_Unselect:
+  59              	.LFB66:
+  21:BSP/MyUDP.c   **** void W5500_Unselect(void) {
+  60              		.loc 1 21 27 is_stmt 1 view -0
+  61              		.cfi_startproc
+  62              		@ args = 0, pretend = 0, frame = 0
+  63              		@ frame_needed = 0, uses_anonymous_args = 0
+  64 0000 08B5     		push	{r3, lr}
+  65              	.LCFI1:
+  66              		.cfi_def_cfa_offset 8
+  67              		.cfi_offset 3, -8
+  68              		.cfi_offset 14, -4
+  22:BSP/MyUDP.c   ****     HAL_GPIO_WritePin(W5500_CS_GPIO_Port, W5500_CS_Pin, GPIO_PIN_SET);
+  69              		.loc 1 22 5 view .LVU4
+  70 0002 0122     		movs	r2, #1
+  71 0004 4FF40071 		mov	r1, #512
+  72 0008 0148     		ldr	r0, .L7
+  73 000a FFF7FEFF 		bl	HAL_GPIO_WritePin
+  74              	.LVL1:
+  23:BSP/MyUDP.c   **** }
+  75              		.loc 1 23 1 is_stmt 0 view .LVU5
+  76 000e 08BD     		pop	{r3, pc}
+  77              	.L8:
+  78              		.align	2
+  79              	.L7:
+  80 0010 00200140 		.word	1073815552
+  81              		.cfi_endproc
+  82              	.LFE66:
+  84              		.section	.text.W5500_Restart,"ax",%progbits
+  85              		.align	1
+  86              		.global	W5500_Restart
+  87              		.syntax unified
+  88              		.thumb
+  89              		.thumb_func
+  91              	W5500_Restart:
+  92              	.LFB67:
+  24:BSP/MyUDP.c   **** void W5500_Restart(void) {
+  93              		.loc 1 24 26 is_stmt 1 view -0
+  94              		.cfi_startproc
+  95              		@ args = 0, pretend = 0, frame = 0
+ARM GAS  /tmp/ccVlYndZ.s 			page 3
+
+
+  96              		@ frame_needed = 0, uses_anonymous_args = 0
+  97 0000 10B5     		push	{r4, lr}
+  98              	.LCFI2:
+  99              		.cfi_def_cfa_offset 8
+ 100              		.cfi_offset 4, -8
+ 101              		.cfi_offset 14, -4
+  25:BSP/MyUDP.c   ****     HAL_GPIO_WritePin(W5500_RST_GPIO_Port, W5500_RST_Pin, GPIO_PIN_RESET);
+ 102              		.loc 1 25 5 view .LVU7
+ 103 0002 0A4C     		ldr	r4, .L11
+ 104 0004 0022     		movs	r2, #0
+ 105 0006 4FF40041 		mov	r1, #32768
+ 106 000a 2046     		mov	r0, r4
+ 107 000c FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 108              	.LVL2:
+  26:BSP/MyUDP.c   ****     HAL_Delay(1);  // delay 1ms
+ 109              		.loc 1 26 5 view .LVU8
+ 110 0010 0120     		movs	r0, #1
+ 111 0012 FFF7FEFF 		bl	HAL_Delay
+ 112              	.LVL3:
+  27:BSP/MyUDP.c   ****     HAL_GPIO_WritePin(W5500_RST_GPIO_Port, W5500_RST_Pin, GPIO_PIN_SET);
+ 113              		.loc 1 27 5 view .LVU9
+ 114 0016 0122     		movs	r2, #1
+ 115 0018 4FF40041 		mov	r1, #32768
+ 116 001c 2046     		mov	r0, r4
+ 117 001e FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 118              	.LVL4:
+  28:BSP/MyUDP.c   ****     HAL_Delay(1600);  // delay 1600ms
+ 119              		.loc 1 28 5 view .LVU10
+ 120 0022 4FF4C860 		mov	r0, #1600
+ 121 0026 FFF7FEFF 		bl	HAL_Delay
+ 122              	.LVL5:
+  29:BSP/MyUDP.c   **** }
+ 123              		.loc 1 29 1 is_stmt 0 view .LVU11
+ 124 002a 10BD     		pop	{r4, pc}
+ 125              	.L12:
+ 126              		.align	2
+ 127              	.L11:
+ 128 002c 00200140 		.word	1073815552
+ 129              		.cfi_endproc
+ 130              	.LFE67:
+ 132              		.section	.text.W5500_ReadBuff,"ax",%progbits
+ 133              		.align	1
+ 134              		.global	W5500_ReadBuff
+ 135              		.syntax unified
+ 136              		.thumb
+ 137              		.thumb_func
+ 139              	W5500_ReadBuff:
+ 140              	.LVL6:
+ 141              	.LFB68:
+  30:BSP/MyUDP.c   **** 
+  31:BSP/MyUDP.c   **** void W5500_ReadBuff(uint8_t* buff, uint16_t len) {
+ 142              		.loc 1 31 50 is_stmt 1 view -0
+ 143              		.cfi_startproc
+ 144              		@ args = 0, pretend = 0, frame = 0
+ 145              		@ frame_needed = 0, uses_anonymous_args = 0
+ 146              		.loc 1 31 50 is_stmt 0 view .LVU13
+ 147 0000 08B5     		push	{r3, lr}
+ARM GAS  /tmp/ccVlYndZ.s 			page 4
+
+
+ 148              	.LCFI3:
+ 149              		.cfi_def_cfa_offset 8
+ 150              		.cfi_offset 3, -8
+ 151              		.cfi_offset 14, -4
+ 152 0002 0A46     		mov	r2, r1
+  32:BSP/MyUDP.c   ****     HAL_SPI_Receive(&hspi2, buff, len, HAL_MAX_DELAY);
+ 153              		.loc 1 32 5 is_stmt 1 view .LVU14
+ 154 0004 4FF0FF33 		mov	r3, #-1
+ 155 0008 0146     		mov	r1, r0
+ 156              	.LVL7:
+ 157              		.loc 1 32 5 is_stmt 0 view .LVU15
+ 158 000a 0248     		ldr	r0, .L15
+ 159              	.LVL8:
+ 160              		.loc 1 32 5 view .LVU16
+ 161 000c FFF7FEFF 		bl	HAL_SPI_Receive
+ 162              	.LVL9:
+  33:BSP/MyUDP.c   **** }
+ 163              		.loc 1 33 1 view .LVU17
+ 164 0010 08BD     		pop	{r3, pc}
+ 165              	.L16:
+ 166 0012 00BF     		.align	2
+ 167              	.L15:
+ 168 0014 00000000 		.word	hspi2
+ 169              		.cfi_endproc
+ 170              	.LFE68:
+ 172              		.section	.text.W5500_ReadByte,"ax",%progbits
+ 173              		.align	1
+ 174              		.global	W5500_ReadByte
+ 175              		.syntax unified
+ 176              		.thumb
+ 177              		.thumb_func
+ 179              	W5500_ReadByte:
+ 180              	.LFB70:
+  34:BSP/MyUDP.c   **** 
+  35:BSP/MyUDP.c   **** void W5500_WriteBuff(uint8_t* buff, uint16_t len) {
+  36:BSP/MyUDP.c   ****     HAL_SPI_Transmit(&hspi2, buff, len, HAL_MAX_DELAY);
+  37:BSP/MyUDP.c   **** }
+  38:BSP/MyUDP.c   **** 
+  39:BSP/MyUDP.c   **** uint8_t W5500_ReadByte(void) {
+ 181              		.loc 1 39 30 is_stmt 1 view -0
+ 182              		.cfi_startproc
+ 183              		@ args = 0, pretend = 0, frame = 8
+ 184              		@ frame_needed = 0, uses_anonymous_args = 0
+ 185 0000 00B5     		push	{lr}
+ 186              	.LCFI4:
+ 187              		.cfi_def_cfa_offset 4
+ 188              		.cfi_offset 14, -4
+ 189 0002 83B0     		sub	sp, sp, #12
+ 190              	.LCFI5:
+ 191              		.cfi_def_cfa_offset 16
+  40:BSP/MyUDP.c   ****     uint8_t byte;
+ 192              		.loc 1 40 5 view .LVU19
+  41:BSP/MyUDP.c   ****     W5500_ReadBuff(&byte, sizeof(byte));
+ 193              		.loc 1 41 5 view .LVU20
+ 194 0004 0121     		movs	r1, #1
+ 195 0006 0DF10700 		add	r0, sp, #7
+ 196 000a FFF7FEFF 		bl	W5500_ReadBuff
+ARM GAS  /tmp/ccVlYndZ.s 			page 5
+
+
+ 197              	.LVL10:
+  42:BSP/MyUDP.c   ****     return byte;
+ 198              		.loc 1 42 5 view .LVU21
+  43:BSP/MyUDP.c   **** }
+ 199              		.loc 1 43 1 is_stmt 0 view .LVU22
+ 200 000e 9DF80700 		ldrb	r0, [sp, #7]	@ zero_extendqisi2
+ 201 0012 03B0     		add	sp, sp, #12
+ 202              	.LCFI6:
+ 203              		.cfi_def_cfa_offset 4
+ 204              		@ sp needed
+ 205 0014 5DF804FB 		ldr	pc, [sp], #4
+ 206              		.cfi_endproc
+ 207              	.LFE70:
+ 209              		.section	.text.W5500_WriteBuff,"ax",%progbits
+ 210              		.align	1
+ 211              		.global	W5500_WriteBuff
+ 212              		.syntax unified
+ 213              		.thumb
+ 214              		.thumb_func
+ 216              	W5500_WriteBuff:
+ 217              	.LVL11:
+ 218              	.LFB69:
+  35:BSP/MyUDP.c   ****     HAL_SPI_Transmit(&hspi2, buff, len, HAL_MAX_DELAY);
+ 219              		.loc 1 35 51 is_stmt 1 view -0
+ 220              		.cfi_startproc
+ 221              		@ args = 0, pretend = 0, frame = 0
+ 222              		@ frame_needed = 0, uses_anonymous_args = 0
+  35:BSP/MyUDP.c   ****     HAL_SPI_Transmit(&hspi2, buff, len, HAL_MAX_DELAY);
+ 223              		.loc 1 35 51 is_stmt 0 view .LVU24
+ 224 0000 08B5     		push	{r3, lr}
+ 225              	.LCFI7:
+ 226              		.cfi_def_cfa_offset 8
+ 227              		.cfi_offset 3, -8
+ 228              		.cfi_offset 14, -4
+ 229 0002 0A46     		mov	r2, r1
+  36:BSP/MyUDP.c   **** }
+ 230              		.loc 1 36 5 is_stmt 1 view .LVU25
+ 231 0004 4FF0FF33 		mov	r3, #-1
+ 232 0008 0146     		mov	r1, r0
+ 233              	.LVL12:
+  36:BSP/MyUDP.c   **** }
+ 234              		.loc 1 36 5 is_stmt 0 view .LVU26
+ 235 000a 0248     		ldr	r0, .L21
+ 236              	.LVL13:
+  36:BSP/MyUDP.c   **** }
+ 237              		.loc 1 36 5 view .LVU27
+ 238 000c FFF7FEFF 		bl	HAL_SPI_Transmit
+ 239              	.LVL14:
+  37:BSP/MyUDP.c   **** 
+ 240              		.loc 1 37 1 view .LVU28
+ 241 0010 08BD     		pop	{r3, pc}
+ 242              	.L22:
+ 243 0012 00BF     		.align	2
+ 244              	.L21:
+ 245 0014 00000000 		.word	hspi2
+ 246              		.cfi_endproc
+ 247              	.LFE69:
+ARM GAS  /tmp/ccVlYndZ.s 			page 6
+
+
+ 249              		.section	.text.W5500_WriteByte,"ax",%progbits
+ 250              		.align	1
+ 251              		.global	W5500_WriteByte
+ 252              		.syntax unified
+ 253              		.thumb
+ 254              		.thumb_func
+ 256              	W5500_WriteByte:
+ 257              	.LVL15:
+ 258              	.LFB71:
+  44:BSP/MyUDP.c   **** 
+  45:BSP/MyUDP.c   **** void W5500_WriteByte(uint8_t byte) {
+ 259              		.loc 1 45 36 is_stmt 1 view -0
+ 260              		.cfi_startproc
+ 261              		@ args = 0, pretend = 0, frame = 8
+ 262              		@ frame_needed = 0, uses_anonymous_args = 0
+ 263              		.loc 1 45 36 is_stmt 0 view .LVU30
+ 264 0000 00B5     		push	{lr}
+ 265              	.LCFI8:
+ 266              		.cfi_def_cfa_offset 4
+ 267              		.cfi_offset 14, -4
+ 268 0002 83B0     		sub	sp, sp, #12
+ 269              	.LCFI9:
+ 270              		.cfi_def_cfa_offset 16
+ 271 0004 8DF80700 		strb	r0, [sp, #7]
+  46:BSP/MyUDP.c   ****     W5500_WriteBuff(&byte, sizeof(byte));
+ 272              		.loc 1 46 5 is_stmt 1 view .LVU31
+ 273 0008 0121     		movs	r1, #1
+ 274 000a 0DF10700 		add	r0, sp, #7
+ 275              	.LVL16:
+ 276              		.loc 1 46 5 is_stmt 0 view .LVU32
+ 277 000e FFF7FEFF 		bl	W5500_WriteBuff
+ 278              	.LVL17:
+  47:BSP/MyUDP.c   **** }
+ 279              		.loc 1 47 1 view .LVU33
+ 280 0012 03B0     		add	sp, sp, #12
+ 281              	.LCFI10:
+ 282              		.cfi_def_cfa_offset 4
+ 283              		@ sp needed
+ 284 0014 5DF804FB 		ldr	pc, [sp], #4
+ 285              		.cfi_endproc
+ 286              	.LFE71:
+ 288              		.section	.text.validSetNetInfoResult,"ax",%progbits
+ 289              		.align	1
+ 290              		.global	validSetNetInfoResult
+ 291              		.syntax unified
+ 292              		.thumb
+ 293              		.thumb_func
+ 295              	validSetNetInfoResult:
+ 296              	.LVL18:
+ 297              	.LFB72:
+  48:BSP/MyUDP.c   **** 
+  49:BSP/MyUDP.c   **** //配置W5500网络信息
+  50:BSP/MyUDP.c   **** wiz_NetInfo gSetNetInfo = {
+  51:BSP/MyUDP.c   ****   .mac  = {0x00, 0x08, 0xdc, 0x11, 0x11, 0x11},
+  52:BSP/MyUDP.c   ****   .ip   = {192, 168, 1, 2},
+  53:BSP/MyUDP.c   ****   .sn   = {255, 255, 255, 0},
+  54:BSP/MyUDP.c   ****   .gw   = {192, 168, 1, 1},
+ARM GAS  /tmp/ccVlYndZ.s 			page 7
+
+
+  55:BSP/MyUDP.c   ****   .dns  = {144, 144, 144, 144},
+  56:BSP/MyUDP.c   ****   .dhcp = NETINFO_STATIC};
+  57:BSP/MyUDP.c   **** 
+  58:BSP/MyUDP.c   **** wiz_NetInfo gGetNetInfo;
+  59:BSP/MyUDP.c   **** 
+  60:BSP/MyUDP.c   **** enum Status
+  61:BSP/MyUDP.c   **** {
+  62:BSP/MyUDP.c   ****   Failed = 0,
+  63:BSP/MyUDP.c   ****   Success = 1
+  64:BSP/MyUDP.c   **** };
+  65:BSP/MyUDP.c   **** 
+  66:BSP/MyUDP.c   **** /**
+  67:BSP/MyUDP.c   ****  * @brief valid the result of set net info
+  68:BSP/MyUDP.c   ****  * @return 1: Success
+  69:BSP/MyUDP.c   ****  *         0: Failed
+  70:BSP/MyUDP.c   **** */
+  71:BSP/MyUDP.c   **** uint8_t validSetNetInfoResult(wiz_NetInfo* _set, wiz_NetInfo* _get)
+  72:BSP/MyUDP.c   **** {
+ 298              		.loc 1 72 1 is_stmt 1 view -0
+ 299              		.cfi_startproc
+ 300              		@ args = 0, pretend = 0, frame = 0
+ 301              		@ frame_needed = 0, uses_anonymous_args = 0
+ 302              		.loc 1 72 1 is_stmt 0 view .LVU35
+ 303 0000 08B5     		push	{r3, lr}
+ 304              	.LCFI11:
+ 305              		.cfi_def_cfa_offset 8
+ 306              		.cfi_offset 3, -8
+ 307              		.cfi_offset 14, -4
+  73:BSP/MyUDP.c   ****   return (!memcmp(_set, _get, sizeof(wiz_NetInfo)));  // if same, memcmp return 0
+ 308              		.loc 1 73 3 is_stmt 1 view .LVU36
+ 309              		.loc 1 73 12 is_stmt 0 view .LVU37
+ 310 0002 1722     		movs	r2, #23
+ 311 0004 FFF7FEFF 		bl	memcmp
+ 312              	.LVL19:
+  74:BSP/MyUDP.c   **** }
+ 313              		.loc 1 74 1 view .LVU38
+ 314 0008 B0FA80F0 		clz	r0, r0
+ 315 000c 4009     		lsrs	r0, r0, #5
+ 316 000e 08BD     		pop	{r3, pc}
+ 317              		.cfi_endproc
+ 318              	.LFE72:
+ 320              		.section	.rodata.UDPinit.str1.4,"aMS",%progbits,1
+ 321              		.align	2
+ 322              	.LC0:
+ 323 0000 02020202 		.ascii	"\002\002\002\002\002\002\002\002\002\002\002\002\002"
+ 323      02020202 
+ 323      02020202 
+ 323      02
+ 324 000d 02020200 		.ascii	"\002\002\002\000"
+ 325              		.section	.text.UDPinit,"ax",%progbits
+ 326              		.align	1
+ 327              		.global	UDPinit
+ 328              		.syntax unified
+ 329              		.thumb
+ 330              		.thumb_func
+ 332              	UDPinit:
+ 333              	.LFB73:
+ARM GAS  /tmp/ccVlYndZ.s 			page 8
+
+
+  75:BSP/MyUDP.c   **** 
+  76:BSP/MyUDP.c   **** 
+  77:BSP/MyUDP.c   **** void UDPinit(void)
+  78:BSP/MyUDP.c   **** {
+ 334              		.loc 1 78 1 is_stmt 1 view -0
+ 335              		.cfi_startproc
+ 336              		@ args = 0, pretend = 0, frame = 16
+ 337              		@ frame_needed = 0, uses_anonymous_args = 0
+ 338 0000 00B5     		push	{lr}
+ 339              	.LCFI12:
+ 340              		.cfi_def_cfa_offset 4
+ 341              		.cfi_offset 14, -4
+ 342 0002 85B0     		sub	sp, sp, #20
+ 343              	.LCFI13:
+ 344              		.cfi_def_cfa_offset 24
+  79:BSP/MyUDP.c   ****   W5500_Restart();  // hardware restart through RESET pin
+ 345              		.loc 1 79 3 view .LVU40
+ 346 0004 FFF7FEFF 		bl	W5500_Restart
+ 347              	.LVL20:
+  80:BSP/MyUDP.c   ****   reg_wizchip_cs_cbfunc(W5500_Select, W5500_Unselect);
+ 348              		.loc 1 80 3 view .LVU41
+ 349 0008 0F49     		ldr	r1, .L29
+ 350 000a 1048     		ldr	r0, .L29+4
+ 351 000c FFF7FEFF 		bl	reg_wizchip_cs_cbfunc
+ 352              	.LVL21:
+  81:BSP/MyUDP.c   ****   reg_wizchip_spi_cbfunc(W5500_ReadByte, W5500_WriteByte);
+ 353              		.loc 1 81 3 view .LVU42
+ 354 0010 0F49     		ldr	r1, .L29+8
+ 355 0012 1048     		ldr	r0, .L29+12
+ 356 0014 FFF7FEFF 		bl	reg_wizchip_spi_cbfunc
+ 357              	.LVL22:
+  82:BSP/MyUDP.c   **** 
+  83:BSP/MyUDP.c   **** 
+  84:BSP/MyUDP.c   ****   ctlnetwork(CN_SET_NETINFO, (void*)&gSetNetInfo);  // set net info
+ 358              		.loc 1 84 3 view .LVU43
+ 359 0018 0F49     		ldr	r1, .L29+16
+ 360 001a 0020     		movs	r0, #0
+ 361 001c FFF7FEFF 		bl	ctlnetwork
+ 362              	.LVL23:
+  85:BSP/MyUDP.c   ****   // maybe need delay
+  86:BSP/MyUDP.c   ****   ctlnetwork(CN_GET_NETINFO, (void*)&gGetNetInfo);  // get net info
+ 363              		.loc 1 86 3 view .LVU44
+ 364 0020 0E49     		ldr	r1, .L29+20
+ 365 0022 0120     		movs	r0, #1
+ 366 0024 FFF7FEFF 		bl	ctlnetwork
+ 367              	.LVL24:
+  87:BSP/MyUDP.c   **** 
+  88:BSP/MyUDP.c   ****   // W5500 has 8 channel, 32k buffer, 2 means 2KBytes
+  89:BSP/MyUDP.c   ****   uint8_t buffer_size_8channel_tx_rx[16] = {2, 2, 2, 2, 2, 2, 2, 2,  // 8 channel tx
+ 368              		.loc 1 89 3 view .LVU45
+ 369              		.loc 1 89 11 is_stmt 0 view .LVU46
+ 370 0028 0D4B     		ldr	r3, .L29+24
+ 371 002a EC46     		mov	ip, sp
+ 372 002c 0FCB     		ldm	r3, {r0, r1, r2, r3}
+ 373 002e 8CE80F00 		stm	ip, {r0, r1, r2, r3}
+  90:BSP/MyUDP.c   ****                                             2, 2, 2, 2, 2, 2, 2, 2}; // 8 channel rx
+  91:BSP/MyUDP.c   ****   if(ctlwizchip(CW_INIT_WIZCHIP,(void*)buffer_size_8channel_tx_rx))
+ARM GAS  /tmp/ccVlYndZ.s 			page 9
+
+
+ 374              		.loc 1 91 3 is_stmt 1 view .LVU47
+ 375              		.loc 1 91 6 is_stmt 0 view .LVU48
+ 376 0032 6146     		mov	r1, ip
+ 377 0034 0120     		movs	r0, #1
+ 378 0036 FFF7FEFF 		bl	ctlwizchip
+ 379              	.LVL25:
+  92:BSP/MyUDP.c   ****   {
+  93:BSP/MyUDP.c   ****     // failed
+  94:BSP/MyUDP.c   ****     
+  95:BSP/MyUDP.c   ****   }
+ 380              		.loc 1 95 3 is_stmt 1 view .LVU49
+  96:BSP/MyUDP.c   **** 
+  97:BSP/MyUDP.c   ****   // uint8_t sta = getSn_SR(SOCK_UDPS);
+  98:BSP/MyUDP.c   ****   // if(sta == SOCK_CLOSED)
+  99:BSP/MyUDP.c   ****   // {
+ 100:BSP/MyUDP.c   ****   //   socket(SOCK_UDPS, Sn_MR_UDP, 5001, 0);
+ 101:BSP/MyUDP.c   ****   // }
+ 102:BSP/MyUDP.c   ****   HAL_Delay(100);
+ 381              		.loc 1 102 3 view .LVU50
+ 382 003a 6420     		movs	r0, #100
+ 383 003c FFF7FEFF 		bl	HAL_Delay
+ 384              	.LVL26:
+ 103:BSP/MyUDP.c   **** 
+ 104:BSP/MyUDP.c   **** }
+ 385              		.loc 1 104 1 is_stmt 0 view .LVU51
+ 386 0040 05B0     		add	sp, sp, #20
+ 387              	.LCFI14:
+ 388              		.cfi_def_cfa_offset 4
+ 389              		@ sp needed
+ 390 0042 5DF804FB 		ldr	pc, [sp], #4
+ 391              	.L30:
+ 392 0046 00BF     		.align	2
+ 393              	.L29:
+ 394 0048 00000000 		.word	W5500_Unselect
+ 395 004c 00000000 		.word	W5500_Select
+ 396 0050 00000000 		.word	W5500_WriteByte
+ 397 0054 00000000 		.word	W5500_ReadByte
+ 398 0058 00000000 		.word	gSetNetInfo
+ 399 005c 00000000 		.word	gGetNetInfo
+ 400 0060 00000000 		.word	.LC0
+ 401              		.cfi_endproc
+ 402              	.LFE73:
+ 404              		.section	.rodata.do_udp.str1.4,"aMS",%progbits,1
+ 405              		.align	2
+ 406              	.LC1:
+ 407 0000 68656C6C 		.ascii	"hello wwww\012\000"
+ 407      6F207777 
+ 407      77770A00 
+ 408              		.section	.text.do_udp,"ax",%progbits
+ 409              		.align	1
+ 410              		.global	do_udp
+ 411              		.syntax unified
+ 412              		.thumb
+ 413              		.thumb_func
+ 415              	do_udp:
+ 416              	.LFB74:
+ 105:BSP/MyUDP.c   **** 
+ARM GAS  /tmp/ccVlYndZ.s 			page 10
+
+
+ 106:BSP/MyUDP.c   **** 
+ 107:BSP/MyUDP.c   **** void do_udp(void)
+ 108:BSP/MyUDP.c   **** {                                                              
+ 417              		.loc 1 108 1 is_stmt 1 view -0
+ 418              		.cfi_startproc
+ 419              		@ args = 0, pretend = 0, frame = 16
+ 420              		@ frame_needed = 0, uses_anonymous_args = 0
+ 421 0000 F0B5     		push	{r4, r5, r6, r7, lr}
+ 422              	.LCFI15:
+ 423              		.cfi_def_cfa_offset 20
+ 424              		.cfi_offset 4, -20
+ 425              		.cfi_offset 5, -16
+ 426              		.cfi_offset 6, -12
+ 427              		.cfi_offset 7, -8
+ 428              		.cfi_offset 14, -4
+ 429 0002 87B0     		sub	sp, sp, #28
+ 430              	.LCFI16:
+ 431              		.cfi_def_cfa_offset 48
+ 109:BSP/MyUDP.c   ****   static uint32_t last_send_time = 0;
+ 432              		.loc 1 109 3 view .LVU53
+ 110:BSP/MyUDP.c   **** 	uint16_t len=0;	
+ 433              		.loc 1 110 2 view .LVU54
+ 434              	.LVL27:
+ 111:BSP/MyUDP.c   ****   uint8_t str1[] = "hello wwww\n";
+ 435              		.loc 1 111 3 view .LVU55
+ 436              		.loc 1 111 11 is_stmt 0 view .LVU56
+ 437 0004 264B     		ldr	r3, .L38
+ 438 0006 93E80700 		ldm	r3, {r0, r1, r2}
+ 439 000a 06AB     		add	r3, sp, #24
+ 440 000c 03E90700 		stmdb	r3, {r0, r1, r2}
+ 112:BSP/MyUDP.c   **** 	switch(getSn_SR(SOCK_UDPS))       /*获取socket的状态*/
+ 441              		.loc 1 112 2 is_stmt 1 view .LVU57
+ 442              		.loc 1 112 9 is_stmt 0 view .LVU58
+ 443 0010 4FF45270 		mov	r0, #840
+ 444 0014 FFF7FEFF 		bl	WIZCHIP_READ
+ 445              	.LVL28:
+ 446              		.loc 1 112 2 discriminator 1 view .LVU59
+ 447 0018 98B3     		cbz	r0, .L32
+ 448 001a 2228     		cmp	r0, #34
+ 449 001c 38D1     		bne	.L31
+ 113:BSP/MyUDP.c   **** 	{
+ 114:BSP/MyUDP.c   **** 		case SOCK_CLOSED:                 /*socket处于关闭状态*/
+ 115:BSP/MyUDP.c   **** 			socket(SOCK_UDPS,Sn_MR_UDP,5001,0);    /*初始化socket*/
+ 116:BSP/MyUDP.c   **** 		  break;
+ 117:BSP/MyUDP.c   **** 		
+ 118:BSP/MyUDP.c   **** 		case SOCK_UDP:      /*socket初始化完成*/
+ 119:BSP/MyUDP.c   **** 			HAL_Delay(10);  
+ 450              		.loc 1 119 4 is_stmt 1 view .LVU60
+ 451 001e 0A20     		movs	r0, #10
+ 452 0020 FFF7FEFF 		bl	HAL_Delay
+ 453              	.LVL29:
+ 120:BSP/MyUDP.c   **** 			if(getSn_IR(SOCK_UDPS) & Sn_IR_RECV) //检查是否有接收中断
+ 454              		.loc 1 120 4 view .LVU61
+ 455              		.loc 1 120 7 is_stmt 0 view .LVU62
+ 456 0024 4FF41270 		mov	r0, #584
+ 457 0028 FFF7FEFF 		bl	WIZCHIP_READ
+ 458              	.LVL30:
+ARM GAS  /tmp/ccVlYndZ.s 			page 11
+
+
+ 459              		.loc 1 120 6 discriminator 1 view .LVU63
+ 460 002c 10F0040F 		tst	r0, #4
+ 461 0030 30D1     		bne	.L37
+ 462              	.L35:
+ 121:BSP/MyUDP.c   **** 			{
+ 122:BSP/MyUDP.c   **** 				setSn_IR(SOCK_UDPS, Sn_IR_RECV);  /*清接收中断*/
+ 123:BSP/MyUDP.c   **** 			}
+ 124:BSP/MyUDP.c   **** 			if((len=getSn_RX_RSR(SOCK_UDPS))>0)  /*接收到数据*/
+ 463              		.loc 1 124 4 is_stmt 1 view .LVU64
+ 464              		.loc 1 124 12 is_stmt 0 view .LVU65
+ 465 0032 0220     		movs	r0, #2
+ 466 0034 FFF7FEFF 		bl	getSn_RX_RSR
+ 467              	.LVL31:
+ 468              		.loc 1 124 6 discriminator 1 view .LVU66
+ 469 0038 0446     		mov	r4, r0
+ 470 003a 48B3     		cbz	r0, .L31
+ 125:BSP/MyUDP.c   **** 			{
+ 126:BSP/MyUDP.c   **** 				recvfrom(SOCK_UDPS,buff, len, remote_ip,&remote_port);               /*W5500接收计算机发�
+ 471              		.loc 1 126 5 is_stmt 1 view .LVU67
+ 472 003c 194E     		ldr	r6, .L38+4
+ 473 003e 1A4D     		ldr	r5, .L38+8
+ 474 0040 1A4F     		ldr	r7, .L38+12
+ 475 0042 0097     		str	r7, [sp]
+ 476 0044 3346     		mov	r3, r6
+ 477 0046 0246     		mov	r2, r0
+ 478 0048 2946     		mov	r1, r5
+ 479 004a 0220     		movs	r0, #2
+ 480              	.LVL32:
+ 481              		.loc 1 126 5 is_stmt 0 view .LVU68
+ 482 004c FFF7FEFF 		bl	recvfrom
+ 483              	.LVL33:
+ 127:BSP/MyUDP.c   **** 				sendto(SOCK_UDPS,str1, sizeof(str1)/sizeof(str1[0]), remote_ip, remote_port);                /*
+ 484              		.loc 1 127 5 is_stmt 1 view .LVU69
+ 485 0050 3B88     		ldrh	r3, [r7]
+ 486 0052 0093     		str	r3, [sp]
+ 487 0054 3346     		mov	r3, r6
+ 488 0056 0C22     		movs	r2, #12
+ 489 0058 0DEB0201 		add	r1, sp, r2
+ 490 005c 0220     		movs	r0, #2
+ 491 005e FFF7FEFF 		bl	sendto
+ 492              	.LVL34:
+ 128:BSP/MyUDP.c   ****         // HAL_UART_Transmit(&huart1, &remote_port, 1, 1000);
+ 129:BSP/MyUDP.c   **** 				sendto(SOCK_UDPS,buff,len-8, remote_ip, remote_port);                /*W5500把接收到的数�
+ 493              		.loc 1 129 5 view .LVU70
+ 494 0062 A4F10802 		sub	r2, r4, #8
+ 495 0066 3B88     		ldrh	r3, [r7]
+ 496 0068 0093     		str	r3, [sp]
+ 497 006a 3346     		mov	r3, r6
+ 498 006c 92B2     		uxth	r2, r2
+ 499 006e 2946     		mov	r1, r5
+ 500 0070 0220     		movs	r0, #2
+ 501 0072 FFF7FEFF 		bl	sendto
+ 502              	.LVL35:
+ 130:BSP/MyUDP.c   **** 
+ 131:BSP/MyUDP.c   ****         Analysis(buff);//分析数据
+ 503              		.loc 1 131 9 view .LVU71
+ 132:BSP/MyUDP.c   ****         memset(buff, 0, sizeof(buff));
+ARM GAS  /tmp/ccVlYndZ.s 			page 12
+
+
+ 504              		.loc 1 132 9 view .LVU72
+ 505 0076 8022     		movs	r2, #128
+ 506 0078 0021     		movs	r1, #0
+ 507 007a 2846     		mov	r0, r5
+ 508 007c FFF7FEFF 		bl	memset
+ 509              	.LVL36:
+ 133:BSP/MyUDP.c   **** 			}
+ 134:BSP/MyUDP.c   ****             // if (HAL_GetTick() - last_send_time >= 1000)  // 每秒发送一次
+ 135:BSP/MyUDP.c   ****             // {
+ 136:BSP/MyUDP.c   ****             //     sendto(SOCK_UDPS, str1, sizeof(str1), remote_ip, remote_port);  // 发送数据
+ 137:BSP/MyUDP.c   ****             //     last_send_time = HAL_GetTick();  // 更新最后发送时间
+ 138:BSP/MyUDP.c   ****             // }
+ 139:BSP/MyUDP.c   **** 			break;
+ 140:BSP/MyUDP.c   **** 	}
+ 141:BSP/MyUDP.c   **** 
+ 142:BSP/MyUDP.c   **** }
+ 510              		.loc 1 142 1 is_stmt 0 view .LVU73
+ 511 0080 06E0     		b	.L31
+ 512              	.LVL37:
+ 513              	.L32:
+ 115:BSP/MyUDP.c   **** 		  break;
+ 514              		.loc 1 115 4 is_stmt 1 view .LVU74
+ 515 0082 0023     		movs	r3, #0
+ 516 0084 41F28932 		movw	r2, #5001
+ 517 0088 0221     		movs	r1, #2
+ 518 008a 0846     		mov	r0, r1
+ 519 008c FFF7FEFF 		bl	socket
+ 520              	.LVL38:
+ 116:BSP/MyUDP.c   **** 		
+ 521              		.loc 1 116 5 view .LVU75
+ 522              	.L31:
+ 523              		.loc 1 142 1 is_stmt 0 view .LVU76
+ 524 0090 07B0     		add	sp, sp, #28
+ 525              	.LCFI17:
+ 526              		.cfi_remember_state
+ 527              		.cfi_def_cfa_offset 20
+ 528              		@ sp needed
+ 529 0092 F0BD     		pop	{r4, r5, r6, r7, pc}
+ 530              	.LVL39:
+ 531              	.L37:
+ 532              	.LCFI18:
+ 533              		.cfi_restore_state
+ 122:BSP/MyUDP.c   **** 			}
+ 534              		.loc 1 122 5 is_stmt 1 view .LVU77
+ 535 0094 0421     		movs	r1, #4
+ 536 0096 4FF41270 		mov	r0, #584
+ 537 009a FFF7FEFF 		bl	WIZCHIP_WRITE
+ 538              	.LVL40:
+ 539 009e C8E7     		b	.L35
+ 540              	.L39:
+ 541              		.align	2
+ 542              	.L38:
+ 543 00a0 00000000 		.word	.LC1
+ 544 00a4 00000000 		.word	remote_ip
+ 545 00a8 00000000 		.word	buff
+ 546 00ac 00000000 		.word	remote_port
+ 547              		.cfi_endproc
+ARM GAS  /tmp/ccVlYndZ.s 			page 13
+
+
+ 548              	.LFE74:
+ 550              		.section	.text.do_udp1,"ax",%progbits
+ 551              		.align	1
+ 552              		.global	do_udp1
+ 553              		.syntax unified
+ 554              		.thumb
+ 555              		.thumb_func
+ 557              	do_udp1:
+ 558              	.LFB75:
+ 143:BSP/MyUDP.c   **** void do_udp1(void)
+ 144:BSP/MyUDP.c   **** {                                                              
+ 559              		.loc 1 144 1 view -0
+ 560              		.cfi_startproc
+ 561              		@ args = 0, pretend = 0, frame = 16
+ 562              		@ frame_needed = 0, uses_anonymous_args = 0
+ 563 0000 00B5     		push	{lr}
+ 564              	.LCFI19:
+ 565              		.cfi_def_cfa_offset 4
+ 566              		.cfi_offset 14, -4
+ 567 0002 87B0     		sub	sp, sp, #28
+ 568              	.LCFI20:
+ 569              		.cfi_def_cfa_offset 32
+ 145:BSP/MyUDP.c   ****   static uint32_t last_send_time = 0;
+ 570              		.loc 1 145 3 view .LVU79
+ 146:BSP/MyUDP.c   **** 	uint16_t len=0;	
+ 571              		.loc 1 146 2 view .LVU80
+ 572              	.LVL41:
+ 147:BSP/MyUDP.c   ****   uint8_t str1[] = "hello wwww\n";
+ 573              		.loc 1 147 3 view .LVU81
+ 574              		.loc 1 147 11 is_stmt 0 view .LVU82
+ 575 0004 124B     		ldr	r3, .L45
+ 576 0006 93E80700 		ldm	r3, {r0, r1, r2}
+ 577 000a 06AB     		add	r3, sp, #24
+ 578 000c 03E90700 		stmdb	r3, {r0, r1, r2}
+ 148:BSP/MyUDP.c   **** 	switch(getSn_SR(SOCK_UDPS))       /*获取socket的状态*/
+ 579              		.loc 1 148 2 is_stmt 1 view .LVU83
+ 580              		.loc 1 148 9 is_stmt 0 view .LVU84
+ 581 0010 4FF45270 		mov	r0, #840
+ 582 0014 FFF7FEFF 		bl	WIZCHIP_READ
+ 583              	.LVL42:
+ 584              		.loc 1 148 2 discriminator 1 view .LVU85
+ 585 0018 78B1     		cbz	r0, .L41
+ 586 001a 2228     		cmp	r0, #34
+ 587 001c 14D1     		bne	.L40
+ 149:BSP/MyUDP.c   **** 	{
+ 150:BSP/MyUDP.c   **** 		case SOCK_CLOSED:                 /*socket处于关闭状态*/
+ 151:BSP/MyUDP.c   **** 			socket(SOCK_UDPS,Sn_MR_UDP, local_port,0);    /*初始化socket*/
+ 152:BSP/MyUDP.c   **** 		  break;
+ 153:BSP/MyUDP.c   **** 		
+ 154:BSP/MyUDP.c   **** 		case SOCK_UDP:      /*socket初始化完成*/
+ 155:BSP/MyUDP.c   **** 			HAL_Delay(10);  
+ 588              		.loc 1 155 4 is_stmt 1 view .LVU86
+ 589 001e 0A20     		movs	r0, #10
+ 590 0020 FFF7FEFF 		bl	HAL_Delay
+ 591              	.LVL43:
+ 156:BSP/MyUDP.c   **** 				sendto(SOCK_UDPS,str1, sizeof(str1)/sizeof(str1[0]), remote_ip, remote_port);                /*
+ 592              		.loc 1 156 5 view .LVU87
+ARM GAS  /tmp/ccVlYndZ.s 			page 14
+
+
+ 593 0024 0B4B     		ldr	r3, .L45+4
+ 594 0026 1B88     		ldrh	r3, [r3]
+ 595 0028 0093     		str	r3, [sp]
+ 596 002a 0B4B     		ldr	r3, .L45+8
+ 597 002c 0C22     		movs	r2, #12
+ 598 002e 0DEB0201 		add	r1, sp, r2
+ 599 0032 0220     		movs	r0, #2
+ 600 0034 FFF7FEFF 		bl	sendto
+ 601              	.LVL44:
+ 157:BSP/MyUDP.c   **** 			break;
+ 602              		.loc 1 157 4 view .LVU88
+ 158:BSP/MyUDP.c   **** 	}
+ 159:BSP/MyUDP.c   **** 
+ 160:BSP/MyUDP.c   **** }
+ 603              		.loc 1 160 1 is_stmt 0 view .LVU89
+ 604 0038 06E0     		b	.L40
+ 605              	.L41:
+ 151:BSP/MyUDP.c   **** 		  break;
+ 606              		.loc 1 151 4 is_stmt 1 view .LVU90
+ 607 003a 0023     		movs	r3, #0
+ 608 003c 074A     		ldr	r2, .L45+12
+ 609 003e 1288     		ldrh	r2, [r2]
+ 610 0040 0221     		movs	r1, #2
+ 611 0042 0846     		mov	r0, r1
+ 612 0044 FFF7FEFF 		bl	socket
+ 613              	.LVL45:
+ 152:BSP/MyUDP.c   **** 		
+ 614              		.loc 1 152 5 view .LVU91
+ 615              	.L40:
+ 616              		.loc 1 160 1 is_stmt 0 view .LVU92
+ 617 0048 07B0     		add	sp, sp, #28
+ 618              	.LCFI21:
+ 619              		.cfi_def_cfa_offset 4
+ 620              		@ sp needed
+ 621 004a 5DF804FB 		ldr	pc, [sp], #4
+ 622              	.L46:
+ 623 004e 00BF     		.align	2
+ 624              	.L45:
+ 625 0050 00000000 		.word	.LC1
+ 626 0054 00000000 		.word	remote_port
+ 627 0058 00000000 		.word	remote_ip
+ 628 005c 00000000 		.word	local_port
+ 629              		.cfi_endproc
+ 630              	.LFE75:
+ 632              		.section	.text.UDP_send,"ax",%progbits
+ 633              		.align	1
+ 634              		.global	UDP_send
+ 635              		.syntax unified
+ 636              		.thumb
+ 637              		.thumb_func
+ 639              	UDP_send:
+ 640              	.LVL46:
+ 641              	.LFB76:
+ 161:BSP/MyUDP.c   **** 
+ 162:BSP/MyUDP.c   **** void UDP_send(uint8_t* data,uint8_t len)
+ 163:BSP/MyUDP.c   **** {
+ 642              		.loc 1 163 1 is_stmt 1 view -0
+ARM GAS  /tmp/ccVlYndZ.s 			page 15
+
+
+ 643              		.cfi_startproc
+ 644              		@ args = 0, pretend = 0, frame = 0
+ 645              		@ frame_needed = 0, uses_anonymous_args = 0
+ 646              		.loc 1 163 1 is_stmt 0 view .LVU94
+ 647 0000 30B5     		push	{r4, r5, lr}
+ 648              	.LCFI22:
+ 649              		.cfi_def_cfa_offset 12
+ 650              		.cfi_offset 4, -12
+ 651              		.cfi_offset 5, -8
+ 652              		.cfi_offset 14, -4
+ 653 0002 83B0     		sub	sp, sp, #12
+ 654              	.LCFI23:
+ 655              		.cfi_def_cfa_offset 24
+ 656 0004 0446     		mov	r4, r0
+ 657 0006 0D46     		mov	r5, r1
+ 164:BSP/MyUDP.c   ****   sendto(SOCK_UDPS, data, len, remote_ip, remote_port);
+ 658              		.loc 1 164 3 is_stmt 1 view .LVU95
+ 659 0008 074B     		ldr	r3, .L49
+ 660 000a 1B88     		ldrh	r3, [r3]
+ 661 000c 0093     		str	r3, [sp]
+ 662 000e 074B     		ldr	r3, .L49+4
+ 663 0010 0A46     		mov	r2, r1
+ 664 0012 0146     		mov	r1, r0
+ 665              	.LVL47:
+ 666              		.loc 1 164 3 is_stmt 0 view .LVU96
+ 667 0014 0220     		movs	r0, #2
+ 668              	.LVL48:
+ 669              		.loc 1 164 3 view .LVU97
+ 670 0016 FFF7FEFF 		bl	sendto
+ 671              	.LVL49:
+ 165:BSP/MyUDP.c   ****   memset(data, 0, len);
+ 672              		.loc 1 165 3 is_stmt 1 view .LVU98
+ 673 001a 2A46     		mov	r2, r5
+ 674 001c 0021     		movs	r1, #0
+ 675 001e 2046     		mov	r0, r4
+ 676 0020 FFF7FEFF 		bl	memset
+ 677              	.LVL50:
+ 166:BSP/MyUDP.c   **** }
+ 678              		.loc 1 166 1 is_stmt 0 view .LVU99
+ 679 0024 03B0     		add	sp, sp, #12
+ 680              	.LCFI24:
+ 681              		.cfi_def_cfa_offset 12
+ 682              		@ sp needed
+ 683 0026 30BD     		pop	{r4, r5, pc}
+ 684              	.LVL51:
+ 685              	.L50:
+ 686              		.loc 1 166 1 view .LVU100
+ 687              		.align	2
+ 688              	.L49:
+ 689 0028 00000000 		.word	remote_port
+ 690 002c 00000000 		.word	remote_ip
+ 691              		.cfi_endproc
+ 692              	.LFE76:
+ 694              		.section	.text.Analysis,"ax",%progbits
+ 695              		.align	1
+ 696              		.global	Analysis
+ 697              		.syntax unified
+ARM GAS  /tmp/ccVlYndZ.s 			page 16
+
+
+ 698              		.thumb
+ 699              		.thumb_func
+ 701              	Analysis:
+ 702              	.LVL52:
+ 703              	.LFB77:
+ 167:BSP/MyUDP.c   **** 
+ 168:BSP/MyUDP.c   **** //分析数据
+ 169:BSP/MyUDP.c   **** void Analysis(uint8_t *buf)
+ 170:BSP/MyUDP.c   **** {
+ 704              		.loc 1 170 1 is_stmt 1 view -0
+ 705              		.cfi_startproc
+ 706              		@ args = 0, pretend = 0, frame = 0
+ 707              		@ frame_needed = 0, uses_anonymous_args = 0
+ 708              		@ link register save eliminated.
+ 171:BSP/MyUDP.c   **** 
+ 172:BSP/MyUDP.c   **** }
+ 709              		.loc 1 172 1 view .LVU102
+ 710 0000 7047     		bx	lr
+ 711              		.cfi_endproc
+ 712              	.LFE77:
+ 714              		.section	.rodata.do_tcp_server.str1.4,"aMS",%progbits,1
+ 715              		.align	2
+ 716              	.LC3:
+ 717 0000 257300   		.ascii	"%s\000"
+ 718 0003 00       		.align	2
+ 719              	.LC2:
+ 720 0004 4920616D 		.ascii	"I am TCP Server\012\000"
+ 720      20544350 
+ 720      20536572 
+ 720      7665720A 
+ 720      00
+ 721              		.section	.text.do_tcp_server,"ax",%progbits
+ 722              		.align	1
+ 723              		.global	do_tcp_server
+ 724              		.syntax unified
+ 725              		.thumb
+ 726              		.thumb_func
+ 728              	do_tcp_server:
+ 729              	.LFB78:
+ 173:BSP/MyUDP.c   **** void do_tcp_server(void)
+ 174:BSP/MyUDP.c   **** {                                                              
+ 730              		.loc 1 174 1 view -0
+ 731              		.cfi_startproc
+ 732              		@ args = 0, pretend = 0, frame = 24
+ 733              		@ frame_needed = 0, uses_anonymous_args = 0
+ 734 0000 10B5     		push	{r4, lr}
+ 735              	.LCFI25:
+ 736              		.cfi_def_cfa_offset 8
+ 737              		.cfi_offset 4, -8
+ 738              		.cfi_offset 14, -4
+ 739 0002 86B0     		sub	sp, sp, #24
+ 740              	.LCFI26:
+ 741              		.cfi_def_cfa_offset 32
+ 175:BSP/MyUDP.c   **** 	uint16_t len=0;	
+ 742              		.loc 1 175 2 view .LVU104
+ 743              	.LVL53:
+ 176:BSP/MyUDP.c   **** 	uint8_t str[]="I am TCP Server\n";
+ARM GAS  /tmp/ccVlYndZ.s 			page 17
+
+
+ 744              		.loc 1 176 2 view .LVU105
+ 745              		.loc 1 176 10 is_stmt 0 view .LVU106
+ 746 0004 0DF1040C 		add	ip, sp, #4
+ 747 0008 2A4C     		ldr	r4, .L63
+ 748 000a 0FCC     		ldmia	r4!, {r0, r1, r2, r3}
+ 749 000c ACE80F00 		stmia	ip!, {r0, r1, r2, r3}
+ 750 0010 2368     		ldr	r3, [r4]
+ 751 0012 8CF80030 		strb	r3, [ip]
+ 177:BSP/MyUDP.c   **** 	switch(getSn_SR(SOCK_TCPS))       /*获取socket的状态*/
+ 752              		.loc 1 177 2 is_stmt 1 view .LVU107
+ 753              		.loc 1 177 9 is_stmt 0 view .LVU108
+ 754 0016 4FF44270 		mov	r0, #776
+ 755 001a FFF7FEFF 		bl	WIZCHIP_READ
+ 756              	.LVL54:
+ 757              		.loc 1 177 2 discriminator 1 view .LVU109
+ 758 001e 1C28     		cmp	r0, #28
+ 759 0020 17D8     		bhi	.L52
+ 760 0022 DFE800F0 		tbb	[pc, r0]
+ 761              	.L55:
+ 762 0026 0F       		.byte	(.L58-.L55)/2
+ 763 0027 16       		.byte	(.L52-.L55)/2
+ 764 0028 16       		.byte	(.L52-.L55)/2
+ 765 0029 16       		.byte	(.L52-.L55)/2
+ 766 002a 16       		.byte	(.L52-.L55)/2
+ 767 002b 16       		.byte	(.L52-.L55)/2
+ 768 002c 16       		.byte	(.L52-.L55)/2
+ 769 002d 16       		.byte	(.L52-.L55)/2
+ 770 002e 16       		.byte	(.L52-.L55)/2
+ 771 002f 16       		.byte	(.L52-.L55)/2
+ 772 0030 16       		.byte	(.L52-.L55)/2
+ 773 0031 16       		.byte	(.L52-.L55)/2
+ 774 0032 16       		.byte	(.L52-.L55)/2
+ 775 0033 16       		.byte	(.L52-.L55)/2
+ 776 0034 16       		.byte	(.L52-.L55)/2
+ 777 0035 16       		.byte	(.L52-.L55)/2
+ 778 0036 16       		.byte	(.L52-.L55)/2
+ 779 0037 16       		.byte	(.L52-.L55)/2
+ 780 0038 16       		.byte	(.L52-.L55)/2
+ 781 0039 18       		.byte	(.L57-.L55)/2
+ 782 003a 16       		.byte	(.L52-.L55)/2
+ 783 003b 16       		.byte	(.L52-.L55)/2
+ 784 003c 16       		.byte	(.L52-.L55)/2
+ 785 003d 1C       		.byte	(.L56-.L55)/2
+ 786 003e 16       		.byte	(.L52-.L55)/2
+ 787 003f 16       		.byte	(.L52-.L55)/2
+ 788 0040 16       		.byte	(.L52-.L55)/2
+ 789 0041 16       		.byte	(.L52-.L55)/2
+ 790 0042 43       		.byte	(.L54-.L55)/2
+ 791 0043 00       		.p2align 1
+ 792              	.L58:
+ 178:BSP/MyUDP.c   **** 	{
+ 179:BSP/MyUDP.c   **** 	case SOCK_CLOSED:                 /*socket处于关闭状态*/
+ 180:BSP/MyUDP.c   **** 		socket(SOCK_TCPS, Sn_MR_TCP, local_port, 0);    /*初始化socket*/
+ 793              		.loc 1 180 3 is_stmt 1 view .LVU110
+ 794 0044 0023     		movs	r3, #0
+ 795 0046 1C4A     		ldr	r2, .L63+4
+ 796 0048 1288     		ldrh	r2, [r2]
+ARM GAS  /tmp/ccVlYndZ.s 			page 18
+
+
+ 797 004a 0121     		movs	r1, #1
+ 798 004c 1846     		mov	r0, r3
+ 799 004e FFF7FEFF 		bl	socket
+ 800              	.LVL55:
+ 181:BSP/MyUDP.c   **** 	  break;
+ 801              		.loc 1 181 4 view .LVU111
+ 802              	.L52:
+ 182:BSP/MyUDP.c   **** 	case SOCK_INIT:
+ 183:BSP/MyUDP.c   **** 		listen(SOCK_TCPS);
+ 184:BSP/MyUDP.c   **** 		break;
+ 185:BSP/MyUDP.c   **** 	case SOCK_ESTABLISHED:      /*socket初始化完成*/
+ 186:BSP/MyUDP.c   **** 
+ 187:BSP/MyUDP.c   **** 		if(getSn_IR(SOCK_TCPS) & Sn_IR_CON) //检查是否有接收中断
+ 188:BSP/MyUDP.c   **** 		{
+ 189:BSP/MyUDP.c   **** 			setSn_IR(SOCK_TCPS, Sn_IR_CON);  /*清接收中断*/
+ 190:BSP/MyUDP.c   **** 		}
+ 191:BSP/MyUDP.c   **** 		if((len=getSn_RX_RSR(SOCK_TCPS))>0)  /*接收到数据*/
+ 192:BSP/MyUDP.c   **** 		{
+ 193:BSP/MyUDP.c   **** 			recv(SOCK_TCPS,buff, len);               /*W5500接收计算机发送来的数据W5500接收计�
+ 194:BSP/MyUDP.c   **** 			
+ 195:BSP/MyUDP.c   **** 			//sendto(SOCK_TCPS,buff,len-8, remote_ip, remote_port);                /*W5500把接收到的数
+ 196:BSP/MyUDP.c   **** 			printf("%s", buff);
+ 197:BSP/MyUDP.c   **** 			send(SOCK_TCPS, str, sizeof(str)/sizeof(str[0]));
+ 198:BSP/MyUDP.c   ****         Analysis(buff);//分析数据
+ 199:BSP/MyUDP.c   ****         memset(buff, 0, sizeof(buff));
+ 200:BSP/MyUDP.c   **** 			}
+ 201:BSP/MyUDP.c   **** 			break;
+ 202:BSP/MyUDP.c   **** 	case SOCK_CLOSE_WAIT:
+ 203:BSP/MyUDP.c   **** 		close(SOCK_TCPS);
+ 204:BSP/MyUDP.c   **** 		break;
+ 205:BSP/MyUDP.c   **** 	}
+ 206:BSP/MyUDP.c   **** 
+ 207:BSP/MyUDP.c   **** }
+ 803              		.loc 1 207 1 is_stmt 0 view .LVU112
+ 804 0052 06B0     		add	sp, sp, #24
+ 805              	.LCFI27:
+ 806              		.cfi_remember_state
+ 807              		.cfi_def_cfa_offset 8
+ 808              		@ sp needed
+ 809 0054 10BD     		pop	{r4, pc}
+ 810              	.LVL56:
+ 811              	.L57:
+ 812              	.LCFI28:
+ 813              		.cfi_restore_state
+ 183:BSP/MyUDP.c   **** 		break;
+ 814              		.loc 1 183 3 is_stmt 1 view .LVU113
+ 815 0056 0020     		movs	r0, #0
+ 816 0058 FFF7FEFF 		bl	listen
+ 817              	.LVL57:
+ 184:BSP/MyUDP.c   **** 	case SOCK_ESTABLISHED:      /*socket初始化完成*/
+ 818              		.loc 1 184 3 view .LVU114
+ 819 005c F9E7     		b	.L52
+ 820              	.L56:
+ 187:BSP/MyUDP.c   **** 		{
+ 821              		.loc 1 187 3 view .LVU115
+ 187:BSP/MyUDP.c   **** 		{
+ 822              		.loc 1 187 6 is_stmt 0 view .LVU116
+ARM GAS  /tmp/ccVlYndZ.s 			page 19
+
+
+ 823 005e 4FF40270 		mov	r0, #520
+ 824 0062 FFF7FEFF 		bl	WIZCHIP_READ
+ 825              	.LVL58:
+ 187:BSP/MyUDP.c   **** 		{
+ 826              		.loc 1 187 5 discriminator 1 view .LVU117
+ 827 0066 10F0010F 		tst	r0, #1
+ 828 006a 19D1     		bne	.L62
+ 829              	.L59:
+ 191:BSP/MyUDP.c   **** 		{
+ 830              		.loc 1 191 3 is_stmt 1 view .LVU118
+ 191:BSP/MyUDP.c   **** 		{
+ 831              		.loc 1 191 11 is_stmt 0 view .LVU119
+ 832 006c 0020     		movs	r0, #0
+ 833 006e FFF7FEFF 		bl	getSn_RX_RSR
+ 834              	.LVL59:
+ 191:BSP/MyUDP.c   **** 		{
+ 835              		.loc 1 191 5 discriminator 1 view .LVU120
+ 836 0072 0246     		mov	r2, r0
+ 837 0074 0028     		cmp	r0, #0
+ 838 0076 ECD0     		beq	.L52
+ 839              	.LBB2:
+ 193:BSP/MyUDP.c   **** 			
+ 840              		.loc 1 193 4 is_stmt 1 view .LVU121
+ 841 0078 104C     		ldr	r4, .L63+8
+ 842 007a 2146     		mov	r1, r4
+ 843 007c 0020     		movs	r0, #0
+ 844              	.LVL60:
+ 193:BSP/MyUDP.c   **** 			
+ 845              		.loc 1 193 4 is_stmt 0 view .LVU122
+ 846 007e FFF7FEFF 		bl	recv
+ 847              	.LVL61:
+ 196:BSP/MyUDP.c   **** 			send(SOCK_TCPS, str, sizeof(str)/sizeof(str[0]));
+ 848              		.loc 1 196 4 is_stmt 1 view .LVU123
+ 849 0082 2146     		mov	r1, r4
+ 850 0084 0E48     		ldr	r0, .L63+12
+ 851 0086 FFF7FEFF 		bl	printf
+ 852              	.LVL62:
+ 197:BSP/MyUDP.c   ****         Analysis(buff);//分析数据
+ 853              		.loc 1 197 4 view .LVU124
+ 854 008a 1122     		movs	r2, #17
+ 855 008c 01A9     		add	r1, sp, #4
+ 856 008e 0020     		movs	r0, #0
+ 857 0090 FFF7FEFF 		bl	send
+ 858              	.LVL63:
+ 198:BSP/MyUDP.c   ****         memset(buff, 0, sizeof(buff));
+ 859              		.loc 1 198 9 view .LVU125
+ 199:BSP/MyUDP.c   **** 			}
+ 860              		.loc 1 199 9 view .LVU126
+ 861 0094 8022     		movs	r2, #128
+ 862 0096 0021     		movs	r1, #0
+ 863 0098 2046     		mov	r0, r4
+ 864 009a FFF7FEFF 		bl	memset
+ 865              	.LVL64:
+ 866 009e D8E7     		b	.L52
+ 867              	.LVL65:
+ 868              	.L62:
+ 199:BSP/MyUDP.c   **** 			}
+ARM GAS  /tmp/ccVlYndZ.s 			page 20
+
+
+ 869              		.loc 1 199 9 is_stmt 0 view .LVU127
+ 870              	.LBE2:
+ 189:BSP/MyUDP.c   **** 		}
+ 871              		.loc 1 189 4 is_stmt 1 view .LVU128
+ 872 00a0 0121     		movs	r1, #1
+ 873 00a2 4FF40270 		mov	r0, #520
+ 874 00a6 FFF7FEFF 		bl	WIZCHIP_WRITE
+ 875              	.LVL66:
+ 876 00aa DFE7     		b	.L59
+ 877              	.L54:
+ 203:BSP/MyUDP.c   **** 		break;
+ 878              		.loc 1 203 3 view .LVU129
+ 879 00ac 0020     		movs	r0, #0
+ 880 00ae FFF7FEFF 		bl	close
+ 881              	.LVL67:
+ 204:BSP/MyUDP.c   **** 	}
+ 882              		.loc 1 204 3 view .LVU130
+ 883              		.loc 1 207 1 is_stmt 0 view .LVU131
+ 884 00b2 CEE7     		b	.L52
+ 885              	.L64:
+ 886              		.align	2
+ 887              	.L63:
+ 888 00b4 04000000 		.word	.LC2
+ 889 00b8 00000000 		.word	local_port
+ 890 00bc 00000000 		.word	buff
+ 891 00c0 00000000 		.word	.LC3
+ 892              		.cfi_endproc
+ 893              	.LFE78:
+ 895              		.section	.text.do_tcp_server1,"ax",%progbits
+ 896              		.align	1
+ 897              		.global	do_tcp_server1
+ 898              		.syntax unified
+ 899              		.thumb
+ 900              		.thumb_func
+ 902              	do_tcp_server1:
+ 903              	.LFB79:
+ 208:BSP/MyUDP.c   **** void do_tcp_server1(void)
+ 209:BSP/MyUDP.c   **** {                                                              
+ 904              		.loc 1 209 1 is_stmt 1 view -0
+ 905              		.cfi_startproc
+ 906              		@ args = 0, pretend = 0, frame = 24
+ 907              		@ frame_needed = 0, uses_anonymous_args = 0
+ 908 0000 10B5     		push	{r4, lr}
+ 909              	.LCFI29:
+ 910              		.cfi_def_cfa_offset 8
+ 911              		.cfi_offset 4, -8
+ 912              		.cfi_offset 14, -4
+ 913 0002 86B0     		sub	sp, sp, #24
+ 914              	.LCFI30:
+ 915              		.cfi_def_cfa_offset 32
+ 210:BSP/MyUDP.c   **** 	uint16_t len=0;	
+ 916              		.loc 1 210 2 view .LVU133
+ 917              	.LVL68:
+ 211:BSP/MyUDP.c   **** 	uint8_t str[]="I am TCP Server\n";
+ 918              		.loc 1 211 2 view .LVU134
+ 919              		.loc 1 211 10 is_stmt 0 view .LVU135
+ 920 0004 0DF1040C 		add	ip, sp, #4
+ARM GAS  /tmp/ccVlYndZ.s 			page 21
+
+
+ 921 0008 1C4C     		ldr	r4, .L74
+ 922 000a 0FCC     		ldmia	r4!, {r0, r1, r2, r3}
+ 923 000c ACE80F00 		stmia	ip!, {r0, r1, r2, r3}
+ 924 0010 2368     		ldr	r3, [r4]
+ 925 0012 8CF80030 		strb	r3, [ip]
+ 212:BSP/MyUDP.c   **** 	switch(getSn_SR(SOCK_TCPS))       /*获取socket的状态*/
+ 926              		.loc 1 212 2 is_stmt 1 view .LVU136
+ 927              		.loc 1 212 9 is_stmt 0 view .LVU137
+ 928 0016 4FF44270 		mov	r0, #776
+ 929 001a FFF7FEFF 		bl	WIZCHIP_READ
+ 930              	.LVL69:
+ 931              		.loc 1 212 2 discriminator 1 view .LVU138
+ 932 001e 1C28     		cmp	r0, #28
+ 933 0020 17D8     		bhi	.L65
+ 934 0022 DFE800F0 		tbb	[pc, r0]
+ 935              	.L68:
+ 936 0026 0F       		.byte	(.L71-.L68)/2
+ 937 0027 16       		.byte	(.L65-.L68)/2
+ 938 0028 16       		.byte	(.L65-.L68)/2
+ 939 0029 16       		.byte	(.L65-.L68)/2
+ 940 002a 16       		.byte	(.L65-.L68)/2
+ 941 002b 16       		.byte	(.L65-.L68)/2
+ 942 002c 16       		.byte	(.L65-.L68)/2
+ 943 002d 16       		.byte	(.L65-.L68)/2
+ 944 002e 16       		.byte	(.L65-.L68)/2
+ 945 002f 16       		.byte	(.L65-.L68)/2
+ 946 0030 16       		.byte	(.L65-.L68)/2
+ 947 0031 16       		.byte	(.L65-.L68)/2
+ 948 0032 16       		.byte	(.L65-.L68)/2
+ 949 0033 16       		.byte	(.L65-.L68)/2
+ 950 0034 16       		.byte	(.L65-.L68)/2
+ 951 0035 16       		.byte	(.L65-.L68)/2
+ 952 0036 16       		.byte	(.L65-.L68)/2
+ 953 0037 16       		.byte	(.L65-.L68)/2
+ 954 0038 16       		.byte	(.L65-.L68)/2
+ 955 0039 18       		.byte	(.L70-.L68)/2
+ 956 003a 16       		.byte	(.L65-.L68)/2
+ 957 003b 16       		.byte	(.L65-.L68)/2
+ 958 003c 16       		.byte	(.L65-.L68)/2
+ 959 003d 1C       		.byte	(.L69-.L68)/2
+ 960 003e 16       		.byte	(.L65-.L68)/2
+ 961 003f 16       		.byte	(.L65-.L68)/2
+ 962 0040 16       		.byte	(.L65-.L68)/2
+ 963 0041 16       		.byte	(.L65-.L68)/2
+ 964 0042 26       		.byte	(.L67-.L68)/2
+ 965 0043 00       		.p2align 1
+ 966              	.L71:
+ 967              	.LBB3:
+ 213:BSP/MyUDP.c   **** 	{
+ 214:BSP/MyUDP.c   **** 	case SOCK_CLOSED:                 /*socket处于关闭状态*/
+ 215:BSP/MyUDP.c   **** 		socket(SOCK_TCPS, Sn_MR_TCP, local_port, 0);    /*初始化socket*/
+ 968              		.loc 1 215 3 is_stmt 1 view .LVU139
+ 969 0044 0023     		movs	r3, #0
+ 970 0046 0E4A     		ldr	r2, .L74+4
+ 971 0048 1288     		ldrh	r2, [r2]
+ 972 004a 0121     		movs	r1, #1
+ 973 004c 1846     		mov	r0, r3
+ARM GAS  /tmp/ccVlYndZ.s 			page 22
+
+
+ 974 004e FFF7FEFF 		bl	socket
+ 975              	.LVL70:
+ 216:BSP/MyUDP.c   **** 	  break;
+ 976              		.loc 1 216 4 view .LVU140
+ 977              	.L65:
+ 978              	.LBE3:
+ 217:BSP/MyUDP.c   **** 	case SOCK_INIT:
+ 218:BSP/MyUDP.c   **** 		listen(SOCK_TCPS);
+ 219:BSP/MyUDP.c   **** 		break;
+ 220:BSP/MyUDP.c   **** 	case SOCK_ESTABLISHED:      /*socket初始化完成*/
+ 221:BSP/MyUDP.c   **** 
+ 222:BSP/MyUDP.c   **** 			printf("%s",str);
+ 223:BSP/MyUDP.c   **** 			send(SOCK_TCPS, str, sizeof(str)/sizeof(str[0]));
+ 224:BSP/MyUDP.c   **** 			break;
+ 225:BSP/MyUDP.c   **** 	case SOCK_CLOSE_WAIT:
+ 226:BSP/MyUDP.c   **** 		close(SOCK_TCPS);
+ 227:BSP/MyUDP.c   **** 		break;
+ 228:BSP/MyUDP.c   **** 	}
+ 229:BSP/MyUDP.c   **** 
+ 230:BSP/MyUDP.c   **** }
+ 979              		.loc 1 230 1 is_stmt 0 view .LVU141
+ 980 0052 06B0     		add	sp, sp, #24
+ 981              	.LCFI31:
+ 982              		.cfi_remember_state
+ 983              		.cfi_def_cfa_offset 8
+ 984              		@ sp needed
+ 985 0054 10BD     		pop	{r4, pc}
+ 986              	.L70:
+ 987              	.LCFI32:
+ 988              		.cfi_restore_state
+ 989              	.LBB4:
+ 218:BSP/MyUDP.c   **** 		break;
+ 990              		.loc 1 218 3 is_stmt 1 view .LVU142
+ 991 0056 0020     		movs	r0, #0
+ 992 0058 FFF7FEFF 		bl	listen
+ 993              	.LVL71:
+ 219:BSP/MyUDP.c   **** 	case SOCK_ESTABLISHED:      /*socket初始化完成*/
+ 994              		.loc 1 219 3 view .LVU143
+ 995 005c F9E7     		b	.L65
+ 996              	.L69:
+ 222:BSP/MyUDP.c   **** 			send(SOCK_TCPS, str, sizeof(str)/sizeof(str[0]));
+ 997              		.loc 1 222 4 view .LVU144
+ 998 005e 01A9     		add	r1, sp, #4
+ 999 0060 0848     		ldr	r0, .L74+8
+ 1000 0062 FFF7FEFF 		bl	printf
+ 1001              	.LVL72:
+ 223:BSP/MyUDP.c   **** 			break;
+ 1002              		.loc 1 223 4 view .LVU145
+ 1003 0066 1122     		movs	r2, #17
+ 1004 0068 01A9     		add	r1, sp, #4
+ 1005 006a 0020     		movs	r0, #0
+ 1006 006c FFF7FEFF 		bl	send
+ 1007              	.LVL73:
+ 224:BSP/MyUDP.c   **** 	case SOCK_CLOSE_WAIT:
+ 1008              		.loc 1 224 4 view .LVU146
+ 1009 0070 EFE7     		b	.L65
+ 1010              	.L67:
+ARM GAS  /tmp/ccVlYndZ.s 			page 23
+
+
+ 226:BSP/MyUDP.c   **** 		break;
+ 1011              		.loc 1 226 3 view .LVU147
+ 1012 0072 0020     		movs	r0, #0
+ 1013 0074 FFF7FEFF 		bl	close
+ 1014              	.LVL74:
+ 227:BSP/MyUDP.c   **** 	}
+ 1015              		.loc 1 227 3 view .LVU148
+ 1016              	.LBE4:
+ 1017              		.loc 1 230 1 is_stmt 0 view .LVU149
+ 1018 0078 EBE7     		b	.L65
+ 1019              	.L75:
+ 1020 007a 00BF     		.align	2
+ 1021              	.L74:
+ 1022 007c 04000000 		.word	.LC2
+ 1023 0080 00000000 		.word	local_port
+ 1024 0084 00000000 		.word	.LC3
+ 1025              		.cfi_endproc
+ 1026              	.LFE79:
+ 1028              		.section	.rodata.do_tcp_client.str1.4,"aMS",%progbits,1
+ 1029              		.align	2
+ 1030              	.LC4:
+ 1031 0000 4920616D 		.ascii	"I am TCP Client\012\000"
+ 1031      20544350 
+ 1031      20436C69 
+ 1031      656E740A 
+ 1031      00
+ 1032              		.section	.text.do_tcp_client,"ax",%progbits
+ 1033              		.align	1
+ 1034              		.global	do_tcp_client
+ 1035              		.syntax unified
+ 1036              		.thumb
+ 1037              		.thumb_func
+ 1039              	do_tcp_client:
+ 1040              	.LFB80:
+ 231:BSP/MyUDP.c   **** void do_tcp_client(void)
+ 232:BSP/MyUDP.c   **** {                                                              
+ 1041              		.loc 1 232 1 is_stmt 1 view -0
+ 1042              		.cfi_startproc
+ 1043              		@ args = 0, pretend = 0, frame = 24
+ 1044              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1045 0000 10B5     		push	{r4, lr}
+ 1046              	.LCFI33:
+ 1047              		.cfi_def_cfa_offset 8
+ 1048              		.cfi_offset 4, -8
+ 1049              		.cfi_offset 14, -4
+ 1050 0002 86B0     		sub	sp, sp, #24
+ 1051              	.LCFI34:
+ 1052              		.cfi_def_cfa_offset 32
+ 233:BSP/MyUDP.c   **** 	uint16_t len=0;	
+ 1053              		.loc 1 233 2 view .LVU151
+ 1054              	.LVL75:
+ 234:BSP/MyUDP.c   **** 	uint8_t str[]="I am TCP Client\n";
+ 1055              		.loc 1 234 2 view .LVU152
+ 1056              		.loc 1 234 10 is_stmt 0 view .LVU153
+ 1057 0004 0DF1040C 		add	ip, sp, #4
+ 1058 0008 2C4C     		ldr	r4, .L87
+ 1059 000a 0FCC     		ldmia	r4!, {r0, r1, r2, r3}
+ARM GAS  /tmp/ccVlYndZ.s 			page 24
+
+
+ 1060 000c ACE80F00 		stmia	ip!, {r0, r1, r2, r3}
+ 1061 0010 2368     		ldr	r3, [r4]
+ 1062 0012 8CF80030 		strb	r3, [ip]
+ 235:BSP/MyUDP.c   **** 	switch(getSn_SR(SOCK_TCPC))       /*获取socket的状态*/
+ 1063              		.loc 1 235 2 is_stmt 1 view .LVU154
+ 1064              		.loc 1 235 9 is_stmt 0 view .LVU155
+ 1065 0016 4FF44A70 		mov	r0, #808
+ 1066 001a FFF7FEFF 		bl	WIZCHIP_READ
+ 1067              	.LVL76:
+ 1068              		.loc 1 235 2 discriminator 1 view .LVU156
+ 1069 001e 1C28     		cmp	r0, #28
+ 1070 0020 17D8     		bhi	.L76
+ 1071 0022 DFE800F0 		tbb	[pc, r0]
+ 1072              	.L79:
+ 1073 0026 0F       		.byte	(.L82-.L79)/2
+ 1074 0027 16       		.byte	(.L76-.L79)/2
+ 1075 0028 16       		.byte	(.L76-.L79)/2
+ 1076 0029 16       		.byte	(.L76-.L79)/2
+ 1077 002a 16       		.byte	(.L76-.L79)/2
+ 1078 002b 16       		.byte	(.L76-.L79)/2
+ 1079 002c 16       		.byte	(.L76-.L79)/2
+ 1080 002d 16       		.byte	(.L76-.L79)/2
+ 1081 002e 16       		.byte	(.L76-.L79)/2
+ 1082 002f 16       		.byte	(.L76-.L79)/2
+ 1083 0030 16       		.byte	(.L76-.L79)/2
+ 1084 0031 16       		.byte	(.L76-.L79)/2
+ 1085 0032 16       		.byte	(.L76-.L79)/2
+ 1086 0033 16       		.byte	(.L76-.L79)/2
+ 1087 0034 16       		.byte	(.L76-.L79)/2
+ 1088 0035 16       		.byte	(.L76-.L79)/2
+ 1089 0036 16       		.byte	(.L76-.L79)/2
+ 1090 0037 16       		.byte	(.L76-.L79)/2
+ 1091 0038 16       		.byte	(.L76-.L79)/2
+ 1092 0039 18       		.byte	(.L81-.L79)/2
+ 1093 003a 16       		.byte	(.L76-.L79)/2
+ 1094 003b 16       		.byte	(.L76-.L79)/2
+ 1095 003c 16       		.byte	(.L76-.L79)/2
+ 1096 003d 1F       		.byte	(.L80-.L79)/2
+ 1097 003e 16       		.byte	(.L76-.L79)/2
+ 1098 003f 16       		.byte	(.L76-.L79)/2
+ 1099 0040 16       		.byte	(.L76-.L79)/2
+ 1100 0041 16       		.byte	(.L76-.L79)/2
+ 1101 0042 46       		.byte	(.L78-.L79)/2
+ 1102 0043 00       		.p2align 1
+ 1103              	.L82:
+ 236:BSP/MyUDP.c   **** 	{
+ 237:BSP/MyUDP.c   **** 	case SOCK_CLOSED:                 /*socket处于关闭状态*/
+ 238:BSP/MyUDP.c   **** 		socket(SOCK_TCPC, Sn_MR_TCP, local_port, Sn_MR_ND);    /*初始化socket*/
+ 1104              		.loc 1 238 3 is_stmt 1 view .LVU157
+ 1105 0044 2023     		movs	r3, #32
+ 1106 0046 1E4A     		ldr	r2, .L87+4
+ 1107 0048 1288     		ldrh	r2, [r2]
+ 1108 004a 0121     		movs	r1, #1
+ 1109 004c 0846     		mov	r0, r1
+ 1110 004e FFF7FEFF 		bl	socket
+ 1111              	.LVL77:
+ 239:BSP/MyUDP.c   **** 	  break;
+ARM GAS  /tmp/ccVlYndZ.s 			page 25
+
+
+ 1112              		.loc 1 239 4 view .LVU158
+ 1113              	.L76:
+ 240:BSP/MyUDP.c   **** 	case SOCK_INIT:
+ 241:BSP/MyUDP.c   **** 		connect(SOCK_TCPC, remote_ip, remote_port);
+ 242:BSP/MyUDP.c   **** 		break;
+ 243:BSP/MyUDP.c   **** 	case SOCK_ESTABLISHED:      /*socket初始化完成*/
+ 244:BSP/MyUDP.c   **** 		if(getSn_IR(SOCK_TCPC) & Sn_IR_CON) //检查是否有接收中断
+ 245:BSP/MyUDP.c   **** 		{
+ 246:BSP/MyUDP.c   **** 			setSn_IR(SOCK_TCPC, Sn_IR_CON);  /*清接收中断*/
+ 247:BSP/MyUDP.c   **** 		}
+ 248:BSP/MyUDP.c   **** 		if((len=getSn_RX_RSR(SOCK_TCPC))>0)  /*接收到数据*/
+ 249:BSP/MyUDP.c   **** 		{
+ 250:BSP/MyUDP.c   **** 			recv(SOCK_TCPC,buff, len);               /*W5500接收计算机发送来的数据W5500接收计�
+ 251:BSP/MyUDP.c   **** 			printf("%s", buff);
+ 252:BSP/MyUDP.c   **** 			send(SOCK_TCPC, str, sizeof(str)/sizeof(str[0])); /*W5500把接收到的数据发送*/
+ 253:BSP/MyUDP.c   **** 		        Analysis(buff);//分析数据
+ 254:BSP/MyUDP.c   **** 		        memset(buff, 0, sizeof(buff));
+ 255:BSP/MyUDP.c   **** 			}
+ 256:BSP/MyUDP.c   **** 			break;
+ 257:BSP/MyUDP.c   **** 	case SOCK_CLOSE_WAIT:
+ 258:BSP/MyUDP.c   **** 		close(SOCK_TCPC);
+ 259:BSP/MyUDP.c   **** 		break;
+ 260:BSP/MyUDP.c   **** 	}
+ 261:BSP/MyUDP.c   **** 
+ 262:BSP/MyUDP.c   **** }
+ 1114              		.loc 1 262 1 is_stmt 0 view .LVU159
+ 1115 0052 06B0     		add	sp, sp, #24
+ 1116              	.LCFI35:
+ 1117              		.cfi_remember_state
+ 1118              		.cfi_def_cfa_offset 8
+ 1119              		@ sp needed
+ 1120 0054 10BD     		pop	{r4, pc}
+ 1121              	.LVL78:
+ 1122              	.L81:
+ 1123              	.LCFI36:
+ 1124              		.cfi_restore_state
+ 241:BSP/MyUDP.c   **** 		break;
+ 1125              		.loc 1 241 3 is_stmt 1 view .LVU160
+ 1126 0056 1B4B     		ldr	r3, .L87+8
+ 1127 0058 1A88     		ldrh	r2, [r3]
+ 1128 005a 1B49     		ldr	r1, .L87+12
+ 1129 005c 0120     		movs	r0, #1
+ 1130 005e FFF7FEFF 		bl	connect
+ 1131              	.LVL79:
+ 242:BSP/MyUDP.c   **** 	case SOCK_ESTABLISHED:      /*socket初始化完成*/
+ 1132              		.loc 1 242 3 view .LVU161
+ 1133 0062 F6E7     		b	.L76
+ 1134              	.L80:
+ 244:BSP/MyUDP.c   **** 		{
+ 1135              		.loc 1 244 3 view .LVU162
+ 244:BSP/MyUDP.c   **** 		{
+ 1136              		.loc 1 244 6 is_stmt 0 view .LVU163
+ 1137 0064 4FF40A70 		mov	r0, #552
+ 1138 0068 FFF7FEFF 		bl	WIZCHIP_READ
+ 1139              	.LVL80:
+ 244:BSP/MyUDP.c   **** 		{
+ 1140              		.loc 1 244 5 discriminator 1 view .LVU164
+ARM GAS  /tmp/ccVlYndZ.s 			page 26
+
+
+ 1141 006c 10F0010F 		tst	r0, #1
+ 1142 0070 19D1     		bne	.L86
+ 1143              	.L83:
+ 248:BSP/MyUDP.c   **** 		{
+ 1144              		.loc 1 248 3 is_stmt 1 view .LVU165
+ 248:BSP/MyUDP.c   **** 		{
+ 1145              		.loc 1 248 11 is_stmt 0 view .LVU166
+ 1146 0072 0120     		movs	r0, #1
+ 1147 0074 FFF7FEFF 		bl	getSn_RX_RSR
+ 1148              	.LVL81:
+ 248:BSP/MyUDP.c   **** 		{
+ 1149              		.loc 1 248 5 discriminator 1 view .LVU167
+ 1150 0078 0246     		mov	r2, r0
+ 1151 007a 0028     		cmp	r0, #0
+ 1152 007c E9D0     		beq	.L76
+ 1153              	.LBB5:
+ 250:BSP/MyUDP.c   **** 			printf("%s", buff);
+ 1154              		.loc 1 250 4 is_stmt 1 view .LVU168
+ 1155 007e 134C     		ldr	r4, .L87+16
+ 1156 0080 2146     		mov	r1, r4
+ 1157 0082 0120     		movs	r0, #1
+ 1158              	.LVL82:
+ 250:BSP/MyUDP.c   **** 			printf("%s", buff);
+ 1159              		.loc 1 250 4 is_stmt 0 view .LVU169
+ 1160 0084 FFF7FEFF 		bl	recv
+ 1161              	.LVL83:
+ 251:BSP/MyUDP.c   **** 			send(SOCK_TCPC, str, sizeof(str)/sizeof(str[0])); /*W5500把接收到的数据发送*/
+ 1162              		.loc 1 251 4 is_stmt 1 view .LVU170
+ 1163 0088 2146     		mov	r1, r4
+ 1164 008a 1148     		ldr	r0, .L87+20
+ 1165 008c FFF7FEFF 		bl	printf
+ 1166              	.LVL84:
+ 252:BSP/MyUDP.c   **** 		        Analysis(buff);//分析数据
+ 1167              		.loc 1 252 4 view .LVU171
+ 1168 0090 1122     		movs	r2, #17
+ 1169 0092 01A9     		add	r1, sp, #4
+ 1170 0094 0120     		movs	r0, #1
+ 1171 0096 FFF7FEFF 		bl	send
+ 1172              	.LVL85:
+ 253:BSP/MyUDP.c   **** 		        memset(buff, 0, sizeof(buff));
+ 1173              		.loc 1 253 11 view .LVU172
+ 254:BSP/MyUDP.c   **** 			}
+ 1174              		.loc 1 254 11 view .LVU173
+ 1175 009a 8022     		movs	r2, #128
+ 1176 009c 0021     		movs	r1, #0
+ 1177 009e 2046     		mov	r0, r4
+ 1178 00a0 FFF7FEFF 		bl	memset
+ 1179              	.LVL86:
+ 1180 00a4 D5E7     		b	.L76
+ 1181              	.LVL87:
+ 1182              	.L86:
+ 254:BSP/MyUDP.c   **** 			}
+ 1183              		.loc 1 254 11 is_stmt 0 view .LVU174
+ 1184              	.LBE5:
+ 246:BSP/MyUDP.c   **** 		}
+ 1185              		.loc 1 246 4 is_stmt 1 view .LVU175
+ 1186 00a6 0121     		movs	r1, #1
+ARM GAS  /tmp/ccVlYndZ.s 			page 27
+
+
+ 1187 00a8 4FF40A70 		mov	r0, #552
+ 1188 00ac FFF7FEFF 		bl	WIZCHIP_WRITE
+ 1189              	.LVL88:
+ 1190 00b0 DFE7     		b	.L83
+ 1191              	.L78:
+ 258:BSP/MyUDP.c   **** 		break;
+ 1192              		.loc 1 258 3 view .LVU176
+ 1193 00b2 0120     		movs	r0, #1
+ 1194 00b4 FFF7FEFF 		bl	close
+ 1195              	.LVL89:
+ 259:BSP/MyUDP.c   **** 	}
+ 1196              		.loc 1 259 3 view .LVU177
+ 1197              		.loc 1 262 1 is_stmt 0 view .LVU178
+ 1198 00b8 CBE7     		b	.L76
+ 1199              	.L88:
+ 1200 00ba 00BF     		.align	2
+ 1201              	.L87:
+ 1202 00bc 00000000 		.word	.LC4
+ 1203 00c0 00000000 		.word	local_port
+ 1204 00c4 00000000 		.word	remote_port
+ 1205 00c8 00000000 		.word	remote_ip
+ 1206 00cc 00000000 		.word	buff
+ 1207 00d0 00000000 		.word	.LC3
+ 1208              		.cfi_endproc
+ 1209              	.LFE80:
+ 1211              		.section	.rodata.do_tcp_client1.str1.4,"aMS",%progbits,1
+ 1212              		.align	2
+ 1213              	.LC5:
+ 1214 0000 4920616D 		.ascii	"I am TCP Client 1\012\000"
+ 1214      20544350 
+ 1214      20436C69 
+ 1214      656E7420 
+ 1214      310A00
+ 1215              		.section	.text.do_tcp_client1,"ax",%progbits
+ 1216              		.align	1
+ 1217              		.global	do_tcp_client1
+ 1218              		.syntax unified
+ 1219              		.thumb
+ 1220              		.thumb_func
+ 1222              	do_tcp_client1:
+ 1223              	.LFB81:
+ 263:BSP/MyUDP.c   **** void do_tcp_client1(void)
+ 264:BSP/MyUDP.c   **** {                                                              
+ 1224              		.loc 1 264 1 is_stmt 1 view -0
+ 1225              		.cfi_startproc
+ 1226              		@ args = 0, pretend = 0, frame = 24
+ 1227              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1228 0000 10B5     		push	{r4, lr}
+ 1229              	.LCFI37:
+ 1230              		.cfi_def_cfa_offset 8
+ 1231              		.cfi_offset 4, -8
+ 1232              		.cfi_offset 14, -4
+ 1233 0002 86B0     		sub	sp, sp, #24
+ 1234              	.LCFI38:
+ 1235              		.cfi_def_cfa_offset 32
+ 265:BSP/MyUDP.c   **** 	uint16_t len=0;	
+ 1236              		.loc 1 265 2 view .LVU180
+ARM GAS  /tmp/ccVlYndZ.s 			page 28
+
+
+ 1237              	.LVL90:
+ 266:BSP/MyUDP.c   **** 	uint8_t str[]="I am TCP Client 1\n";
+ 1238              		.loc 1 266 2 view .LVU181
+ 1239              		.loc 1 266 10 is_stmt 0 view .LVU182
+ 1240 0004 0DF1040C 		add	ip, sp, #4
+ 1241 0008 1F4C     		ldr	r4, .L98
+ 1242 000a 0FCC     		ldmia	r4!, {r0, r1, r2, r3}
+ 1243 000c ACE80F00 		stmia	ip!, {r0, r1, r2, r3}
+ 1244 0010 2368     		ldr	r3, [r4]
+ 1245 0012 2CF8023B 		strh	r3, [ip], #2	@ movhi
+ 1246 0016 1B0C     		lsrs	r3, r3, #16
+ 1247 0018 8CF80030 		strb	r3, [ip]
+ 267:BSP/MyUDP.c   **** 	switch(getSn_SR(SOCK_TCPC))       /*获取socket的状态*/
+ 1248              		.loc 1 267 2 is_stmt 1 view .LVU183
+ 1249              		.loc 1 267 9 is_stmt 0 view .LVU184
+ 1250 001c 4FF44A70 		mov	r0, #808
+ 1251 0020 FFF7FEFF 		bl	WIZCHIP_READ
+ 1252              	.LVL91:
+ 1253              		.loc 1 267 2 discriminator 1 view .LVU185
+ 1254 0024 1C28     		cmp	r0, #28
+ 1255 0026 17D8     		bhi	.L89
+ 1256 0028 DFE800F0 		tbb	[pc, r0]
+ 1257              	.L92:
+ 1258 002c 0F       		.byte	(.L95-.L92)/2
+ 1259 002d 16       		.byte	(.L89-.L92)/2
+ 1260 002e 16       		.byte	(.L89-.L92)/2
+ 1261 002f 16       		.byte	(.L89-.L92)/2
+ 1262 0030 16       		.byte	(.L89-.L92)/2
+ 1263 0031 16       		.byte	(.L89-.L92)/2
+ 1264 0032 16       		.byte	(.L89-.L92)/2
+ 1265 0033 16       		.byte	(.L89-.L92)/2
+ 1266 0034 16       		.byte	(.L89-.L92)/2
+ 1267 0035 16       		.byte	(.L89-.L92)/2
+ 1268 0036 16       		.byte	(.L89-.L92)/2
+ 1269 0037 16       		.byte	(.L89-.L92)/2
+ 1270 0038 16       		.byte	(.L89-.L92)/2
+ 1271 0039 16       		.byte	(.L89-.L92)/2
+ 1272 003a 16       		.byte	(.L89-.L92)/2
+ 1273 003b 16       		.byte	(.L89-.L92)/2
+ 1274 003c 16       		.byte	(.L89-.L92)/2
+ 1275 003d 16       		.byte	(.L89-.L92)/2
+ 1276 003e 16       		.byte	(.L89-.L92)/2
+ 1277 003f 18       		.byte	(.L94-.L92)/2
+ 1278 0040 16       		.byte	(.L89-.L92)/2
+ 1279 0041 16       		.byte	(.L89-.L92)/2
+ 1280 0042 16       		.byte	(.L89-.L92)/2
+ 1281 0043 1F       		.byte	(.L93-.L92)/2
+ 1282 0044 16       		.byte	(.L89-.L92)/2
+ 1283 0045 16       		.byte	(.L89-.L92)/2
+ 1284 0046 16       		.byte	(.L89-.L92)/2
+ 1285 0047 16       		.byte	(.L89-.L92)/2
+ 1286 0048 29       		.byte	(.L91-.L92)/2
+ 1287 0049 00       		.p2align 1
+ 1288              	.L95:
+ 1289              	.LBB6:
+ 268:BSP/MyUDP.c   **** 	{
+ 269:BSP/MyUDP.c   **** 	case SOCK_CLOSED:                 /*socket处于关闭状态*/
+ARM GAS  /tmp/ccVlYndZ.s 			page 29
+
+
+ 270:BSP/MyUDP.c   **** 		socket(SOCK_TCPC, Sn_MR_TCP, local_port, Sn_MR_ND);    /*初始化socket*/
+ 1290              		.loc 1 270 3 is_stmt 1 view .LVU186
+ 1291 004a 2023     		movs	r3, #32
+ 1292 004c 0F4A     		ldr	r2, .L98+4
+ 1293 004e 1288     		ldrh	r2, [r2]
+ 1294 0050 0121     		movs	r1, #1
+ 1295 0052 0846     		mov	r0, r1
+ 1296 0054 FFF7FEFF 		bl	socket
+ 1297              	.LVL92:
+ 271:BSP/MyUDP.c   **** 	  break;
+ 1298              		.loc 1 271 4 view .LVU187
+ 1299              	.L89:
+ 1300              	.LBE6:
+ 272:BSP/MyUDP.c   **** 	case SOCK_INIT:
+ 273:BSP/MyUDP.c   **** 		connect(SOCK_TCPC, remote_ip, remote_port);
+ 274:BSP/MyUDP.c   **** 		break;
+ 275:BSP/MyUDP.c   **** 	case SOCK_ESTABLISHED:      /*socket初始化完成*/
+ 276:BSP/MyUDP.c   **** 			printf("%s", str);
+ 277:BSP/MyUDP.c   **** 			send(SOCK_TCPC, str, sizeof(str)/sizeof(str[0])); /*W5500把接收到的数据发送*/
+ 278:BSP/MyUDP.c   **** 			break;
+ 279:BSP/MyUDP.c   **** 	case SOCK_CLOSE_WAIT:
+ 280:BSP/MyUDP.c   **** 		close(SOCK_TCPC);
+ 281:BSP/MyUDP.c   **** 		break;
+ 282:BSP/MyUDP.c   **** 	}
+ 283:BSP/MyUDP.c   **** 
+ 284:BSP/MyUDP.c   **** }
+ 1301              		.loc 1 284 1 is_stmt 0 view .LVU188
+ 1302 0058 06B0     		add	sp, sp, #24
+ 1303              	.LCFI39:
+ 1304              		.cfi_remember_state
+ 1305              		.cfi_def_cfa_offset 8
+ 1306              		@ sp needed
+ 1307 005a 10BD     		pop	{r4, pc}
+ 1308              	.L94:
+ 1309              	.LCFI40:
+ 1310              		.cfi_restore_state
+ 1311              	.LBB7:
+ 273:BSP/MyUDP.c   **** 		break;
+ 1312              		.loc 1 273 3 is_stmt 1 view .LVU189
+ 1313 005c 0C4B     		ldr	r3, .L98+8
+ 1314 005e 1A88     		ldrh	r2, [r3]
+ 1315 0060 0C49     		ldr	r1, .L98+12
+ 1316 0062 0120     		movs	r0, #1
+ 1317 0064 FFF7FEFF 		bl	connect
+ 1318              	.LVL93:
+ 274:BSP/MyUDP.c   **** 	case SOCK_ESTABLISHED:      /*socket初始化完成*/
+ 1319              		.loc 1 274 3 view .LVU190
+ 1320 0068 F6E7     		b	.L89
+ 1321              	.L93:
+ 276:BSP/MyUDP.c   **** 			send(SOCK_TCPC, str, sizeof(str)/sizeof(str[0])); /*W5500把接收到的数据发送*/
+ 1322              		.loc 1 276 4 view .LVU191
+ 1323 006a 01A9     		add	r1, sp, #4
+ 1324 006c 0A48     		ldr	r0, .L98+16
+ 1325 006e FFF7FEFF 		bl	printf
+ 1326              	.LVL94:
+ 277:BSP/MyUDP.c   **** 			break;
+ 1327              		.loc 1 277 4 view .LVU192
+ARM GAS  /tmp/ccVlYndZ.s 			page 30
+
+
+ 1328 0072 1322     		movs	r2, #19
+ 1329 0074 01A9     		add	r1, sp, #4
+ 1330 0076 0120     		movs	r0, #1
+ 1331 0078 FFF7FEFF 		bl	send
+ 1332              	.LVL95:
+ 278:BSP/MyUDP.c   **** 	case SOCK_CLOSE_WAIT:
+ 1333              		.loc 1 278 4 view .LVU193
+ 1334 007c ECE7     		b	.L89
+ 1335              	.L91:
+ 280:BSP/MyUDP.c   **** 		break;
+ 1336              		.loc 1 280 3 view .LVU194
+ 1337 007e 0120     		movs	r0, #1
+ 1338 0080 FFF7FEFF 		bl	close
+ 1339              	.LVL96:
+ 281:BSP/MyUDP.c   **** 	}
+ 1340              		.loc 1 281 3 view .LVU195
+ 1341              	.LBE7:
+ 1342              		.loc 1 284 1 is_stmt 0 view .LVU196
+ 1343 0084 E8E7     		b	.L89
+ 1344              	.L99:
+ 1345 0086 00BF     		.align	2
+ 1346              	.L98:
+ 1347 0088 00000000 		.word	.LC5
+ 1348 008c 00000000 		.word	local_port
+ 1349 0090 00000000 		.word	remote_port
+ 1350 0094 00000000 		.word	remote_ip
+ 1351 0098 00000000 		.word	.LC3
+ 1352              		.cfi_endproc
+ 1353              	.LFE81:
+ 1355              		.section	.rodata.w5500_main.str1.4,"aMS",%progbits,1
+ 1356              		.align	2
+ 1357              	.LC6:
+ 1358 0000 68656C6C 		.ascii	"hello w5500\012\000"
+ 1358      6F207735 
+ 1358      3530300A 
+ 1358      00
+ 1359 000d 000000   		.align	2
+ 1360              	.LC7:
+ 1361 0010 74686973 		.ascii	"this is udp\012\000"
+ 1361      20697320 
+ 1361      7564700A 
+ 1361      00
+ 1362 001d 000000   		.align	2
+ 1363              	.LC8:
+ 1364 0020 74686973 		.ascii	"this is udp1\012\000"
+ 1364      20697320 
+ 1364      75647031 
+ 1364      0A00
+ 1365 002e 0000     		.align	2
+ 1366              	.LC9:
+ 1367 0030 74686973 		.ascii	"this is tcp server\012\000"
+ 1367      20697320 
+ 1367      74637020 
+ 1367      73657276 
+ 1367      65720A00 
+ 1368              		.align	2
+ 1369              	.LC10:
+ARM GAS  /tmp/ccVlYndZ.s 			page 31
+
+
+ 1370 0044 74686973 		.ascii	"this is tcp server 1\012\000"
+ 1370      20697320 
+ 1370      74637020 
+ 1370      73657276 
+ 1370      65722031 
+ 1371 005a 0000     		.align	2
+ 1372              	.LC11:
+ 1373 005c 74686973 		.ascii	"this is tcp client\012\000"
+ 1373      20697320 
+ 1373      74637020 
+ 1373      636C6965 
+ 1373      6E740A00 
+ 1374              		.align	2
+ 1375              	.LC12:
+ 1376 0070 74686973 		.ascii	"this is tcp client1\012\000"
+ 1376      20697320 
+ 1376      74637020 
+ 1376      636C6965 
+ 1376      6E74310A 
+ 1377              		.section	.text.w5500_main,"ax",%progbits
+ 1378              		.align	1
+ 1379              		.global	w5500_main
+ 1380              		.syntax unified
+ 1381              		.thumb
+ 1382              		.thumb_func
+ 1384              	w5500_main:
+ 1385              	.LFB82:
+ 285:BSP/MyUDP.c   **** #define UDP 0
+ 286:BSP/MyUDP.c   **** #define UDP1 1
+ 287:BSP/MyUDP.c   **** #define TCPS 2
+ 288:BSP/MyUDP.c   **** #define TCPS1 3
+ 289:BSP/MyUDP.c   **** #define TCPC  4
+ 290:BSP/MyUDP.c   **** #define TCPC1 5
+ 291:BSP/MyUDP.c   **** 
+ 292:BSP/MyUDP.c   **** void w5500_main(void){
+ 1386              		.loc 1 292 22 is_stmt 1 view -0
+ 1387              		.cfi_startproc
+ 1388              		@ args = 0, pretend = 0, frame = 136
+ 1389              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1390 0000 10B5     		push	{r4, lr}
+ 1391              	.LCFI41:
+ 1392              		.cfi_def_cfa_offset 8
+ 1393              		.cfi_offset 4, -8
+ 1394              		.cfi_offset 14, -4
+ 1395 0002 A2B0     		sub	sp, sp, #136
+ 1396              	.LCFI42:
+ 1397              		.cfi_def_cfa_offset 144
+ 293:BSP/MyUDP.c   ****   char str[] = "hello w5500\n";
+ 1398              		.loc 1 293 3 view .LVU198
+ 1399              		.loc 1 293 8 is_stmt 0 view .LVU199
+ 1400 0004 284B     		ldr	r3, .L103
+ 1401 0006 0DF1780C 		add	ip, sp, #120
+ 1402 000a 0FCB     		ldm	r3, {r0, r1, r2, r3}
+ 1403 000c ACE80700 		stmia	ip!, {r0, r1, r2}
+ 1404 0010 8CF80030 		strb	r3, [ip]
+ 294:BSP/MyUDP.c   ****   char udp[] = "this is udp\n";
+ 1405              		.loc 1 294 3 is_stmt 1 view .LVU200
+ARM GAS  /tmp/ccVlYndZ.s 			page 32
+
+
+ 1406              		.loc 1 294 8 is_stmt 0 view .LVU201
+ 1407 0014 254B     		ldr	r3, .L103+4
+ 1408 0016 0DF1680C 		add	ip, sp, #104
+ 1409 001a 0FCB     		ldm	r3, {r0, r1, r2, r3}
+ 1410 001c ACE80700 		stmia	ip!, {r0, r1, r2}
+ 1411 0020 8CF80030 		strb	r3, [ip]
+ 295:BSP/MyUDP.c   ****   char udp1[] = "this is udp1\n";
+ 1412              		.loc 1 295 3 is_stmt 1 view .LVU202
+ 1413              		.loc 1 295 8 is_stmt 0 view .LVU203
+ 1414 0024 224B     		ldr	r3, .L103+8
+ 1415 0026 0DF1580C 		add	ip, sp, #88
+ 1416 002a 0FCB     		ldm	r3, {r0, r1, r2, r3}
+ 1417 002c ACE80700 		stmia	ip!, {r0, r1, r2}
+ 1418 0030 ACF80030 		strh	r3, [ip]	@ movhi
+ 296:BSP/MyUDP.c   ****   char tcps[] = "this is tcp server\n";
+ 1419              		.loc 1 296 3 is_stmt 1 view .LVU204
+ 1420              		.loc 1 296 8 is_stmt 0 view .LVU205
+ 1421 0034 0DF1440C 		add	ip, sp, #68
+ 1422 0038 1E4C     		ldr	r4, .L103+12
+ 1423 003a 0FCC     		ldmia	r4!, {r0, r1, r2, r3}
+ 1424 003c ACE80F00 		stmia	ip!, {r0, r1, r2, r3}
+ 1425 0040 2368     		ldr	r3, [r4]
+ 1426 0042 CCF80030 		str	r3, [ip]
+ 297:BSP/MyUDP.c   ****   char tcps1[] = "this is tcp server 1\n";
+ 1427              		.loc 1 297 3 is_stmt 1 view .LVU206
+ 1428              		.loc 1 297 8 is_stmt 0 view .LVU207
+ 1429 0046 0DF12C0C 		add	ip, sp, #44
+ 1430 004a 1B4C     		ldr	r4, .L103+16
+ 1431 004c 0FCC     		ldmia	r4!, {r0, r1, r2, r3}
+ 1432 004e ACE80F00 		stmia	ip!, {r0, r1, r2, r3}
+ 1433 0052 94E80300 		ldm	r4, {r0, r1}
+ 1434 0056 4CF8040B 		str	r0, [ip], #4
+ 1435 005a ACF80010 		strh	r1, [ip]	@ movhi
+ 298:BSP/MyUDP.c   ****   char tcpc[] = "this is tcp client\n";
+ 1436              		.loc 1 298 3 is_stmt 1 view .LVU208
+ 1437              		.loc 1 298 8 is_stmt 0 view .LVU209
+ 1438 005e 0DF1180C 		add	ip, sp, #24
+ 1439 0062 164C     		ldr	r4, .L103+20
+ 1440 0064 0FCC     		ldmia	r4!, {r0, r1, r2, r3}
+ 1441 0066 ACE80F00 		stmia	ip!, {r0, r1, r2, r3}
+ 1442 006a 2368     		ldr	r3, [r4]
+ 1443 006c CCF80030 		str	r3, [ip]
+ 299:BSP/MyUDP.c   ****   char tcpc1[] = "this is tcp client1\n";
+ 1444              		.loc 1 299 3 is_stmt 1 view .LVU210
+ 1445              		.loc 1 299 8 is_stmt 0 view .LVU211
+ 1446 0070 EC46     		mov	ip, sp
+ 1447 0072 134C     		ldr	r4, .L103+24
+ 1448 0074 0FCC     		ldmia	r4!, {r0, r1, r2, r3}
+ 1449 0076 ACE80F00 		stmia	ip!, {r0, r1, r2, r3}
+ 1450 007a 94E80300 		ldm	r4, {r0, r1}
+ 1451 007e 4CF8040B 		str	r0, [ip], #4
+ 1452 0082 8CF80010 		strb	r1, [ip]
+ 300:BSP/MyUDP.c   ****   int select = 3; // 1:udp1 0:udp
+ 1453              		.loc 1 300 3 is_stmt 1 view .LVU212
+ 1454              	.LVL97:
+ 301:BSP/MyUDP.c   ****   // int procotol = UDP;
+ 302:BSP/MyUDP.c   ****   // int procotol = UDP1;
+ARM GAS  /tmp/ccVlYndZ.s 			page 33
+
+
+ 303:BSP/MyUDP.c   ****   // int procotol = TCPS;
+ 304:BSP/MyUDP.c   ****   // int procotol = TCPS1;
+ 305:BSP/MyUDP.c   ****   // int procotol = TCPC;
+ 306:BSP/MyUDP.c   ****   int procotol = TCPC1;
+ 1455              		.loc 1 306 3 view .LVU213
+ 307:BSP/MyUDP.c   ****   
+ 308:BSP/MyUDP.c   ****   UDPinit();
+ 1456              		.loc 1 308 3 view .LVU214
+ 1457 0086 FFF7FEFF 		bl	UDPinit
+ 1458              	.LVL98:
+ 1459              	.L101:
+ 309:BSP/MyUDP.c   ****   
+ 310:BSP/MyUDP.c   ****   while(1){
+ 1460              		.loc 1 310 3 view .LVU215
+ 311:BSP/MyUDP.c   **** 
+ 312:BSP/MyUDP.c   ****     switch(procotol){
+ 1461              		.loc 1 312 5 view .LVU216
+ 313:BSP/MyUDP.c   ****       case UDP:
+ 314:BSP/MyUDP.c   ****         HAL_UART_Transmit(&huart1, udp, sizeof(udp)/sizeof(udp[0]), HAL_MAX_DELAY);
+ 315:BSP/MyUDP.c   ****         do_udp();
+ 316:BSP/MyUDP.c   ****         break;
+ 317:BSP/MyUDP.c   ****       case UDP1:
+ 318:BSP/MyUDP.c   ****         HAL_UART_Transmit(&huart1, udp1, sizeof(udp1)/sizeof(udp1[0]), HAL_MAX_DELAY);
+ 319:BSP/MyUDP.c   ****         do_udp1();
+ 320:BSP/MyUDP.c   ****         HAL_Delay(1000);
+ 321:BSP/MyUDP.c   ****         break;
+ 322:BSP/MyUDP.c   ****       case TCPS:
+ 323:BSP/MyUDP.c   ****         HAL_UART_Transmit(&huart1, tcps, sizeof(tcps)/sizeof(tcps[0]), HAL_MAX_DELAY);
+ 324:BSP/MyUDP.c   ****         do_tcp_server();
+ 325:BSP/MyUDP.c   ****         break;
+ 326:BSP/MyUDP.c   ****       case TCPS1:
+ 327:BSP/MyUDP.c   ****         HAL_UART_Transmit(&huart1, tcps1, sizeof(tcps1)/sizeof(tcps1[0]), HAL_MAX_DELAY);
+ 328:BSP/MyUDP.c   ****         do_tcp_server1();
+ 329:BSP/MyUDP.c   ****         HAL_Delay(1000);
+ 330:BSP/MyUDP.c   ****         break;
+ 331:BSP/MyUDP.c   ****       case TCPC:
+ 332:BSP/MyUDP.c   ****         HAL_UART_Transmit(&huart1, tcpc, sizeof(tcpc)/sizeof(tcpc[0]), HAL_MAX_DELAY);
+ 333:BSP/MyUDP.c   ****         do_tcp_client();
+ 334:BSP/MyUDP.c   ****         break;
+ 335:BSP/MyUDP.c   ****       case TCPC1:
+ 336:BSP/MyUDP.c   ****         HAL_UART_Transmit(&huart1, tcpc1, sizeof(tcpc1)/sizeof(tcpc1[0]), HAL_MAX_DELAY);
+ 1462              		.loc 1 336 9 view .LVU217
+ 1463 008a 4FF0FF33 		mov	r3, #-1
+ 1464 008e 1522     		movs	r2, #21
+ 1465 0090 6946     		mov	r1, sp
+ 1466 0092 0C48     		ldr	r0, .L103+28
+ 1467 0094 FFF7FEFF 		bl	HAL_UART_Transmit
+ 1468              	.LVL99:
+ 337:BSP/MyUDP.c   ****         do_tcp_client1();
+ 1469              		.loc 1 337 9 view .LVU218
+ 1470 0098 FFF7FEFF 		bl	do_tcp_client1
+ 1471              	.LVL100:
+ 338:BSP/MyUDP.c   ****         HAL_Delay(1000);
+ 1472              		.loc 1 338 9 view .LVU219
+ 1473 009c 4FF47A70 		mov	r0, #1000
+ 1474 00a0 FFF7FEFF 		bl	HAL_Delay
+ 1475              	.LVL101:
+ARM GAS  /tmp/ccVlYndZ.s 			page 34
+
+
+ 339:BSP/MyUDP.c   ****         break;
+ 1476              		.loc 1 339 9 view .LVU220
+ 1477 00a4 F1E7     		b	.L101
+ 1478              	.L104:
+ 1479 00a6 00BF     		.align	2
+ 1480              	.L103:
+ 1481 00a8 00000000 		.word	.LC6
+ 1482 00ac 10000000 		.word	.LC7
+ 1483 00b0 20000000 		.word	.LC8
+ 1484 00b4 30000000 		.word	.LC9
+ 1485 00b8 44000000 		.word	.LC10
+ 1486 00bc 5C000000 		.word	.LC11
+ 1487 00c0 70000000 		.word	.LC12
+ 1488 00c4 00000000 		.word	huart1
+ 1489              		.cfi_endproc
+ 1490              	.LFE82:
+ 1492              		.global	gGetNetInfo
+ 1493              		.section	.bss.gGetNetInfo,"aw",%nobits
+ 1494              		.align	2
+ 1497              	gGetNetInfo:
+ 1498 0000 00000000 		.space	23
+ 1498      00000000 
+ 1498      00000000 
+ 1498      00000000 
+ 1498      00000000 
+ 1499              		.global	gSetNetInfo
+ 1500              		.section	.data.gSetNetInfo,"aw"
+ 1501              		.align	2
+ 1504              	gSetNetInfo:
+ 1505 0000 0008DC11 		.ascii	"\000\010\334\021\021\021"
+ 1505      1111
+ 1506 0006 C0A80102 		.ascii	"\300\250\001\002"
+ 1507 000a FFFFFF00 		.ascii	"\377\377\377\000"
+ 1508 000e C0A80101 		.ascii	"\300\250\001\001"
+ 1509 0012 90909090 		.ascii	"\220\220\220\220"
+ 1510 0016 01       		.byte	1
+ 1511              		.global	local_port
+ 1512              		.section	.data.local_port,"aw"
+ 1513              		.align	1
+ 1516              	local_port:
+ 1517 0000 8913     		.short	5001
+ 1518              		.global	remote_port
+ 1519              		.section	.data.remote_port,"aw"
+ 1520              		.align	1
+ 1523              	remote_port:
+ 1524 0000 8A13     		.short	5002
+ 1525              		.global	remote_ip
+ 1526              		.section	.data.remote_ip,"aw"
+ 1527              		.align	2
+ 1530              	remote_ip:
+ 1531 0000 C0A80116 		.ascii	"\300\250\001\026"
+ 1532              		.global	UDP_send_buff
+ 1533              		.section	.bss.UDP_send_buff,"aw",%nobits
+ 1534              		.align	2
+ 1537              	UDP_send_buff:
+ 1538 0000 00000000 		.space	128
+ 1538      00000000 
+ARM GAS  /tmp/ccVlYndZ.s 			page 35
+
+
+ 1538      00000000 
+ 1538      00000000 
+ 1538      00000000 
+ 1539              		.global	buff
+ 1540              		.section	.bss.buff,"aw",%nobits
+ 1541              		.align	2
+ 1544              	buff:
+ 1545 0000 00000000 		.space	128
+ 1545      00000000 
+ 1545      00000000 
+ 1545      00000000 
+ 1545      00000000 
+ 1546              		.text
+ 1547              	.Letext0:
+ 1548              		.file 2 "/usr/lib/gcc/arm-none-eabi/13.2.1/include/stdint.h"
+ 1549              		.file 3 "Drivers/CMSIS/Device/ST/STM32F1xx/Include/stm32f103xe.h"
+ 1550              		.file 4 "/usr/lib/gcc/arm-none-eabi/13.2.1/include/stddef.h"
+ 1551              		.file 5 "Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_def.h"
+ 1552              		.file 6 "Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_gpio.h"
+ 1553              		.file 7 "Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_dma.h"
+ 1554              		.file 8 "Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_spi.h"
+ 1555              		.file 9 "Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_uart.h"
+ 1556              		.file 10 "BSP/wizchip_conf.h"
+ 1557              		.file 11 "Core/Inc/spi.h"
+ 1558              		.file 12 "BSP/MyUDP.h"
+ 1559              		.file 13 "Core/Inc/usart.h"
+ 1560              		.file 14 "BSP/socket.h"
+ 1561              		.file 15 "/usr/include/newlib/string.h"
+ 1562              		.file 16 "BSP/W5500/w5500.h"
+ 1563              		.file 17 "Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h"
+ 1564              		.file 18 "<built-in>"
+ARM GAS  /tmp/ccVlYndZ.s 			page 36
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 MyUDP.c
+     /tmp/ccVlYndZ.s:19     .text.W5500_Select:00000000 $t
+     /tmp/ccVlYndZ.s:25     .text.W5500_Select:00000000 W5500_Select
+     /tmp/ccVlYndZ.s:47     .text.W5500_Select:00000010 $d
+     /tmp/ccVlYndZ.s:52     .text.W5500_Unselect:00000000 $t
+     /tmp/ccVlYndZ.s:58     .text.W5500_Unselect:00000000 W5500_Unselect
+     /tmp/ccVlYndZ.s:80     .text.W5500_Unselect:00000010 $d
+     /tmp/ccVlYndZ.s:85     .text.W5500_Restart:00000000 $t
+     /tmp/ccVlYndZ.s:91     .text.W5500_Restart:00000000 W5500_Restart
+     /tmp/ccVlYndZ.s:128    .text.W5500_Restart:0000002c $d
+     /tmp/ccVlYndZ.s:133    .text.W5500_ReadBuff:00000000 $t
+     /tmp/ccVlYndZ.s:139    .text.W5500_ReadBuff:00000000 W5500_ReadBuff
+     /tmp/ccVlYndZ.s:168    .text.W5500_ReadBuff:00000014 $d
+     /tmp/ccVlYndZ.s:173    .text.W5500_ReadByte:00000000 $t
+     /tmp/ccVlYndZ.s:179    .text.W5500_ReadByte:00000000 W5500_ReadByte
+     /tmp/ccVlYndZ.s:210    .text.W5500_WriteBuff:00000000 $t
+     /tmp/ccVlYndZ.s:216    .text.W5500_WriteBuff:00000000 W5500_WriteBuff
+     /tmp/ccVlYndZ.s:245    .text.W5500_WriteBuff:00000014 $d
+     /tmp/ccVlYndZ.s:250    .text.W5500_WriteByte:00000000 $t
+     /tmp/ccVlYndZ.s:256    .text.W5500_WriteByte:00000000 W5500_WriteByte
+     /tmp/ccVlYndZ.s:289    .text.validSetNetInfoResult:00000000 $t
+     /tmp/ccVlYndZ.s:295    .text.validSetNetInfoResult:00000000 validSetNetInfoResult
+     /tmp/ccVlYndZ.s:321    .rodata.UDPinit.str1.4:00000000 $d
+     /tmp/ccVlYndZ.s:326    .text.UDPinit:00000000 $t
+     /tmp/ccVlYndZ.s:332    .text.UDPinit:00000000 UDPinit
+     /tmp/ccVlYndZ.s:394    .text.UDPinit:00000048 $d
+     /tmp/ccVlYndZ.s:1504   .data.gSetNetInfo:00000000 gSetNetInfo
+     /tmp/ccVlYndZ.s:1497   .bss.gGetNetInfo:00000000 gGetNetInfo
+     /tmp/ccVlYndZ.s:405    .rodata.do_udp.str1.4:00000000 $d
+     /tmp/ccVlYndZ.s:409    .text.do_udp:00000000 $t
+     /tmp/ccVlYndZ.s:415    .text.do_udp:00000000 do_udp
+     /tmp/ccVlYndZ.s:543    .text.do_udp:000000a0 $d
+     /tmp/ccVlYndZ.s:1530   .data.remote_ip:00000000 remote_ip
+     /tmp/ccVlYndZ.s:1544   .bss.buff:00000000 buff
+     /tmp/ccVlYndZ.s:1523   .data.remote_port:00000000 remote_port
+     /tmp/ccVlYndZ.s:551    .text.do_udp1:00000000 $t
+     /tmp/ccVlYndZ.s:557    .text.do_udp1:00000000 do_udp1
+     /tmp/ccVlYndZ.s:625    .text.do_udp1:00000050 $d
+     /tmp/ccVlYndZ.s:1516   .data.local_port:00000000 local_port
+     /tmp/ccVlYndZ.s:633    .text.UDP_send:00000000 $t
+     /tmp/ccVlYndZ.s:639    .text.UDP_send:00000000 UDP_send
+     /tmp/ccVlYndZ.s:689    .text.UDP_send:00000028 $d
+     /tmp/ccVlYndZ.s:695    .text.Analysis:00000000 $t
+     /tmp/ccVlYndZ.s:701    .text.Analysis:00000000 Analysis
+     /tmp/ccVlYndZ.s:715    .rodata.do_tcp_server.str1.4:00000000 $d
+     /tmp/ccVlYndZ.s:722    .text.do_tcp_server:00000000 $t
+     /tmp/ccVlYndZ.s:728    .text.do_tcp_server:00000000 do_tcp_server
+     /tmp/ccVlYndZ.s:762    .text.do_tcp_server:00000026 $d
+     /tmp/ccVlYndZ.s:888    .text.do_tcp_server:000000b4 $d
+     /tmp/ccVlYndZ.s:896    .text.do_tcp_server1:00000000 $t
+     /tmp/ccVlYndZ.s:902    .text.do_tcp_server1:00000000 do_tcp_server1
+     /tmp/ccVlYndZ.s:936    .text.do_tcp_server1:00000026 $d
+     /tmp/ccVlYndZ.s:1022   .text.do_tcp_server1:0000007c $d
+     /tmp/ccVlYndZ.s:1029   .rodata.do_tcp_client.str1.4:00000000 $d
+     /tmp/ccVlYndZ.s:1033   .text.do_tcp_client:00000000 $t
+     /tmp/ccVlYndZ.s:1039   .text.do_tcp_client:00000000 do_tcp_client
+ARM GAS  /tmp/ccVlYndZ.s 			page 37
+
+
+     /tmp/ccVlYndZ.s:1073   .text.do_tcp_client:00000026 $d
+     /tmp/ccVlYndZ.s:1202   .text.do_tcp_client:000000bc $d
+     /tmp/ccVlYndZ.s:1212   .rodata.do_tcp_client1.str1.4:00000000 $d
+     /tmp/ccVlYndZ.s:1216   .text.do_tcp_client1:00000000 $t
+     /tmp/ccVlYndZ.s:1222   .text.do_tcp_client1:00000000 do_tcp_client1
+     /tmp/ccVlYndZ.s:1258   .text.do_tcp_client1:0000002c $d
+     /tmp/ccVlYndZ.s:1347   .text.do_tcp_client1:00000088 $d
+     /tmp/ccVlYndZ.s:1356   .rodata.w5500_main.str1.4:00000000 $d
+     /tmp/ccVlYndZ.s:1378   .text.w5500_main:00000000 $t
+     /tmp/ccVlYndZ.s:1384   .text.w5500_main:00000000 w5500_main
+     /tmp/ccVlYndZ.s:1481   .text.w5500_main:000000a8 $d
+     /tmp/ccVlYndZ.s:1494   .bss.gGetNetInfo:00000000 $d
+     /tmp/ccVlYndZ.s:1501   .data.gSetNetInfo:00000000 $d
+     /tmp/ccVlYndZ.s:1513   .data.local_port:00000000 $d
+     /tmp/ccVlYndZ.s:1520   .data.remote_port:00000000 $d
+     /tmp/ccVlYndZ.s:1527   .data.remote_ip:00000000 $d
+     /tmp/ccVlYndZ.s:1537   .bss.UDP_send_buff:00000000 UDP_send_buff
+     /tmp/ccVlYndZ.s:1534   .bss.UDP_send_buff:00000000 $d
+     /tmp/ccVlYndZ.s:1541   .bss.buff:00000000 $d
+     /tmp/ccVlYndZ.s:791    .text.do_tcp_server:00000043 $d
+     /tmp/ccVlYndZ.s:791    .text.do_tcp_server:00000044 $t
+     /tmp/ccVlYndZ.s:965    .text.do_tcp_server1:00000043 $d
+     /tmp/ccVlYndZ.s:965    .text.do_tcp_server1:00000044 $t
+     /tmp/ccVlYndZ.s:1102   .text.do_tcp_client:00000043 $d
+     /tmp/ccVlYndZ.s:1102   .text.do_tcp_client:00000044 $t
+     /tmp/ccVlYndZ.s:1287   .text.do_tcp_client1:00000049 $d
+     /tmp/ccVlYndZ.s:1287   .text.do_tcp_client1:0000004a $t
+
+UNDEFINED SYMBOLS
+HAL_GPIO_WritePin
+HAL_Delay
+HAL_SPI_Receive
+hspi2
+HAL_SPI_Transmit
+memcmp
+reg_wizchip_cs_cbfunc
+reg_wizchip_spi_cbfunc
+ctlnetwork
+ctlwizchip
+WIZCHIP_READ
+getSn_RX_RSR
+recvfrom
+sendto
+memset
+socket
+WIZCHIP_WRITE
+listen
+recv
+printf
+send
+close
+connect
+HAL_UART_Transmit
+huart1

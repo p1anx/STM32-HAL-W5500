@@ -1,0 +1,635 @@
+ARM GAS  /tmp/cccREYOI.s 			page 1
+
+
+   1              		.cpu cortex-m3
+   2              		.arch armv7-m
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"freertos.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.file 1 "Core/Src/freertos.c"
+  18              		.section	.text.StartDefaultTask,"ax",%progbits
+  19              		.align	1
+  20              		.global	StartDefaultTask
+  21              		.syntax unified
+  22              		.thumb
+  23              		.thumb_func
+  25              	StartDefaultTask:
+  26              	.LFB70:
+   1:Core/Src/freertos.c **** /* USER CODE BEGIN Header */
+   2:Core/Src/freertos.c **** /**
+   3:Core/Src/freertos.c ****   ******************************************************************************
+   4:Core/Src/freertos.c ****   * File Name          : freertos.c
+   5:Core/Src/freertos.c ****   * Description        : Code for freertos applications
+   6:Core/Src/freertos.c ****   ******************************************************************************
+   7:Core/Src/freertos.c ****   * @attention
+   8:Core/Src/freertos.c ****   *
+   9:Core/Src/freertos.c ****   * Copyright (c) 2024 STMicroelectronics.
+  10:Core/Src/freertos.c ****   * All rights reserved.
+  11:Core/Src/freertos.c ****   *
+  12:Core/Src/freertos.c ****   * This software is licensed under terms that can be found in the LICENSE file
+  13:Core/Src/freertos.c ****   * in the root directory of this software component.
+  14:Core/Src/freertos.c ****   * If no LICENSE file comes with this software, it is provided AS-IS.
+  15:Core/Src/freertos.c ****   *
+  16:Core/Src/freertos.c ****   ******************************************************************************
+  17:Core/Src/freertos.c ****   */
+  18:Core/Src/freertos.c **** /* USER CODE END Header */
+  19:Core/Src/freertos.c **** 
+  20:Core/Src/freertos.c **** /* Includes ------------------------------------------------------------------*/
+  21:Core/Src/freertos.c **** #include "FreeRTOS.h"
+  22:Core/Src/freertos.c **** #include "task.h"
+  23:Core/Src/freertos.c **** #include "main.h"
+  24:Core/Src/freertos.c **** #include "cmsis_os.h"
+  25:Core/Src/freertos.c **** 
+  26:Core/Src/freertos.c **** /* Private includes ----------------------------------------------------------*/
+  27:Core/Src/freertos.c **** /* USER CODE BEGIN Includes */
+  28:Core/Src/freertos.c **** #include "usart.h"
+  29:Core/Src/freertos.c **** #include "MyUDP.h"
+  30:Core/Src/freertos.c **** 
+  31:Core/Src/freertos.c **** /* USER CODE END Includes */
+  32:Core/Src/freertos.c **** 
+ARM GAS  /tmp/cccREYOI.s 			page 2
+
+
+  33:Core/Src/freertos.c **** /* Private typedef -----------------------------------------------------------*/
+  34:Core/Src/freertos.c **** /* USER CODE BEGIN PTD */
+  35:Core/Src/freertos.c **** 
+  36:Core/Src/freertos.c **** /* USER CODE END PTD */
+  37:Core/Src/freertos.c **** 
+  38:Core/Src/freertos.c **** /* Private define ------------------------------------------------------------*/
+  39:Core/Src/freertos.c **** /* USER CODE BEGIN PD */
+  40:Core/Src/freertos.c **** 
+  41:Core/Src/freertos.c **** /* USER CODE END PD */
+  42:Core/Src/freertos.c **** 
+  43:Core/Src/freertos.c **** /* Private macro -------------------------------------------------------------*/
+  44:Core/Src/freertos.c **** /* USER CODE BEGIN PM */
+  45:Core/Src/freertos.c **** 
+  46:Core/Src/freertos.c **** /* USER CODE END PM */
+  47:Core/Src/freertos.c **** 
+  48:Core/Src/freertos.c **** /* Private variables ---------------------------------------------------------*/
+  49:Core/Src/freertos.c **** /* USER CODE BEGIN Variables */
+  50:Core/Src/freertos.c **** 
+  51:Core/Src/freertos.c **** /* USER CODE END Variables */
+  52:Core/Src/freertos.c **** /* Definitions for defaultTask */
+  53:Core/Src/freertos.c **** osThreadId_t defaultTaskHandle;
+  54:Core/Src/freertos.c **** const osThreadAttr_t defaultTask_attributes = {
+  55:Core/Src/freertos.c ****   .name = "defaultTask",
+  56:Core/Src/freertos.c ****   .stack_size = 128 * 4,
+  57:Core/Src/freertos.c ****   .priority = (osPriority_t) osPriorityNormal,
+  58:Core/Src/freertos.c **** };
+  59:Core/Src/freertos.c **** 
+  60:Core/Src/freertos.c **** /* Private function prototypes -----------------------------------------------*/
+  61:Core/Src/freertos.c **** /* USER CODE BEGIN FunctionPrototypes */
+  62:Core/Src/freertos.c **** void task0(void);
+  63:Core/Src/freertos.c **** void w5500_task(void);
+  64:Core/Src/freertos.c **** /* USER CODE END FunctionPrototypes */
+  65:Core/Src/freertos.c **** 
+  66:Core/Src/freertos.c **** void StartDefaultTask(void *argument);
+  67:Core/Src/freertos.c **** 
+  68:Core/Src/freertos.c **** void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
+  69:Core/Src/freertos.c **** 
+  70:Core/Src/freertos.c **** /**
+  71:Core/Src/freertos.c ****   * @brief  FreeRTOS initialization
+  72:Core/Src/freertos.c ****   * @param  None
+  73:Core/Src/freertos.c ****   * @retval None
+  74:Core/Src/freertos.c ****   */
+  75:Core/Src/freertos.c **** void MX_FREERTOS_Init(void) {
+  76:Core/Src/freertos.c ****   /* USER CODE BEGIN Init */
+  77:Core/Src/freertos.c **** 
+  78:Core/Src/freertos.c ****   /* USER CODE END Init */
+  79:Core/Src/freertos.c **** 
+  80:Core/Src/freertos.c ****   /* USER CODE BEGIN RTOS_MUTEX */
+  81:Core/Src/freertos.c ****   /* add mutexes, ... */
+  82:Core/Src/freertos.c ****   /* USER CODE END RTOS_MUTEX */
+  83:Core/Src/freertos.c **** 
+  84:Core/Src/freertos.c ****   /* USER CODE BEGIN RTOS_SEMAPHORES */
+  85:Core/Src/freertos.c ****   /* add semaphores, ... */
+  86:Core/Src/freertos.c ****   /* USER CODE END RTOS_SEMAPHORES */
+  87:Core/Src/freertos.c **** 
+  88:Core/Src/freertos.c ****   /* USER CODE BEGIN RTOS_TIMERS */
+  89:Core/Src/freertos.c ****   /* start timers, add new ones, ... */
+ARM GAS  /tmp/cccREYOI.s 			page 3
+
+
+  90:Core/Src/freertos.c ****   /* USER CODE END RTOS_TIMERS */
+  91:Core/Src/freertos.c **** 
+  92:Core/Src/freertos.c ****   /* USER CODE BEGIN RTOS_QUEUES */
+  93:Core/Src/freertos.c ****   /* add queues, ... */
+  94:Core/Src/freertos.c ****   /* USER CODE END RTOS_QUEUES */
+  95:Core/Src/freertos.c **** 
+  96:Core/Src/freertos.c ****   /* Create the thread(s) */
+  97:Core/Src/freertos.c ****   /* creation of defaultTask */
+  98:Core/Src/freertos.c ****   defaultTaskHandle = osThreadNew(StartDefaultTask, NULL, &defaultTask_attributes);
+  99:Core/Src/freertos.c **** 
+ 100:Core/Src/freertos.c ****   /* USER CODE BEGIN RTOS_THREADS */
+ 101:Core/Src/freertos.c ****   /* add threads, ... */
+ 102:Core/Src/freertos.c ****   xTaskCreate(task0, "task0", 128, NULL, osPriorityNormal, NULL);
+ 103:Core/Src/freertos.c ****   xTaskCreate(w5500_main, "task1", 128, NULL, osPriorityNormal, NULL);
+ 104:Core/Src/freertos.c ****   /* USER CODE END RTOS_THREADS */
+ 105:Core/Src/freertos.c **** 
+ 106:Core/Src/freertos.c ****   /* USER CODE BEGIN RTOS_EVENTS */
+ 107:Core/Src/freertos.c ****   /* add events, ... */
+ 108:Core/Src/freertos.c ****   /* USER CODE END RTOS_EVENTS */
+ 109:Core/Src/freertos.c **** 
+ 110:Core/Src/freertos.c **** }
+ 111:Core/Src/freertos.c **** 
+ 112:Core/Src/freertos.c **** /* USER CODE BEGIN Header_StartDefaultTask */
+ 113:Core/Src/freertos.c **** /**
+ 114:Core/Src/freertos.c ****   * @brief  Function implementing the defaultTask thread.
+ 115:Core/Src/freertos.c ****   * @param  argument: Not used
+ 116:Core/Src/freertos.c ****   * @retval None
+ 117:Core/Src/freertos.c ****   */
+ 118:Core/Src/freertos.c **** /* USER CODE END Header_StartDefaultTask */
+ 119:Core/Src/freertos.c **** void StartDefaultTask(void *argument)
+ 120:Core/Src/freertos.c **** {
+  27              		.loc 1 120 1 view -0
+  28              		.cfi_startproc
+  29              		@ Volatile: function does not return.
+  30              		@ args = 0, pretend = 0, frame = 0
+  31              		@ frame_needed = 0, uses_anonymous_args = 0
+  32              	.LVL0:
+  33              		.loc 1 120 1 is_stmt 0 view .LVU1
+  34 0000 08B5     		push	{r3, lr}
+  35              	.LCFI0:
+  36              		.cfi_def_cfa_offset 8
+  37              		.cfi_offset 3, -8
+  38              		.cfi_offset 14, -4
+  39              	.LVL1:
+  40              	.L2:
+ 121:Core/Src/freertos.c ****   /* USER CODE BEGIN StartDefaultTask */
+ 122:Core/Src/freertos.c ****   /* Infinite loop */
+ 123:Core/Src/freertos.c ****   for(;;)
+  41              		.loc 1 123 3 is_stmt 1 view .LVU2
+ 124:Core/Src/freertos.c ****   {
+ 125:Core/Src/freertos.c ****     HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_0);
+  42              		.loc 1 125 5 view .LVU3
+  43 0002 0121     		movs	r1, #1
+  44 0004 0348     		ldr	r0, .L4
+  45 0006 FFF7FEFF 		bl	HAL_GPIO_TogglePin
+  46              	.LVL2:
+ 126:Core/Src/freertos.c ****     osDelay(1000);
+ARM GAS  /tmp/cccREYOI.s 			page 4
+
+
+  47              		.loc 1 126 5 discriminator 1 view .LVU4
+  48 000a 4FF47A70 		mov	r0, #1000
+  49 000e FFF7FEFF 		bl	osDelay
+  50              	.LVL3:
+ 123:Core/Src/freertos.c ****   {
+  51              		.loc 1 123 3 view .LVU5
+  52 0012 F6E7     		b	.L2
+  53              	.L5:
+  54              		.align	2
+  55              	.L4:
+  56 0014 000C0140 		.word	1073810432
+  57              		.cfi_endproc
+  58              	.LFE70:
+  60              		.section	.rodata.task0.str1.4,"aMS",%progbits,1
+  61              		.align	2
+  62              	.LC0:
+  63 0000 68656C6C 		.ascii	"hello dap!!\012\000"
+  63      6F206461 
+  63      7021210A 
+  63      00
+  64              		.section	.text.task0,"ax",%progbits
+  65              		.align	1
+  66              		.global	task0
+  67              		.syntax unified
+  68              		.thumb
+  69              		.thumb_func
+  71              	task0:
+  72              	.LFB71:
+ 127:Core/Src/freertos.c ****   }
+ 128:Core/Src/freertos.c ****   /* USER CODE END StartDefaultTask */
+ 129:Core/Src/freertos.c **** }
+ 130:Core/Src/freertos.c **** 
+ 131:Core/Src/freertos.c **** /* Private application code --------------------------------------------------*/
+ 132:Core/Src/freertos.c **** /* USER CODE BEGIN Application */
+ 133:Core/Src/freertos.c **** void task0(void){
+  73              		.loc 1 133 17 view -0
+  74              		.cfi_startproc
+  75              		@ Volatile: function does not return.
+  76              		@ args = 0, pretend = 0, frame = 16
+  77              		@ frame_needed = 0, uses_anonymous_args = 0
+  78 0000 00B5     		push	{lr}
+  79              	.LCFI1:
+  80              		.cfi_def_cfa_offset 4
+  81              		.cfi_offset 14, -4
+  82 0002 85B0     		sub	sp, sp, #20
+  83              	.LCFI2:
+  84              		.cfi_def_cfa_offset 24
+ 134:Core/Src/freertos.c ****   char str[] = "hello dap!!\n";
+  85              		.loc 1 134 3 view .LVU7
+  86              		.loc 1 134 8 is_stmt 0 view .LVU8
+  87 0004 094B     		ldr	r3, .L9
+  88 0006 EC46     		mov	ip, sp
+  89 0008 0FCB     		ldm	r3, {r0, r1, r2, r3}
+  90 000a ACE80700 		stmia	ip!, {r0, r1, r2}
+  91 000e 8CF80030 		strb	r3, [ip]
+  92              	.L7:
+ 135:Core/Src/freertos.c ****   for(;;){
+ARM GAS  /tmp/cccREYOI.s 			page 5
+
+
+  93              		.loc 1 135 3 is_stmt 1 view .LVU9
+ 136:Core/Src/freertos.c ****     HAL_UART_Transmit(&huart1, str, sizeof(str)/sizeof(str[0]), HAL_MAX_DELAY);
+  94              		.loc 1 136 5 view .LVU10
+  95 0012 4FF0FF33 		mov	r3, #-1
+  96 0016 0D22     		movs	r2, #13
+  97 0018 6946     		mov	r1, sp
+  98 001a 0548     		ldr	r0, .L9+4
+  99 001c FFF7FEFF 		bl	HAL_UART_Transmit
+ 100              	.LVL4:
+ 137:Core/Src/freertos.c ****     vTaskDelay(1000);
+ 101              		.loc 1 137 5 discriminator 1 view .LVU11
+ 102 0020 4FF47A70 		mov	r0, #1000
+ 103 0024 FFF7FEFF 		bl	vTaskDelay
+ 104              	.LVL5:
+ 135:Core/Src/freertos.c ****   for(;;){
+ 105              		.loc 1 135 3 view .LVU12
+ 106 0028 F3E7     		b	.L7
+ 107              	.L10:
+ 108 002a 00BF     		.align	2
+ 109              	.L9:
+ 110 002c 00000000 		.word	.LC0
+ 111 0030 00000000 		.word	huart1
+ 112              		.cfi_endproc
+ 113              	.LFE71:
+ 115              		.section	.rodata.MX_FREERTOS_Init.str1.4,"aMS",%progbits,1
+ 116              		.align	2
+ 117              	.LC1:
+ 118 0000 7461736B 		.ascii	"task0\000"
+ 118      3000
+ 119 0006 0000     		.align	2
+ 120              	.LC2:
+ 121 0008 7461736B 		.ascii	"task1\000"
+ 121      3100
+ 122              		.section	.text.MX_FREERTOS_Init,"ax",%progbits
+ 123              		.align	1
+ 124              		.global	MX_FREERTOS_Init
+ 125              		.syntax unified
+ 126              		.thumb
+ 127              		.thumb_func
+ 129              	MX_FREERTOS_Init:
+ 130              	.LFB69:
+  75:Core/Src/freertos.c ****   /* USER CODE BEGIN Init */
+ 131              		.loc 1 75 29 view -0
+ 132              		.cfi_startproc
+ 133              		@ args = 0, pretend = 0, frame = 0
+ 134              		@ frame_needed = 0, uses_anonymous_args = 0
+ 135 0000 30B5     		push	{r4, r5, lr}
+ 136              	.LCFI3:
+ 137              		.cfi_def_cfa_offset 12
+ 138              		.cfi_offset 4, -12
+ 139              		.cfi_offset 5, -8
+ 140              		.cfi_offset 14, -4
+ 141 0002 83B0     		sub	sp, sp, #12
+ 142              	.LCFI4:
+ 143              		.cfi_def_cfa_offset 24
+  98:Core/Src/freertos.c **** 
+ 144              		.loc 1 98 3 view .LVU14
+ARM GAS  /tmp/cccREYOI.s 			page 6
+
+
+  98:Core/Src/freertos.c **** 
+ 145              		.loc 1 98 23 is_stmt 0 view .LVU15
+ 146 0004 0D4A     		ldr	r2, .L13
+ 147 0006 0021     		movs	r1, #0
+ 148 0008 0D48     		ldr	r0, .L13+4
+ 149 000a FFF7FEFF 		bl	osThreadNew
+ 150              	.LVL6:
+  98:Core/Src/freertos.c **** 
+ 151              		.loc 1 98 21 discriminator 1 view .LVU16
+ 152 000e 0D4B     		ldr	r3, .L13+8
+ 153 0010 1860     		str	r0, [r3]
+ 102:Core/Src/freertos.c ****   xTaskCreate(w5500_main, "task1", 128, NULL, osPriorityNormal, NULL);
+ 154              		.loc 1 102 3 is_stmt 1 view .LVU17
+ 155 0012 0024     		movs	r4, #0
+ 156 0014 0194     		str	r4, [sp, #4]
+ 157 0016 1825     		movs	r5, #24
+ 158 0018 0095     		str	r5, [sp]
+ 159 001a 2346     		mov	r3, r4
+ 160 001c 8022     		movs	r2, #128
+ 161 001e 0A49     		ldr	r1, .L13+12
+ 162 0020 0A48     		ldr	r0, .L13+16
+ 163 0022 FFF7FEFF 		bl	xTaskCreate
+ 164              	.LVL7:
+ 103:Core/Src/freertos.c ****   /* USER CODE END RTOS_THREADS */
+ 165              		.loc 1 103 3 view .LVU18
+ 166 0026 0194     		str	r4, [sp, #4]
+ 167 0028 0095     		str	r5, [sp]
+ 168 002a 2346     		mov	r3, r4
+ 169 002c 8022     		movs	r2, #128
+ 170 002e 0849     		ldr	r1, .L13+20
+ 171 0030 0848     		ldr	r0, .L13+24
+ 172 0032 FFF7FEFF 		bl	xTaskCreate
+ 173              	.LVL8:
+ 110:Core/Src/freertos.c **** 
+ 174              		.loc 1 110 1 is_stmt 0 view .LVU19
+ 175 0036 03B0     		add	sp, sp, #12
+ 176              	.LCFI5:
+ 177              		.cfi_def_cfa_offset 12
+ 178              		@ sp needed
+ 179 0038 30BD     		pop	{r4, r5, pc}
+ 180              	.L14:
+ 181 003a 00BF     		.align	2
+ 182              	.L13:
+ 183 003c 00000000 		.word	defaultTask_attributes
+ 184 0040 00000000 		.word	StartDefaultTask
+ 185 0044 00000000 		.word	defaultTaskHandle
+ 186 0048 00000000 		.word	.LC1
+ 187 004c 00000000 		.word	task0
+ 188 0050 08000000 		.word	.LC2
+ 189 0054 00000000 		.word	w5500_main
+ 190              		.cfi_endproc
+ 191              	.LFE69:
+ 193              		.section	.rodata.w5500_task.str1.4,"aMS",%progbits,1
+ 194              		.align	2
+ 195              	.LC3:
+ 196 0000 68656C6C 		.ascii	"hello w5500\012\000"
+ 196      6F207735 
+ARM GAS  /tmp/cccREYOI.s 			page 7
+
+
+ 196      3530300A 
+ 196      00
+ 197 000d 000000   		.align	2
+ 198              	.LC4:
+ 199 0010 74686973 		.ascii	"this is udp\012\000"
+ 199      20697320 
+ 199      7564700A 
+ 199      00
+ 200 001d 000000   		.align	2
+ 201              	.LC5:
+ 202 0020 74686973 		.ascii	"this is udp1\012\000"
+ 202      20697320 
+ 202      75647031 
+ 202      0A00
+ 203 002e 0000     		.align	2
+ 204              	.LC6:
+ 205 0030 74686973 		.ascii	"this is tcp server\012\000"
+ 205      20697320 
+ 205      74637020 
+ 205      73657276 
+ 205      65720A00 
+ 206              		.align	2
+ 207              	.LC7:
+ 208 0044 74686973 		.ascii	"this is tcp server 1\012\000"
+ 208      20697320 
+ 208      74637020 
+ 208      73657276 
+ 208      65722031 
+ 209 005a 0000     		.align	2
+ 210              	.LC8:
+ 211 005c 74686973 		.ascii	"this is tcp client\012\000"
+ 211      20697320 
+ 211      74637020 
+ 211      636C6965 
+ 211      6E740A00 
+ 212              		.align	2
+ 213              	.LC9:
+ 214 0070 74686973 		.ascii	"this is tcp client1\012\000"
+ 214      20697320 
+ 214      74637020 
+ 214      636C6965 
+ 214      6E74310A 
+ 215              		.section	.text.w5500_task,"ax",%progbits
+ 216              		.align	1
+ 217              		.global	w5500_task
+ 218              		.syntax unified
+ 219              		.thumb
+ 220              		.thumb_func
+ 222              	w5500_task:
+ 223              	.LFB72:
+ 138:Core/Src/freertos.c ****   }
+ 139:Core/Src/freertos.c **** }
+ 140:Core/Src/freertos.c **** #define UDP 0
+ 141:Core/Src/freertos.c **** #define UDP1 1
+ 142:Core/Src/freertos.c **** #define TCPS 2
+ 143:Core/Src/freertos.c **** #define TCPS1 3
+ 144:Core/Src/freertos.c **** #define TCPC  4
+ARM GAS  /tmp/cccREYOI.s 			page 8
+
+
+ 145:Core/Src/freertos.c **** #define TCPC1 5
+ 146:Core/Src/freertos.c **** 
+ 147:Core/Src/freertos.c **** void w5500_task(void){
+ 224              		.loc 1 147 22 is_stmt 1 view -0
+ 225              		.cfi_startproc
+ 226              		@ args = 0, pretend = 0, frame = 136
+ 227              		@ frame_needed = 0, uses_anonymous_args = 0
+ 228 0000 10B5     		push	{r4, lr}
+ 229              	.LCFI6:
+ 230              		.cfi_def_cfa_offset 8
+ 231              		.cfi_offset 4, -8
+ 232              		.cfi_offset 14, -4
+ 233 0002 A2B0     		sub	sp, sp, #136
+ 234              	.LCFI7:
+ 235              		.cfi_def_cfa_offset 144
+ 148:Core/Src/freertos.c ****   char str[] = "hello w5500\n";
+ 236              		.loc 1 148 3 view .LVU21
+ 237              		.loc 1 148 8 is_stmt 0 view .LVU22
+ 238 0004 264B     		ldr	r3, .L18
+ 239 0006 0DF1780C 		add	ip, sp, #120
+ 240 000a 0FCB     		ldm	r3, {r0, r1, r2, r3}
+ 241 000c ACE80700 		stmia	ip!, {r0, r1, r2}
+ 242 0010 8CF80030 		strb	r3, [ip]
+ 149:Core/Src/freertos.c ****   char udp[] = "this is udp\n";
+ 243              		.loc 1 149 3 is_stmt 1 view .LVU23
+ 244              		.loc 1 149 8 is_stmt 0 view .LVU24
+ 245 0014 234B     		ldr	r3, .L18+4
+ 246 0016 0DF1680C 		add	ip, sp, #104
+ 247 001a 0FCB     		ldm	r3, {r0, r1, r2, r3}
+ 248 001c ACE80700 		stmia	ip!, {r0, r1, r2}
+ 249 0020 8CF80030 		strb	r3, [ip]
+ 150:Core/Src/freertos.c ****   char udp1[] = "this is udp1\n";
+ 250              		.loc 1 150 3 is_stmt 1 view .LVU25
+ 251              		.loc 1 150 8 is_stmt 0 view .LVU26
+ 252 0024 204B     		ldr	r3, .L18+8
+ 253 0026 0DF1580C 		add	ip, sp, #88
+ 254 002a 0FCB     		ldm	r3, {r0, r1, r2, r3}
+ 255 002c ACE80700 		stmia	ip!, {r0, r1, r2}
+ 256 0030 ACF80030 		strh	r3, [ip]	@ movhi
+ 151:Core/Src/freertos.c ****   char tcps[] = "this is tcp server\n";
+ 257              		.loc 1 151 3 is_stmt 1 view .LVU27
+ 258              		.loc 1 151 8 is_stmt 0 view .LVU28
+ 259 0034 0DF1440C 		add	ip, sp, #68
+ 260 0038 1C4C     		ldr	r4, .L18+12
+ 261 003a 0FCC     		ldmia	r4!, {r0, r1, r2, r3}
+ 262 003c ACE80F00 		stmia	ip!, {r0, r1, r2, r3}
+ 263 0040 2368     		ldr	r3, [r4]
+ 264 0042 CCF80030 		str	r3, [ip]
+ 152:Core/Src/freertos.c ****   char tcps1[] = "this is tcp server 1\n";
+ 265              		.loc 1 152 3 is_stmt 1 view .LVU29
+ 266              		.loc 1 152 8 is_stmt 0 view .LVU30
+ 267 0046 0DF12C0C 		add	ip, sp, #44
+ 268 004a 194C     		ldr	r4, .L18+16
+ 269 004c 0FCC     		ldmia	r4!, {r0, r1, r2, r3}
+ 270 004e ACE80F00 		stmia	ip!, {r0, r1, r2, r3}
+ 271 0052 94E80300 		ldm	r4, {r0, r1}
+ 272 0056 4CF8040B 		str	r0, [ip], #4
+ARM GAS  /tmp/cccREYOI.s 			page 9
+
+
+ 273 005a ACF80010 		strh	r1, [ip]	@ movhi
+ 153:Core/Src/freertos.c ****   char tcpc[] = "this is tcp client\n";
+ 274              		.loc 1 153 3 is_stmt 1 view .LVU31
+ 275              		.loc 1 153 8 is_stmt 0 view .LVU32
+ 276 005e 0DF1180C 		add	ip, sp, #24
+ 277 0062 144C     		ldr	r4, .L18+20
+ 278 0064 0FCC     		ldmia	r4!, {r0, r1, r2, r3}
+ 279 0066 ACE80F00 		stmia	ip!, {r0, r1, r2, r3}
+ 280 006a 2368     		ldr	r3, [r4]
+ 281 006c CCF80030 		str	r3, [ip]
+ 154:Core/Src/freertos.c ****   char tcpc1[] = "this is tcp client1\n";
+ 282              		.loc 1 154 3 is_stmt 1 view .LVU33
+ 283              		.loc 1 154 8 is_stmt 0 view .LVU34
+ 284 0070 EC46     		mov	ip, sp
+ 285 0072 114C     		ldr	r4, .L18+24
+ 286 0074 0FCC     		ldmia	r4!, {r0, r1, r2, r3}
+ 287 0076 ACE80F00 		stmia	ip!, {r0, r1, r2, r3}
+ 288 007a 94E80300 		ldm	r4, {r0, r1}
+ 289 007e 4CF8040B 		str	r0, [ip], #4
+ 290 0082 8CF80010 		strb	r1, [ip]
+ 155:Core/Src/freertos.c ****   int select = 3; // 1:udp1 0:udp
+ 291              		.loc 1 155 3 is_stmt 1 view .LVU35
+ 292              	.LVL9:
+ 156:Core/Src/freertos.c ****   int procotol = TCPS;
+ 293              		.loc 1 156 3 view .LVU36
+ 157:Core/Src/freertos.c ****   
+ 158:Core/Src/freertos.c ****   UDPinit();
+ 294              		.loc 1 158 3 view .LVU37
+ 295 0086 FFF7FEFF 		bl	UDPinit
+ 296              	.LVL10:
+ 297              	.L16:
+ 159:Core/Src/freertos.c ****   
+ 160:Core/Src/freertos.c ****   while(1){
+ 298              		.loc 1 160 3 view .LVU38
+ 161:Core/Src/freertos.c **** 
+ 162:Core/Src/freertos.c ****     switch(procotol){
+ 299              		.loc 1 162 5 view .LVU39
+ 163:Core/Src/freertos.c ****       case UDP:
+ 164:Core/Src/freertos.c ****         HAL_UART_Transmit(&huart1, udp, sizeof(udp)/sizeof(udp[0]), HAL_MAX_DELAY);
+ 165:Core/Src/freertos.c ****         do_udp();
+ 166:Core/Src/freertos.c ****         break;
+ 167:Core/Src/freertos.c ****       case UDP1:
+ 168:Core/Src/freertos.c ****         HAL_UART_Transmit(&huart1, udp1, sizeof(udp1)/sizeof(udp1[0]), HAL_MAX_DELAY);
+ 169:Core/Src/freertos.c ****         do_udp1();
+ 170:Core/Src/freertos.c ****         break;
+ 171:Core/Src/freertos.c ****       case TCPS:
+ 172:Core/Src/freertos.c ****         HAL_UART_Transmit(&huart1, tcps, sizeof(tcps)/sizeof(tcps[0]), HAL_MAX_DELAY);
+ 300              		.loc 1 172 9 view .LVU40
+ 301 008a 4FF0FF33 		mov	r3, #-1
+ 302 008e 1422     		movs	r2, #20
+ 303 0090 11A9     		add	r1, sp, #68
+ 304 0092 0A48     		ldr	r0, .L18+28
+ 305 0094 FFF7FEFF 		bl	HAL_UART_Transmit
+ 306              	.LVL11:
+ 173:Core/Src/freertos.c ****         do_tcp_server();
+ 307              		.loc 1 173 9 view .LVU41
+ 308 0098 FFF7FEFF 		bl	do_tcp_server
+ARM GAS  /tmp/cccREYOI.s 			page 10
+
+
+ 309              	.LVL12:
+ 174:Core/Src/freertos.c ****         break;
+ 310              		.loc 1 174 9 view .LVU42
+ 311 009c F5E7     		b	.L16
+ 312              	.L19:
+ 313 009e 00BF     		.align	2
+ 314              	.L18:
+ 315 00a0 00000000 		.word	.LC3
+ 316 00a4 10000000 		.word	.LC4
+ 317 00a8 20000000 		.word	.LC5
+ 318 00ac 30000000 		.word	.LC6
+ 319 00b0 44000000 		.word	.LC7
+ 320 00b4 5C000000 		.word	.LC8
+ 321 00b8 70000000 		.word	.LC9
+ 322 00bc 00000000 		.word	huart1
+ 323              		.cfi_endproc
+ 324              	.LFE72:
+ 326              		.global	defaultTask_attributes
+ 327              		.section	.rodata.str1.4,"aMS",%progbits,1
+ 328              		.align	2
+ 329              	.LC10:
+ 330 0000 64656661 		.ascii	"defaultTask\000"
+ 330      756C7454 
+ 330      61736B00 
+ 331              		.section	.rodata.defaultTask_attributes,"a"
+ 332              		.align	2
+ 335              	defaultTask_attributes:
+ 336 0000 00000000 		.word	.LC10
+ 337 0004 00000000 		.space	16
+ 337      00000000 
+ 337      00000000 
+ 337      00000000 
+ 338 0014 00020000 		.word	512
+ 339 0018 18000000 		.word	24
+ 340 001c 00000000 		.space	8
+ 340      00000000 
+ 341              		.global	defaultTaskHandle
+ 342              		.section	.bss.defaultTaskHandle,"aw",%nobits
+ 343              		.align	2
+ 346              	defaultTaskHandle:
+ 347 0000 00000000 		.space	4
+ 348              		.text
+ 349              	.Letext0:
+ 350              		.file 2 "/usr/lib/gcc/arm-none-eabi/13.2.1/include/stdint.h"
+ 351              		.file 3 "Middlewares/Third_Party/FreeRTOS/Source/include/projdefs.h"
+ 352              		.file 4 "Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM3/portmacro.h"
+ 353              		.file 5 "Middlewares/Third_Party/FreeRTOS/Source/include/task.h"
+ 354              		.file 6 "Drivers/CMSIS/Device/ST/STM32F1xx/Include/stm32f103xe.h"
+ 355              		.file 7 "Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_def.h"
+ 356              		.file 8 "Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_dma.h"
+ 357              		.file 9 "Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_uart.h"
+ 358              		.file 10 "Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os2.h"
+ 359              		.file 11 "Core/Inc/usart.h"
+ 360              		.file 12 "BSP/MyUDP.h"
+ 361              		.file 13 "Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_gpio.h"
+ARM GAS  /tmp/cccREYOI.s 			page 11
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 freertos.c
+     /tmp/cccREYOI.s:19     .text.StartDefaultTask:00000000 $t
+     /tmp/cccREYOI.s:25     .text.StartDefaultTask:00000000 StartDefaultTask
+     /tmp/cccREYOI.s:56     .text.StartDefaultTask:00000014 $d
+     /tmp/cccREYOI.s:61     .rodata.task0.str1.4:00000000 $d
+     /tmp/cccREYOI.s:65     .text.task0:00000000 $t
+     /tmp/cccREYOI.s:71     .text.task0:00000000 task0
+     /tmp/cccREYOI.s:110    .text.task0:0000002c $d
+     /tmp/cccREYOI.s:116    .rodata.MX_FREERTOS_Init.str1.4:00000000 $d
+     /tmp/cccREYOI.s:123    .text.MX_FREERTOS_Init:00000000 $t
+     /tmp/cccREYOI.s:129    .text.MX_FREERTOS_Init:00000000 MX_FREERTOS_Init
+     /tmp/cccREYOI.s:183    .text.MX_FREERTOS_Init:0000003c $d
+     /tmp/cccREYOI.s:335    .rodata.defaultTask_attributes:00000000 defaultTask_attributes
+     /tmp/cccREYOI.s:346    .bss.defaultTaskHandle:00000000 defaultTaskHandle
+     /tmp/cccREYOI.s:194    .rodata.w5500_task.str1.4:00000000 $d
+     /tmp/cccREYOI.s:216    .text.w5500_task:00000000 $t
+     /tmp/cccREYOI.s:222    .text.w5500_task:00000000 w5500_task
+     /tmp/cccREYOI.s:315    .text.w5500_task:000000a0 $d
+     /tmp/cccREYOI.s:328    .rodata.str1.4:00000000 $d
+     /tmp/cccREYOI.s:332    .rodata.defaultTask_attributes:00000000 $d
+     /tmp/cccREYOI.s:343    .bss.defaultTaskHandle:00000000 $d
+
+UNDEFINED SYMBOLS
+HAL_GPIO_TogglePin
+osDelay
+HAL_UART_Transmit
+vTaskDelay
+huart1
+osThreadNew
+xTaskCreate
+w5500_main
+UDPinit
+do_tcp_server

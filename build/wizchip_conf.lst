@@ -1,0 +1,3711 @@
+ARM GAS  /tmp/cc5ibyYO.s 			page 1
+
+
+   1              		.cpu cortex-m3
+   2              		.arch armv7-m
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"wizchip_conf.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.file 1 "BSP/wizchip_conf.c"
+  18              		.section	.text.wizchip_cris_enter,"ax",%progbits
+  19              		.align	1
+  20              		.global	wizchip_cris_enter
+  21              		.syntax unified
+  22              		.thumb
+  23              		.thumb_func
+  25              	wizchip_cris_enter:
+  26              	.LFB0:
+   1:BSP/wizchip_conf.c **** //****************************************************************************/ 
+   2:BSP/wizchip_conf.c **** //!
+   3:BSP/wizchip_conf.c **** //! \file wizchip_conf.c
+   4:BSP/wizchip_conf.c **** //! \brief WIZCHIP Config Header File.
+   5:BSP/wizchip_conf.c **** //! \version 1.0.1
+   6:BSP/wizchip_conf.c **** //! \date 2013/10/21
+   7:BSP/wizchip_conf.c **** //! \par  Revision history
+   8:BSP/wizchip_conf.c **** //!       <2015/02/05> Notice
+   9:BSP/wizchip_conf.c **** //!        The version history is not updated after this point.
+  10:BSP/wizchip_conf.c **** //!        Download the latest version directly from GitHub. Please visit the our GitHub repository
+  11:BSP/wizchip_conf.c **** //!        >> https://github.com/Wiznet/ioLibrary_Driver
+  12:BSP/wizchip_conf.c **** //!       <2014/05/01> V1.0.1  Refer to M20140501
+  13:BSP/wizchip_conf.c **** //!        1. Explicit type casting in wizchip_bus_readdata() & wizchip_bus_writedata()
+  14:BSP/wizchip_conf.c **** //            Issued by Mathias ClauBen.
+  15:BSP/wizchip_conf.c **** //!           uint32_t type converts into ptrdiff_t first. And then recoverting it into uint8_t*
+  16:BSP/wizchip_conf.c **** //!           For remove the warning when pointer type size is not 32bit.
+  17:BSP/wizchip_conf.c **** //!           If ptrdiff_t doesn't support in your complier, You should must replace ptrdiff_t into
+  18:BSP/wizchip_conf.c **** //!       <2013/10/21> 1st Release
+  19:BSP/wizchip_conf.c **** //! \author MidnightCow
+  20:BSP/wizchip_conf.c **** //! \copyright
+  21:BSP/wizchip_conf.c **** //!
+  22:BSP/wizchip_conf.c **** //! Copyright (c)  2013, WIZnet Co., LTD.
+  23:BSP/wizchip_conf.c **** //! All rights reserved.
+  24:BSP/wizchip_conf.c **** //! 
+  25:BSP/wizchip_conf.c **** //! Redistribution and use in source and binary forms, with or without 
+  26:BSP/wizchip_conf.c **** //! modification, are permitted provided that the following conditions 
+  27:BSP/wizchip_conf.c **** //! are met: 
+  28:BSP/wizchip_conf.c **** //! 
+  29:BSP/wizchip_conf.c **** //!     * Redistributions of source code must retain the above copyright 
+  30:BSP/wizchip_conf.c **** //! notice, this list of conditions and the following disclaimer. 
+  31:BSP/wizchip_conf.c **** //!     * Redistributions in binary form must reproduce the above copyright
+  32:BSP/wizchip_conf.c **** //! notice, this list of conditions and the following disclaimer in the
+ARM GAS  /tmp/cc5ibyYO.s 			page 2
+
+
+  33:BSP/wizchip_conf.c **** //! documentation and/or other materials provided with the distribution. 
+  34:BSP/wizchip_conf.c **** //!     * Neither the name of the <ORGANIZATION> nor the names of its 
+  35:BSP/wizchip_conf.c **** //! contributors may be used to endorse or promote products derived 
+  36:BSP/wizchip_conf.c **** //! from this software without specific prior written permission. 
+  37:BSP/wizchip_conf.c **** //! 
+  38:BSP/wizchip_conf.c **** //! THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+  39:BSP/wizchip_conf.c **** //! AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE 
+  40:BSP/wizchip_conf.c **** //! IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+  41:BSP/wizchip_conf.c **** //! ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE 
+  42:BSP/wizchip_conf.c **** //! LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR 
+  43:BSP/wizchip_conf.c **** //! CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF 
+  44:BSP/wizchip_conf.c **** //! SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+  45:BSP/wizchip_conf.c **** //! INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN 
+  46:BSP/wizchip_conf.c **** //! CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
+  47:BSP/wizchip_conf.c **** //! ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF 
+  48:BSP/wizchip_conf.c **** //! THE POSSIBILITY OF SUCH DAMAGE.
+  49:BSP/wizchip_conf.c **** //
+  50:BSP/wizchip_conf.c **** //*****************************************************************************/
+  51:BSP/wizchip_conf.c **** //A20140501 : for use the type - ptrdiff_t
+  52:BSP/wizchip_conf.c **** #include <stddef.h>
+  53:BSP/wizchip_conf.c **** //
+  54:BSP/wizchip_conf.c **** 
+  55:BSP/wizchip_conf.c **** #include "wizchip_conf.h"
+  56:BSP/wizchip_conf.c **** 
+  57:BSP/wizchip_conf.c **** /////////////
+  58:BSP/wizchip_conf.c **** //M20150401 : Remove ; in the default callback function such as wizchip_cris_enter(), wizchip_cs_se
+  59:BSP/wizchip_conf.c **** /////////////
+  60:BSP/wizchip_conf.c **** 
+  61:BSP/wizchip_conf.c **** /**
+  62:BSP/wizchip_conf.c ****  * @brief Default function to enable interrupt.
+  63:BSP/wizchip_conf.c ****  * @note This function help not to access wrong address. If you do not describe this function or re
+  64:BSP/wizchip_conf.c ****  * null function is called.
+  65:BSP/wizchip_conf.c ****  */
+  66:BSP/wizchip_conf.c **** //void 	  wizchip_cris_enter(void)           {};
+  67:BSP/wizchip_conf.c **** void 	  wizchip_cris_enter(void)           {}
+  27              		.loc 1 67 44 view -0
+  28              		.cfi_startproc
+  29              		@ args = 0, pretend = 0, frame = 0
+  30              		@ frame_needed = 0, uses_anonymous_args = 0
+  31              		@ link register save eliminated.
+  32              		.loc 1 67 45 view .LVU1
+  33 0000 7047     		bx	lr
+  34              		.cfi_endproc
+  35              	.LFE0:
+  37              		.section	.text.wizchip_cris_exit,"ax",%progbits
+  38              		.align	1
+  39              		.global	wizchip_cris_exit
+  40              		.syntax unified
+  41              		.thumb
+  42              		.thumb_func
+  44              	wizchip_cris_exit:
+  45              	.LFB1:
+  68:BSP/wizchip_conf.c **** 
+  69:BSP/wizchip_conf.c **** /**
+  70:BSP/wizchip_conf.c ****  * @brief Default function to disable interrupt.
+  71:BSP/wizchip_conf.c ****  * @note This function help not to access wrong address. If you do not describe this function or re
+  72:BSP/wizchip_conf.c ****  * null function is called.
+ARM GAS  /tmp/cc5ibyYO.s 			page 3
+
+
+  73:BSP/wizchip_conf.c ****  */
+  74:BSP/wizchip_conf.c **** //void 	  wizchip_cris_exit(void)          {};
+  75:BSP/wizchip_conf.c **** void 	  wizchip_cris_exit(void)          {}
+  46              		.loc 1 75 42 view -0
+  47              		.cfi_startproc
+  48              		@ args = 0, pretend = 0, frame = 0
+  49              		@ frame_needed = 0, uses_anonymous_args = 0
+  50              		@ link register save eliminated.
+  51              		.loc 1 75 43 view .LVU3
+  52 0000 7047     		bx	lr
+  53              		.cfi_endproc
+  54              	.LFE1:
+  56              		.section	.text.wizchip_cs_select,"ax",%progbits
+  57              		.align	1
+  58              		.global	wizchip_cs_select
+  59              		.syntax unified
+  60              		.thumb
+  61              		.thumb_func
+  63              	wizchip_cs_select:
+  64              	.LFB2:
+  76:BSP/wizchip_conf.c **** 
+  77:BSP/wizchip_conf.c **** /**
+  78:BSP/wizchip_conf.c ****  * @brief Default function to select chip.
+  79:BSP/wizchip_conf.c ****  * @note This function help not to access wrong address. If you do not describe this function or re
+  80:BSP/wizchip_conf.c ****  * null function is called.
+  81:BSP/wizchip_conf.c ****  */
+  82:BSP/wizchip_conf.c **** //void 	wizchip_cs_select(void)            {};
+  83:BSP/wizchip_conf.c **** void 	wizchip_cs_select(void)            {}
+  65              		.loc 1 83 42 view -0
+  66              		.cfi_startproc
+  67              		@ args = 0, pretend = 0, frame = 0
+  68              		@ frame_needed = 0, uses_anonymous_args = 0
+  69              		@ link register save eliminated.
+  70              		.loc 1 83 43 view .LVU5
+  71 0000 7047     		bx	lr
+  72              		.cfi_endproc
+  73              	.LFE2:
+  75              		.section	.text.wizchip_cs_deselect,"ax",%progbits
+  76              		.align	1
+  77              		.global	wizchip_cs_deselect
+  78              		.syntax unified
+  79              		.thumb
+  80              		.thumb_func
+  82              	wizchip_cs_deselect:
+  83              	.LFB3:
+  84:BSP/wizchip_conf.c **** 
+  85:BSP/wizchip_conf.c **** /**
+  86:BSP/wizchip_conf.c ****  * @brief Default function to deselect chip.
+  87:BSP/wizchip_conf.c ****  * @note This function help not to access wrong address. If you do not describe this function or re
+  88:BSP/wizchip_conf.c ****  * null function is called.
+  89:BSP/wizchip_conf.c ****  */
+  90:BSP/wizchip_conf.c **** //void 	wizchip_cs_deselect(void)          {};
+  91:BSP/wizchip_conf.c **** void 	wizchip_cs_deselect(void)          {}
+  84              		.loc 1 91 42 view -0
+  85              		.cfi_startproc
+  86              		@ args = 0, pretend = 0, frame = 0
+  87              		@ frame_needed = 0, uses_anonymous_args = 0
+ARM GAS  /tmp/cc5ibyYO.s 			page 4
+
+
+  88              		@ link register save eliminated.
+  89              		.loc 1 91 43 view .LVU7
+  90 0000 7047     		bx	lr
+  91              		.cfi_endproc
+  92              	.LFE3:
+  94              		.section	.text.wizchip_bus_readdata,"ax",%progbits
+  95              		.align	1
+  96              		.global	wizchip_bus_readdata
+  97              		.syntax unified
+  98              		.thumb
+  99              		.thumb_func
+ 101              	wizchip_bus_readdata:
+ 102              	.LVL0:
+ 103              	.LFB4:
+  92:BSP/wizchip_conf.c **** 
+  93:BSP/wizchip_conf.c **** /**
+  94:BSP/wizchip_conf.c ****  * @brief Default function to read in direct or indirect interface.
+  95:BSP/wizchip_conf.c ****  * @note This function help not to access wrong address. If you do not describe this function or re
+  96:BSP/wizchip_conf.c ****  * null function is called.
+  97:BSP/wizchip_conf.c ****  */
+  98:BSP/wizchip_conf.c ****  //M20150601 : Rename the function for integrating with W5300
+  99:BSP/wizchip_conf.c **** //uint8_t wizchip_bus_readbyte(uint32_t AddrSel) { return * ((volatile uint8_t *)((ptrdiff_t) AddrS
+ 100:BSP/wizchip_conf.c **** iodata_t wizchip_bus_readdata(uint32_t AddrSel) { return * ((volatile iodata_t *)((ptrdiff_t) AddrS
+ 104              		.loc 1 100 49 view -0
+ 105              		.cfi_startproc
+ 106              		@ args = 0, pretend = 0, frame = 0
+ 107              		@ frame_needed = 0, uses_anonymous_args = 0
+ 108              		@ link register save eliminated.
+ 109              		.loc 1 100 51 view .LVU9
+ 110              		.loc 1 100 58 is_stmt 0 view .LVU10
+ 111 0000 0078     		ldrb	r0, [r0]	@ zero_extendqisi2
+ 112              	.LVL1:
+ 113              		.loc 1 100 106 view .LVU11
+ 114 0002 7047     		bx	lr
+ 115              		.cfi_endproc
+ 116              	.LFE4:
+ 118              		.section	.text.wizchip_bus_writedata,"ax",%progbits
+ 119              		.align	1
+ 120              		.global	wizchip_bus_writedata
+ 121              		.syntax unified
+ 122              		.thumb
+ 123              		.thumb_func
+ 125              	wizchip_bus_writedata:
+ 126              	.LVL2:
+ 127              	.LFB5:
+ 101:BSP/wizchip_conf.c **** 
+ 102:BSP/wizchip_conf.c **** /**
+ 103:BSP/wizchip_conf.c ****  * @brief Default function to write in direct or indirect interface.
+ 104:BSP/wizchip_conf.c ****  * @note This function help not to access wrong address. If you do not describe this function or re
+ 105:BSP/wizchip_conf.c ****  * null function is called.
+ 106:BSP/wizchip_conf.c ****  */
+ 107:BSP/wizchip_conf.c **** //M20150601 : Rename the function for integrating with W5300
+ 108:BSP/wizchip_conf.c **** //void 	wizchip_bus_writebyte(uint32_t AddrSel, uint8_t wb)  { *((volatile uint8_t*)((ptrdiff_t)Add
+ 109:BSP/wizchip_conf.c **** void 	wizchip_bus_writedata(uint32_t AddrSel, iodata_t wb)  { *((volatile iodata_t*)((ptrdiff_t)Add
+ 128              		.loc 1 109 61 is_stmt 1 view -0
+ 129              		.cfi_startproc
+ 130              		@ args = 0, pretend = 0, frame = 0
+ARM GAS  /tmp/cc5ibyYO.s 			page 5
+
+
+ 131              		@ frame_needed = 0, uses_anonymous_args = 0
+ 132              		@ link register save eliminated.
+ 133              		.loc 1 109 63 view .LVU13
+ 134              		.loc 1 109 107 is_stmt 0 view .LVU14
+ 135 0000 0170     		strb	r1, [r0]
+ 136              		.loc 1 109 113 view .LVU15
+ 137 0002 7047     		bx	lr
+ 138              		.cfi_endproc
+ 139              	.LFE5:
+ 141              		.section	.text.wizchip_spi_readbyte,"ax",%progbits
+ 142              		.align	1
+ 143              		.global	wizchip_spi_readbyte
+ 144              		.syntax unified
+ 145              		.thumb
+ 146              		.thumb_func
+ 148              	wizchip_spi_readbyte:
+ 149              	.LFB6:
+ 110:BSP/wizchip_conf.c **** 
+ 111:BSP/wizchip_conf.c **** /**
+ 112:BSP/wizchip_conf.c ****  * @brief Default function to read in SPI interface.
+ 113:BSP/wizchip_conf.c ****  * @note This function help not to access wrong address. If you do not describe this function or re
+ 114:BSP/wizchip_conf.c ****  * null function is called.
+ 115:BSP/wizchip_conf.c ****  */
+ 116:BSP/wizchip_conf.c **** //uint8_t wizchip_spi_readbyte(void)        {return 0;};
+ 117:BSP/wizchip_conf.c **** uint8_t wizchip_spi_readbyte(void)        {return 0;}
+ 150              		.loc 1 117 43 is_stmt 1 view -0
+ 151              		.cfi_startproc
+ 152              		@ args = 0, pretend = 0, frame = 0
+ 153              		@ frame_needed = 0, uses_anonymous_args = 0
+ 154              		@ link register save eliminated.
+ 155              		.loc 1 117 44 view .LVU17
+ 156              		.loc 1 117 53 is_stmt 0 view .LVU18
+ 157 0000 0020     		movs	r0, #0
+ 158 0002 7047     		bx	lr
+ 159              		.cfi_endproc
+ 160              	.LFE6:
+ 162              		.section	.text.wizchip_spi_writebyte,"ax",%progbits
+ 163              		.align	1
+ 164              		.global	wizchip_spi_writebyte
+ 165              		.syntax unified
+ 166              		.thumb
+ 167              		.thumb_func
+ 169              	wizchip_spi_writebyte:
+ 170              	.LVL3:
+ 171              	.LFB7:
+ 118:BSP/wizchip_conf.c **** 
+ 119:BSP/wizchip_conf.c **** /**
+ 120:BSP/wizchip_conf.c ****  * @brief Default function to write in SPI interface.
+ 121:BSP/wizchip_conf.c ****  * @note This function help not to access wrong address. If you do not describe this function or re
+ 122:BSP/wizchip_conf.c ****  * null function is called.
+ 123:BSP/wizchip_conf.c ****  */
+ 124:BSP/wizchip_conf.c **** //void 	wizchip_spi_writebyte(uint8_t wb) {};
+ 125:BSP/wizchip_conf.c **** void 	wizchip_spi_writebyte(uint8_t wb) {}
+ 172              		.loc 1 125 41 is_stmt 1 view -0
+ 173              		.cfi_startproc
+ 174              		@ args = 0, pretend = 0, frame = 0
+ 175              		@ frame_needed = 0, uses_anonymous_args = 0
+ARM GAS  /tmp/cc5ibyYO.s 			page 6
+
+
+ 176              		@ link register save eliminated.
+ 177              		.loc 1 125 42 view .LVU20
+ 178 0000 7047     		bx	lr
+ 179              		.cfi_endproc
+ 180              	.LFE7:
+ 182              		.section	.text.wizchip_spi_readburst,"ax",%progbits
+ 183              		.align	1
+ 184              		.global	wizchip_spi_readburst
+ 185              		.syntax unified
+ 186              		.thumb
+ 187              		.thumb_func
+ 189              	wizchip_spi_readburst:
+ 190              	.LVL4:
+ 191              	.LFB8:
+ 126:BSP/wizchip_conf.c **** 
+ 127:BSP/wizchip_conf.c **** /**
+ 128:BSP/wizchip_conf.c ****  * @brief Default function to burst read in SPI interface.
+ 129:BSP/wizchip_conf.c ****  * @note This function help not to access wrong address. If you do not describe this function or re
+ 130:BSP/wizchip_conf.c ****  * null function is called.
+ 131:BSP/wizchip_conf.c ****  */
+ 132:BSP/wizchip_conf.c **** //void 	wizchip_spi_readburst(uint8_t* pBuf, uint16_t len) 	{}; 
+ 133:BSP/wizchip_conf.c **** void 	wizchip_spi_readburst(uint8_t* pBuf, uint16_t len) 	{}
+ 192              		.loc 1 133 59 view -0
+ 193              		.cfi_startproc
+ 194              		@ args = 0, pretend = 0, frame = 0
+ 195              		@ frame_needed = 0, uses_anonymous_args = 0
+ 196              		@ link register save eliminated.
+ 197              		.loc 1 133 60 view .LVU22
+ 198 0000 7047     		bx	lr
+ 199              		.cfi_endproc
+ 200              	.LFE8:
+ 202              		.section	.text.wizchip_spi_writeburst,"ax",%progbits
+ 203              		.align	1
+ 204              		.global	wizchip_spi_writeburst
+ 205              		.syntax unified
+ 206              		.thumb
+ 207              		.thumb_func
+ 209              	wizchip_spi_writeburst:
+ 210              	.LVL5:
+ 211              	.LFB9:
+ 134:BSP/wizchip_conf.c **** 
+ 135:BSP/wizchip_conf.c **** /**
+ 136:BSP/wizchip_conf.c ****  * @brief Default function to burst write in SPI interface.
+ 137:BSP/wizchip_conf.c ****  * @note This function help not to access wrong address. If you do not describe this function or re
+ 138:BSP/wizchip_conf.c ****  * null function is called.
+ 139:BSP/wizchip_conf.c ****  */
+ 140:BSP/wizchip_conf.c **** //void 	wizchip_spi_writeburst(uint8_t* pBuf, uint16_t len) {};
+ 141:BSP/wizchip_conf.c **** void 	wizchip_spi_writeburst(uint8_t* pBuf, uint16_t len) {}
+ 212              		.loc 1 141 59 view -0
+ 213              		.cfi_startproc
+ 214              		@ args = 0, pretend = 0, frame = 0
+ 215              		@ frame_needed = 0, uses_anonymous_args = 0
+ 216              		@ link register save eliminated.
+ 217              		.loc 1 141 60 view .LVU24
+ 218 0000 7047     		bx	lr
+ 219              		.cfi_endproc
+ 220              	.LFE9:
+ARM GAS  /tmp/cc5ibyYO.s 			page 7
+
+
+ 222              		.section	.text.reg_wizchip_cris_cbfunc,"ax",%progbits
+ 223              		.align	1
+ 224              		.global	reg_wizchip_cris_cbfunc
+ 225              		.syntax unified
+ 226              		.thumb
+ 227              		.thumb_func
+ 229              	reg_wizchip_cris_cbfunc:
+ 230              	.LVL6:
+ 231              	.LFB10:
+ 142:BSP/wizchip_conf.c **** 
+ 143:BSP/wizchip_conf.c **** /**
+ 144:BSP/wizchip_conf.c ****  * @\ref _WIZCHIP instance
+ 145:BSP/wizchip_conf.c ****  */
+ 146:BSP/wizchip_conf.c **** //
+ 147:BSP/wizchip_conf.c **** //M20150401 : For a compiler didnot support a member of structure
+ 148:BSP/wizchip_conf.c **** //            Replace the assignment of struct members with the assingment of array
+ 149:BSP/wizchip_conf.c **** //
+ 150:BSP/wizchip_conf.c **** /*
+ 151:BSP/wizchip_conf.c **** _WIZCHIP  WIZCHIP =
+ 152:BSP/wizchip_conf.c ****       {
+ 153:BSP/wizchip_conf.c ****       .id                  = _WIZCHIP_ID_,
+ 154:BSP/wizchip_conf.c ****       .if_mode             = _WIZCHIP_IO_MODE_,
+ 155:BSP/wizchip_conf.c ****       .CRIS._enter         = wizchip_cris_enter,
+ 156:BSP/wizchip_conf.c ****       .CRIS._exit          = wizchip_cris_exit,
+ 157:BSP/wizchip_conf.c ****       .CS._select          = wizchip_cs_select,
+ 158:BSP/wizchip_conf.c ****       .CS._deselect        = wizchip_cs_deselect,
+ 159:BSP/wizchip_conf.c ****       .IF.BUS._read_byte   = wizchip_bus_readbyte,
+ 160:BSP/wizchip_conf.c ****       .IF.BUS._write_byte  = wizchip_bus_writebyte
+ 161:BSP/wizchip_conf.c **** //    .IF.SPI._read_byte   = wizchip_spi_readbyte,
+ 162:BSP/wizchip_conf.c **** //    .IF.SPI._write_byte  = wizchip_spi_writebyte
+ 163:BSP/wizchip_conf.c ****       };
+ 164:BSP/wizchip_conf.c **** */      
+ 165:BSP/wizchip_conf.c **** _WIZCHIP  WIZCHIP =
+ 166:BSP/wizchip_conf.c **** {
+ 167:BSP/wizchip_conf.c ****     _WIZCHIP_IO_MODE_,
+ 168:BSP/wizchip_conf.c ****     _WIZCHIP_ID_ ,
+ 169:BSP/wizchip_conf.c ****     {
+ 170:BSP/wizchip_conf.c ****         wizchip_cris_enter,
+ 171:BSP/wizchip_conf.c ****         wizchip_cris_exit
+ 172:BSP/wizchip_conf.c ****     },
+ 173:BSP/wizchip_conf.c ****     {
+ 174:BSP/wizchip_conf.c ****         wizchip_cs_select,
+ 175:BSP/wizchip_conf.c ****         wizchip_cs_deselect
+ 176:BSP/wizchip_conf.c ****     },
+ 177:BSP/wizchip_conf.c ****     {
+ 178:BSP/wizchip_conf.c ****         {
+ 179:BSP/wizchip_conf.c ****             //M20150601 : Rename the function 
+ 180:BSP/wizchip_conf.c ****             //wizchip_bus_readbyte,
+ 181:BSP/wizchip_conf.c ****             //wizchip_bus_writebyte
+ 182:BSP/wizchip_conf.c ****             wizchip_bus_readdata,
+ 183:BSP/wizchip_conf.c ****             wizchip_bus_writedata
+ 184:BSP/wizchip_conf.c ****         },
+ 185:BSP/wizchip_conf.c **** 
+ 186:BSP/wizchip_conf.c ****     }
+ 187:BSP/wizchip_conf.c **** };
+ 188:BSP/wizchip_conf.c **** 
+ 189:BSP/wizchip_conf.c **** 
+ARM GAS  /tmp/cc5ibyYO.s 			page 8
+
+
+ 190:BSP/wizchip_conf.c **** static uint8_t    _DNS_[4];      // DNS server ip address
+ 191:BSP/wizchip_conf.c **** static dhcp_mode  _DHCP_;        // DHCP mode
+ 192:BSP/wizchip_conf.c **** 
+ 193:BSP/wizchip_conf.c **** void reg_wizchip_cris_cbfunc(void(*cris_en)(void), void(*cris_ex)(void))
+ 194:BSP/wizchip_conf.c **** {
+ 232              		.loc 1 194 1 view -0
+ 233              		.cfi_startproc
+ 234              		@ args = 0, pretend = 0, frame = 0
+ 235              		@ frame_needed = 0, uses_anonymous_args = 0
+ 236              		@ link register save eliminated.
+ 195:BSP/wizchip_conf.c ****    if(!cris_en || !cris_ex)
+ 237              		.loc 1 195 4 view .LVU26
+ 238              		.loc 1 195 6 is_stmt 0 view .LVU27
+ 239 0000 20B1     		cbz	r0, .L12
+ 240              		.loc 1 195 16 discriminator 1 view .LVU28
+ 241 0002 19B1     		cbz	r1, .L12
+ 196:BSP/wizchip_conf.c ****    {
+ 197:BSP/wizchip_conf.c ****       WIZCHIP.CRIS._enter = wizchip_cris_enter;
+ 198:BSP/wizchip_conf.c ****       WIZCHIP.CRIS._exit  = wizchip_cris_exit;
+ 199:BSP/wizchip_conf.c ****    }
+ 200:BSP/wizchip_conf.c ****    else
+ 201:BSP/wizchip_conf.c ****    {
+ 202:BSP/wizchip_conf.c ****       WIZCHIP.CRIS._enter = cris_en;
+ 242              		.loc 1 202 7 is_stmt 1 view .LVU29
+ 243              		.loc 1 202 27 is_stmt 0 view .LVU30
+ 244 0004 044A     		ldr	r2, .L15
+ 245 0006 D060     		str	r0, [r2, #12]
+ 203:BSP/wizchip_conf.c ****       WIZCHIP.CRIS._exit  = cris_ex;
+ 246              		.loc 1 203 7 is_stmt 1 view .LVU31
+ 247              		.loc 1 203 27 is_stmt 0 view .LVU32
+ 248 0008 1161     		str	r1, [r2, #16]
+ 204:BSP/wizchip_conf.c ****    }
+ 205:BSP/wizchip_conf.c **** }
+ 249              		.loc 1 205 1 view .LVU33
+ 250 000a 7047     		bx	lr
+ 251              	.L12:
+ 197:BSP/wizchip_conf.c ****       WIZCHIP.CRIS._exit  = wizchip_cris_exit;
+ 252              		.loc 1 197 7 is_stmt 1 view .LVU34
+ 197:BSP/wizchip_conf.c ****       WIZCHIP.CRIS._exit  = wizchip_cris_exit;
+ 253              		.loc 1 197 27 is_stmt 0 view .LVU35
+ 254 000c 024B     		ldr	r3, .L15
+ 255 000e 034A     		ldr	r2, .L15+4
+ 256 0010 DA60     		str	r2, [r3, #12]
+ 198:BSP/wizchip_conf.c ****    }
+ 257              		.loc 1 198 7 is_stmt 1 view .LVU36
+ 198:BSP/wizchip_conf.c ****    }
+ 258              		.loc 1 198 27 is_stmt 0 view .LVU37
+ 259 0012 034A     		ldr	r2, .L15+8
+ 260 0014 1A61     		str	r2, [r3, #16]
+ 261 0016 7047     		bx	lr
+ 262              	.L16:
+ 263              		.align	2
+ 264              	.L15:
+ 265 0018 00000000 		.word	WIZCHIP
+ 266 001c 00000000 		.word	wizchip_cris_enter
+ 267 0020 00000000 		.word	wizchip_cris_exit
+ 268              		.cfi_endproc
+ARM GAS  /tmp/cc5ibyYO.s 			page 9
+
+
+ 269              	.LFE10:
+ 271              		.section	.text.reg_wizchip_cs_cbfunc,"ax",%progbits
+ 272              		.align	1
+ 273              		.global	reg_wizchip_cs_cbfunc
+ 274              		.syntax unified
+ 275              		.thumb
+ 276              		.thumb_func
+ 278              	reg_wizchip_cs_cbfunc:
+ 279              	.LVL7:
+ 280              	.LFB11:
+ 206:BSP/wizchip_conf.c **** 
+ 207:BSP/wizchip_conf.c **** void reg_wizchip_cs_cbfunc(void(*cs_sel)(void), void(*cs_desel)(void))
+ 208:BSP/wizchip_conf.c **** {
+ 281              		.loc 1 208 1 is_stmt 1 view -0
+ 282              		.cfi_startproc
+ 283              		@ args = 0, pretend = 0, frame = 0
+ 284              		@ frame_needed = 0, uses_anonymous_args = 0
+ 285              		@ link register save eliminated.
+ 209:BSP/wizchip_conf.c ****    if(!cs_sel || !cs_desel)
+ 286              		.loc 1 209 4 view .LVU39
+ 287              		.loc 1 209 6 is_stmt 0 view .LVU40
+ 288 0000 20B1     		cbz	r0, .L18
+ 289              		.loc 1 209 15 discriminator 1 view .LVU41
+ 290 0002 19B1     		cbz	r1, .L18
+ 210:BSP/wizchip_conf.c ****    {
+ 211:BSP/wizchip_conf.c ****       WIZCHIP.CS._select   = wizchip_cs_select;
+ 212:BSP/wizchip_conf.c ****       WIZCHIP.CS._deselect = wizchip_cs_deselect;
+ 213:BSP/wizchip_conf.c ****    }
+ 214:BSP/wizchip_conf.c ****    else
+ 215:BSP/wizchip_conf.c ****    {
+ 216:BSP/wizchip_conf.c ****       WIZCHIP.CS._select   = cs_sel;
+ 291              		.loc 1 216 7 is_stmt 1 view .LVU42
+ 292              		.loc 1 216 28 is_stmt 0 view .LVU43
+ 293 0004 044A     		ldr	r2, .L21
+ 294 0006 5061     		str	r0, [r2, #20]
+ 217:BSP/wizchip_conf.c ****       WIZCHIP.CS._deselect = cs_desel;
+ 295              		.loc 1 217 7 is_stmt 1 view .LVU44
+ 296              		.loc 1 217 28 is_stmt 0 view .LVU45
+ 297 0008 9161     		str	r1, [r2, #24]
+ 218:BSP/wizchip_conf.c ****    }
+ 219:BSP/wizchip_conf.c **** }
+ 298              		.loc 1 219 1 view .LVU46
+ 299 000a 7047     		bx	lr
+ 300              	.L18:
+ 211:BSP/wizchip_conf.c ****       WIZCHIP.CS._deselect = wizchip_cs_deselect;
+ 301              		.loc 1 211 7 is_stmt 1 view .LVU47
+ 211:BSP/wizchip_conf.c ****       WIZCHIP.CS._deselect = wizchip_cs_deselect;
+ 302              		.loc 1 211 28 is_stmt 0 view .LVU48
+ 303 000c 024B     		ldr	r3, .L21
+ 304 000e 034A     		ldr	r2, .L21+4
+ 305 0010 5A61     		str	r2, [r3, #20]
+ 212:BSP/wizchip_conf.c ****    }
+ 306              		.loc 1 212 7 is_stmt 1 view .LVU49
+ 212:BSP/wizchip_conf.c ****    }
+ 307              		.loc 1 212 28 is_stmt 0 view .LVU50
+ 308 0012 034A     		ldr	r2, .L21+8
+ 309 0014 9A61     		str	r2, [r3, #24]
+ARM GAS  /tmp/cc5ibyYO.s 			page 10
+
+
+ 310 0016 7047     		bx	lr
+ 311              	.L22:
+ 312              		.align	2
+ 313              	.L21:
+ 314 0018 00000000 		.word	WIZCHIP
+ 315 001c 00000000 		.word	wizchip_cs_select
+ 316 0020 00000000 		.word	wizchip_cs_deselect
+ 317              		.cfi_endproc
+ 318              	.LFE11:
+ 320              		.section	.text.reg_wizchip_bus_cbfunc,"ax",%progbits
+ 321              		.align	1
+ 322              		.global	reg_wizchip_bus_cbfunc
+ 323              		.syntax unified
+ 324              		.thumb
+ 325              		.thumb_func
+ 327              	reg_wizchip_bus_cbfunc:
+ 328              	.LFB12:
+ 220:BSP/wizchip_conf.c **** 
+ 221:BSP/wizchip_conf.c **** //M20150515 : For integrating with W5300
+ 222:BSP/wizchip_conf.c **** //void reg_wizchip_bus_cbfunc(uint8_t(*bus_rb)(uint32_t addr), void (*bus_wb)(uint32_t addr, uint8_
+ 223:BSP/wizchip_conf.c **** void reg_wizchip_bus_cbfunc(iodata_t(*bus_rb)(uint32_t addr), void (*bus_wb)(uint32_t addr, iodata_
+ 224:BSP/wizchip_conf.c **** {
+ 329              		.loc 1 224 1 is_stmt 1 view -0
+ 330              		.cfi_startproc
+ 331              		@ args = 0, pretend = 0, frame = 0
+ 332              		@ frame_needed = 0, uses_anonymous_args = 0
+ 333              		@ link register save eliminated.
+ 334              	.LVL8:
+ 335              	.L24:
+ 225:BSP/wizchip_conf.c ****    while(!(WIZCHIP.if_mode & _WIZCHIP_IO_MODE_BUS_));
+ 336              		.loc 1 225 10 discriminator 1 view .LVU52
+ 337              		.loc 1 225 19 is_stmt 0 discriminator 1 view .LVU53
+ 338 0000 084B     		ldr	r3, .L28
+ 339 0002 1B88     		ldrh	r3, [r3]
+ 340              		.loc 1 225 10 discriminator 1 view .LVU54
+ 341 0004 13F4807F 		tst	r3, #256
+ 342 0008 FAD0     		beq	.L24
+ 226:BSP/wizchip_conf.c ****    //M20150601 : Rename call back function for integrating with W5300
+ 227:BSP/wizchip_conf.c ****    /*
+ 228:BSP/wizchip_conf.c ****    if(!bus_rb || !bus_wb)
+ 229:BSP/wizchip_conf.c ****    {
+ 230:BSP/wizchip_conf.c ****       WIZCHIP.IF.BUS._read_byte   = wizchip_bus_readbyte;
+ 231:BSP/wizchip_conf.c ****       WIZCHIP.IF.BUS._write_byte  = wizchip_bus_writebyte;
+ 232:BSP/wizchip_conf.c ****    }
+ 233:BSP/wizchip_conf.c ****    else
+ 234:BSP/wizchip_conf.c ****    {
+ 235:BSP/wizchip_conf.c ****       WIZCHIP.IF.BUS._read_byte   = bus_rb;
+ 236:BSP/wizchip_conf.c ****       WIZCHIP.IF.BUS._write_byte  = bus_wb;
+ 237:BSP/wizchip_conf.c ****    }
+ 238:BSP/wizchip_conf.c ****    */
+ 239:BSP/wizchip_conf.c ****    if(!bus_rb || !bus_wb)
+ 343              		.loc 1 239 4 is_stmt 1 view .LVU55
+ 344              		.loc 1 239 6 is_stmt 0 view .LVU56
+ 345 000a 20B1     		cbz	r0, .L25
+ 346              		.loc 1 239 15 discriminator 1 view .LVU57
+ 347 000c 19B1     		cbz	r1, .L25
+ 240:BSP/wizchip_conf.c ****    {
+ARM GAS  /tmp/cc5ibyYO.s 			page 11
+
+
+ 241:BSP/wizchip_conf.c ****       WIZCHIP.IF.BUS._read_data   = wizchip_bus_readdata;
+ 242:BSP/wizchip_conf.c ****       WIZCHIP.IF.BUS._write_data  = wizchip_bus_writedata;
+ 243:BSP/wizchip_conf.c ****    }
+ 244:BSP/wizchip_conf.c ****    else
+ 245:BSP/wizchip_conf.c ****    {
+ 246:BSP/wizchip_conf.c ****       WIZCHIP.IF.BUS._read_data   = bus_rb;
+ 348              		.loc 1 246 7 is_stmt 1 view .LVU58
+ 349              		.loc 1 246 35 is_stmt 0 view .LVU59
+ 350 000e 054B     		ldr	r3, .L28
+ 351 0010 D861     		str	r0, [r3, #28]
+ 247:BSP/wizchip_conf.c ****       WIZCHIP.IF.BUS._write_data  = bus_wb;
+ 352              		.loc 1 247 7 is_stmt 1 view .LVU60
+ 353              		.loc 1 247 35 is_stmt 0 view .LVU61
+ 354 0012 1962     		str	r1, [r3, #32]
+ 248:BSP/wizchip_conf.c ****    }
+ 249:BSP/wizchip_conf.c **** }
+ 355              		.loc 1 249 1 view .LVU62
+ 356 0014 7047     		bx	lr
+ 357              	.L25:
+ 241:BSP/wizchip_conf.c ****       WIZCHIP.IF.BUS._write_data  = wizchip_bus_writedata;
+ 358              		.loc 1 241 7 is_stmt 1 view .LVU63
+ 241:BSP/wizchip_conf.c ****       WIZCHIP.IF.BUS._write_data  = wizchip_bus_writedata;
+ 359              		.loc 1 241 35 is_stmt 0 view .LVU64
+ 360 0016 034B     		ldr	r3, .L28
+ 361 0018 034A     		ldr	r2, .L28+4
+ 362 001a DA61     		str	r2, [r3, #28]
+ 242:BSP/wizchip_conf.c ****    }
+ 363              		.loc 1 242 7 is_stmt 1 view .LVU65
+ 242:BSP/wizchip_conf.c ****    }
+ 364              		.loc 1 242 35 is_stmt 0 view .LVU66
+ 365 001c 034A     		ldr	r2, .L28+8
+ 366 001e 1A62     		str	r2, [r3, #32]
+ 367 0020 7047     		bx	lr
+ 368              	.L29:
+ 369 0022 00BF     		.align	2
+ 370              	.L28:
+ 371 0024 00000000 		.word	WIZCHIP
+ 372 0028 00000000 		.word	wizchip_bus_readdata
+ 373 002c 00000000 		.word	wizchip_bus_writedata
+ 374              		.cfi_endproc
+ 375              	.LFE12:
+ 377              		.section	.text.reg_wizchip_spi_cbfunc,"ax",%progbits
+ 378              		.align	1
+ 379              		.global	reg_wizchip_spi_cbfunc
+ 380              		.syntax unified
+ 381              		.thumb
+ 382              		.thumb_func
+ 384              	reg_wizchip_spi_cbfunc:
+ 385              	.LFB13:
+ 250:BSP/wizchip_conf.c **** 
+ 251:BSP/wizchip_conf.c **** void reg_wizchip_spi_cbfunc(uint8_t (*spi_rb)(void), void (*spi_wb)(uint8_t wb))
+ 252:BSP/wizchip_conf.c **** {
+ 386              		.loc 1 252 1 is_stmt 1 view -0
+ 387              		.cfi_startproc
+ 388              		@ args = 0, pretend = 0, frame = 0
+ 389              		@ frame_needed = 0, uses_anonymous_args = 0
+ 390              		@ link register save eliminated.
+ARM GAS  /tmp/cc5ibyYO.s 			page 12
+
+
+ 391              	.LVL9:
+ 392              	.L31:
+ 253:BSP/wizchip_conf.c ****    while(!(WIZCHIP.if_mode & _WIZCHIP_IO_MODE_SPI_));
+ 393              		.loc 1 253 10 discriminator 1 view .LVU68
+ 394              		.loc 1 253 19 is_stmt 0 discriminator 1 view .LVU69
+ 395 0000 084B     		ldr	r3, .L35
+ 396 0002 1B88     		ldrh	r3, [r3]
+ 397              		.loc 1 253 10 discriminator 1 view .LVU70
+ 398 0004 13F4007F 		tst	r3, #512
+ 399 0008 FAD0     		beq	.L31
+ 254:BSP/wizchip_conf.c ****    
+ 255:BSP/wizchip_conf.c ****    if(!spi_rb || !spi_wb)
+ 400              		.loc 1 255 4 is_stmt 1 view .LVU71
+ 401              		.loc 1 255 6 is_stmt 0 view .LVU72
+ 402 000a 20B1     		cbz	r0, .L32
+ 403              		.loc 1 255 15 discriminator 1 view .LVU73
+ 404 000c 19B1     		cbz	r1, .L32
+ 256:BSP/wizchip_conf.c ****    {
+ 257:BSP/wizchip_conf.c ****       WIZCHIP.IF.SPI._read_byte   = wizchip_spi_readbyte;
+ 258:BSP/wizchip_conf.c ****       WIZCHIP.IF.SPI._write_byte  = wizchip_spi_writebyte;
+ 259:BSP/wizchip_conf.c ****    }
+ 260:BSP/wizchip_conf.c ****    else
+ 261:BSP/wizchip_conf.c ****    {
+ 262:BSP/wizchip_conf.c ****       WIZCHIP.IF.SPI._read_byte   = spi_rb;
+ 405              		.loc 1 262 7 is_stmt 1 view .LVU74
+ 406              		.loc 1 262 35 is_stmt 0 view .LVU75
+ 407 000e 054B     		ldr	r3, .L35
+ 408 0010 D861     		str	r0, [r3, #28]
+ 263:BSP/wizchip_conf.c ****       WIZCHIP.IF.SPI._write_byte  = spi_wb;
+ 409              		.loc 1 263 7 is_stmt 1 view .LVU76
+ 410              		.loc 1 263 35 is_stmt 0 view .LVU77
+ 411 0012 1962     		str	r1, [r3, #32]
+ 264:BSP/wizchip_conf.c ****    }
+ 265:BSP/wizchip_conf.c **** }
+ 412              		.loc 1 265 1 view .LVU78
+ 413 0014 7047     		bx	lr
+ 414              	.L32:
+ 257:BSP/wizchip_conf.c ****       WIZCHIP.IF.SPI._write_byte  = wizchip_spi_writebyte;
+ 415              		.loc 1 257 7 is_stmt 1 view .LVU79
+ 257:BSP/wizchip_conf.c ****       WIZCHIP.IF.SPI._write_byte  = wizchip_spi_writebyte;
+ 416              		.loc 1 257 35 is_stmt 0 view .LVU80
+ 417 0016 034B     		ldr	r3, .L35
+ 418 0018 034A     		ldr	r2, .L35+4
+ 419 001a DA61     		str	r2, [r3, #28]
+ 258:BSP/wizchip_conf.c ****    }
+ 420              		.loc 1 258 7 is_stmt 1 view .LVU81
+ 258:BSP/wizchip_conf.c ****    }
+ 421              		.loc 1 258 35 is_stmt 0 view .LVU82
+ 422 001c 034A     		ldr	r2, .L35+8
+ 423 001e 1A62     		str	r2, [r3, #32]
+ 424 0020 7047     		bx	lr
+ 425              	.L36:
+ 426 0022 00BF     		.align	2
+ 427              	.L35:
+ 428 0024 00000000 		.word	WIZCHIP
+ 429 0028 00000000 		.word	wizchip_spi_readbyte
+ 430 002c 00000000 		.word	wizchip_spi_writebyte
+ARM GAS  /tmp/cc5ibyYO.s 			page 13
+
+
+ 431              		.cfi_endproc
+ 432              	.LFE13:
+ 434              		.section	.text.reg_wizchip_spiburst_cbfunc,"ax",%progbits
+ 435              		.align	1
+ 436              		.global	reg_wizchip_spiburst_cbfunc
+ 437              		.syntax unified
+ 438              		.thumb
+ 439              		.thumb_func
+ 441              	reg_wizchip_spiburst_cbfunc:
+ 442              	.LFB14:
+ 266:BSP/wizchip_conf.c **** 
+ 267:BSP/wizchip_conf.c **** // 20140626 Eric Added for SPI burst operations
+ 268:BSP/wizchip_conf.c **** void reg_wizchip_spiburst_cbfunc(void (*spi_rb)(uint8_t* pBuf, uint16_t len), void (*spi_wb)(uint8_
+ 269:BSP/wizchip_conf.c **** {
+ 443              		.loc 1 269 1 is_stmt 1 view -0
+ 444              		.cfi_startproc
+ 445              		@ args = 0, pretend = 0, frame = 0
+ 446              		@ frame_needed = 0, uses_anonymous_args = 0
+ 447              		@ link register save eliminated.
+ 448              	.LVL10:
+ 449              	.L38:
+ 270:BSP/wizchip_conf.c ****    while(!(WIZCHIP.if_mode & _WIZCHIP_IO_MODE_SPI_));
+ 450              		.loc 1 270 10 discriminator 1 view .LVU84
+ 451              		.loc 1 270 19 is_stmt 0 discriminator 1 view .LVU85
+ 452 0000 084B     		ldr	r3, .L42
+ 453 0002 1B88     		ldrh	r3, [r3]
+ 454              		.loc 1 270 10 discriminator 1 view .LVU86
+ 455 0004 13F4007F 		tst	r3, #512
+ 456 0008 FAD0     		beq	.L38
+ 271:BSP/wizchip_conf.c **** 
+ 272:BSP/wizchip_conf.c ****    if(!spi_rb || !spi_wb)
+ 457              		.loc 1 272 4 is_stmt 1 view .LVU87
+ 458              		.loc 1 272 6 is_stmt 0 view .LVU88
+ 459 000a 20B1     		cbz	r0, .L39
+ 460              		.loc 1 272 15 discriminator 1 view .LVU89
+ 461 000c 19B1     		cbz	r1, .L39
+ 273:BSP/wizchip_conf.c ****    {
+ 274:BSP/wizchip_conf.c ****       WIZCHIP.IF.SPI._read_burst   = wizchip_spi_readburst;
+ 275:BSP/wizchip_conf.c ****       WIZCHIP.IF.SPI._write_burst  = wizchip_spi_writeburst;
+ 276:BSP/wizchip_conf.c ****    }
+ 277:BSP/wizchip_conf.c ****    else
+ 278:BSP/wizchip_conf.c ****    {
+ 279:BSP/wizchip_conf.c ****       WIZCHIP.IF.SPI._read_burst   = spi_rb;
+ 462              		.loc 1 279 7 is_stmt 1 view .LVU90
+ 463              		.loc 1 279 36 is_stmt 0 view .LVU91
+ 464 000e 054B     		ldr	r3, .L42
+ 465 0010 5862     		str	r0, [r3, #36]
+ 280:BSP/wizchip_conf.c ****       WIZCHIP.IF.SPI._write_burst  = spi_wb;
+ 466              		.loc 1 280 7 is_stmt 1 view .LVU92
+ 467              		.loc 1 280 36 is_stmt 0 view .LVU93
+ 468 0012 9962     		str	r1, [r3, #40]
+ 281:BSP/wizchip_conf.c ****    }
+ 282:BSP/wizchip_conf.c **** }
+ 469              		.loc 1 282 1 view .LVU94
+ 470 0014 7047     		bx	lr
+ 471              	.L39:
+ 274:BSP/wizchip_conf.c ****       WIZCHIP.IF.SPI._write_burst  = wizchip_spi_writeburst;
+ARM GAS  /tmp/cc5ibyYO.s 			page 14
+
+
+ 472              		.loc 1 274 7 is_stmt 1 view .LVU95
+ 274:BSP/wizchip_conf.c ****       WIZCHIP.IF.SPI._write_burst  = wizchip_spi_writeburst;
+ 473              		.loc 1 274 36 is_stmt 0 view .LVU96
+ 474 0016 034B     		ldr	r3, .L42
+ 475 0018 034A     		ldr	r2, .L42+4
+ 476 001a 5A62     		str	r2, [r3, #36]
+ 275:BSP/wizchip_conf.c ****    }
+ 477              		.loc 1 275 7 is_stmt 1 view .LVU97
+ 275:BSP/wizchip_conf.c ****    }
+ 478              		.loc 1 275 36 is_stmt 0 view .LVU98
+ 479 001c 034A     		ldr	r2, .L42+8
+ 480 001e 9A62     		str	r2, [r3, #40]
+ 481 0020 7047     		bx	lr
+ 482              	.L43:
+ 483 0022 00BF     		.align	2
+ 484              	.L42:
+ 485 0024 00000000 		.word	WIZCHIP
+ 486 0028 00000000 		.word	wizchip_spi_readburst
+ 487 002c 00000000 		.word	wizchip_spi_writeburst
+ 488              		.cfi_endproc
+ 489              	.LFE14:
+ 491              		.section	.text.wizchip_sw_reset,"ax",%progbits
+ 492              		.align	1
+ 493              		.global	wizchip_sw_reset
+ 494              		.syntax unified
+ 495              		.thumb
+ 496              		.thumb_func
+ 498              	wizchip_sw_reset:
+ 499              	.LFB17:
+ 283:BSP/wizchip_conf.c **** 
+ 284:BSP/wizchip_conf.c **** int8_t ctlwizchip(ctlwizchip_type cwtype, void* arg)
+ 285:BSP/wizchip_conf.c **** {
+ 286:BSP/wizchip_conf.c **** #if	_WIZCHIP_ == W5100S || _WIZCHIP_ == W5200 || _WIZCHIP_ == W5500
+ 287:BSP/wizchip_conf.c ****    uint8_t tmp = 0;
+ 288:BSP/wizchip_conf.c **** #endif
+ 289:BSP/wizchip_conf.c ****    uint8_t* ptmp[2] = {0,0};
+ 290:BSP/wizchip_conf.c ****    switch(cwtype)
+ 291:BSP/wizchip_conf.c ****    {
+ 292:BSP/wizchip_conf.c ****       case CW_RESET_WIZCHIP:
+ 293:BSP/wizchip_conf.c ****          wizchip_sw_reset();
+ 294:BSP/wizchip_conf.c ****          break;
+ 295:BSP/wizchip_conf.c ****       case CW_INIT_WIZCHIP:
+ 296:BSP/wizchip_conf.c ****          if(arg != 0) 
+ 297:BSP/wizchip_conf.c ****          {
+ 298:BSP/wizchip_conf.c ****             ptmp[0] = (uint8_t*)arg;
+ 299:BSP/wizchip_conf.c ****             ptmp[1] = ptmp[0] + _WIZCHIP_SOCK_NUM_;
+ 300:BSP/wizchip_conf.c ****          }
+ 301:BSP/wizchip_conf.c ****          return wizchip_init(ptmp[0], ptmp[1]);
+ 302:BSP/wizchip_conf.c ****       case CW_CLR_INTERRUPT:
+ 303:BSP/wizchip_conf.c ****          wizchip_clrinterrupt(*((intr_kind*)arg));
+ 304:BSP/wizchip_conf.c ****          break;
+ 305:BSP/wizchip_conf.c ****       case CW_GET_INTERRUPT:
+ 306:BSP/wizchip_conf.c ****         *((intr_kind*)arg) = wizchip_getinterrupt();
+ 307:BSP/wizchip_conf.c ****          break;
+ 308:BSP/wizchip_conf.c ****       case CW_SET_INTRMASK:
+ 309:BSP/wizchip_conf.c ****          wizchip_setinterruptmask(*((intr_kind*)arg));
+ 310:BSP/wizchip_conf.c ****          break;         
+ARM GAS  /tmp/cc5ibyYO.s 			page 15
+
+
+ 311:BSP/wizchip_conf.c ****       case CW_GET_INTRMASK:
+ 312:BSP/wizchip_conf.c ****          *((intr_kind*)arg) = wizchip_getinterruptmask();
+ 313:BSP/wizchip_conf.c ****          break;
+ 314:BSP/wizchip_conf.c ****    //M20150601 : This can be supported by W5200, W5500
+ 315:BSP/wizchip_conf.c ****    //#if _WIZCHIP_ > W5100
+ 316:BSP/wizchip_conf.c ****    #if (_WIZCHIP_ == W5200 || _WIZCHIP_ == W5500)
+ 317:BSP/wizchip_conf.c ****       case CW_SET_INTRTIME:
+ 318:BSP/wizchip_conf.c ****          setINTLEVEL(*(uint16_t*)arg);
+ 319:BSP/wizchip_conf.c ****          break;
+ 320:BSP/wizchip_conf.c ****       case CW_GET_INTRTIME:
+ 321:BSP/wizchip_conf.c ****          *(uint16_t*)arg = getINTLEVEL();
+ 322:BSP/wizchip_conf.c ****          break;
+ 323:BSP/wizchip_conf.c ****    #endif
+ 324:BSP/wizchip_conf.c ****       case CW_GET_ID:
+ 325:BSP/wizchip_conf.c ****          ((uint8_t*)arg)[0] = WIZCHIP.id[0];
+ 326:BSP/wizchip_conf.c ****          ((uint8_t*)arg)[1] = WIZCHIP.id[1];
+ 327:BSP/wizchip_conf.c ****          ((uint8_t*)arg)[2] = WIZCHIP.id[2];
+ 328:BSP/wizchip_conf.c ****          ((uint8_t*)arg)[3] = WIZCHIP.id[3];
+ 329:BSP/wizchip_conf.c ****          ((uint8_t*)arg)[4] = WIZCHIP.id[4];
+ 330:BSP/wizchip_conf.c ****          ((uint8_t*)arg)[5] = WIZCHIP.id[5];
+ 331:BSP/wizchip_conf.c ****          ((uint8_t*)arg)[6] = 0;
+ 332:BSP/wizchip_conf.c ****          break;
+ 333:BSP/wizchip_conf.c ****    #if _WIZCHIP_ == W5100S || _WIZCHIP_ == W5500
+ 334:BSP/wizchip_conf.c ****       case CW_RESET_PHY:
+ 335:BSP/wizchip_conf.c ****          wizphy_reset();
+ 336:BSP/wizchip_conf.c ****          break;
+ 337:BSP/wizchip_conf.c ****       case CW_SET_PHYCONF:
+ 338:BSP/wizchip_conf.c ****          wizphy_setphyconf((wiz_PhyConf*)arg);
+ 339:BSP/wizchip_conf.c ****          break;
+ 340:BSP/wizchip_conf.c ****       case CW_GET_PHYCONF:
+ 341:BSP/wizchip_conf.c ****          wizphy_getphyconf((wiz_PhyConf*)arg);
+ 342:BSP/wizchip_conf.c ****          break;
+ 343:BSP/wizchip_conf.c ****       case CW_GET_PHYSTATUS:
+ 344:BSP/wizchip_conf.c ****          break;
+ 345:BSP/wizchip_conf.c ****       case CW_SET_PHYPOWMODE:
+ 346:BSP/wizchip_conf.c ****          return wizphy_setphypmode(*(uint8_t*)arg);
+ 347:BSP/wizchip_conf.c ****    #endif
+ 348:BSP/wizchip_conf.c ****    #if _WIZCHIP_ == W5100S || _WIZCHIP_ == W5200 || _WIZCHIP_ == W5500
+ 349:BSP/wizchip_conf.c ****       case CW_GET_PHYPOWMODE:
+ 350:BSP/wizchip_conf.c ****          tmp = wizphy_getphypmode();
+ 351:BSP/wizchip_conf.c ****          if((int8_t)tmp == -1) return -1;
+ 352:BSP/wizchip_conf.c ****          *(uint8_t*)arg = tmp;
+ 353:BSP/wizchip_conf.c ****          break;
+ 354:BSP/wizchip_conf.c ****       case CW_GET_PHYLINK:
+ 355:BSP/wizchip_conf.c ****          tmp = wizphy_getphylink();
+ 356:BSP/wizchip_conf.c ****          if((int8_t)tmp == -1) return -1;
+ 357:BSP/wizchip_conf.c ****          *(uint8_t*)arg = tmp;
+ 358:BSP/wizchip_conf.c ****          break;
+ 359:BSP/wizchip_conf.c ****    #endif      
+ 360:BSP/wizchip_conf.c ****       default:
+ 361:BSP/wizchip_conf.c ****          return -1;
+ 362:BSP/wizchip_conf.c ****    }
+ 363:BSP/wizchip_conf.c ****    return 0;
+ 364:BSP/wizchip_conf.c **** }
+ 365:BSP/wizchip_conf.c **** 
+ 366:BSP/wizchip_conf.c **** 
+ 367:BSP/wizchip_conf.c **** int8_t ctlnetwork(ctlnetwork_type cntype, void* arg)
+ARM GAS  /tmp/cc5ibyYO.s 			page 16
+
+
+ 368:BSP/wizchip_conf.c **** {
+ 369:BSP/wizchip_conf.c ****    
+ 370:BSP/wizchip_conf.c ****    switch(cntype)
+ 371:BSP/wizchip_conf.c ****    {
+ 372:BSP/wizchip_conf.c ****       case CN_SET_NETINFO:
+ 373:BSP/wizchip_conf.c ****          wizchip_setnetinfo((wiz_NetInfo*)arg);
+ 374:BSP/wizchip_conf.c ****          break;
+ 375:BSP/wizchip_conf.c ****       case CN_GET_NETINFO:
+ 376:BSP/wizchip_conf.c ****          wizchip_getnetinfo((wiz_NetInfo*)arg);
+ 377:BSP/wizchip_conf.c ****          break;
+ 378:BSP/wizchip_conf.c ****       case CN_SET_NETMODE:
+ 379:BSP/wizchip_conf.c ****          return wizchip_setnetmode(*(netmode_type*)arg);
+ 380:BSP/wizchip_conf.c ****       case CN_GET_NETMODE:
+ 381:BSP/wizchip_conf.c ****          *(netmode_type*)arg = wizchip_getnetmode();
+ 382:BSP/wizchip_conf.c ****          break;
+ 383:BSP/wizchip_conf.c ****       case CN_SET_TIMEOUT:
+ 384:BSP/wizchip_conf.c ****          wizchip_settimeout((wiz_NetTimeout*)arg);
+ 385:BSP/wizchip_conf.c ****          break;
+ 386:BSP/wizchip_conf.c ****       case CN_GET_TIMEOUT:
+ 387:BSP/wizchip_conf.c ****          wizchip_gettimeout((wiz_NetTimeout*)arg);
+ 388:BSP/wizchip_conf.c ****          break;
+ 389:BSP/wizchip_conf.c ****       default:
+ 390:BSP/wizchip_conf.c ****          return -1;
+ 391:BSP/wizchip_conf.c ****    }
+ 392:BSP/wizchip_conf.c ****    return 0;
+ 393:BSP/wizchip_conf.c **** }
+ 394:BSP/wizchip_conf.c **** 
+ 395:BSP/wizchip_conf.c **** void wizchip_sw_reset(void)
+ 396:BSP/wizchip_conf.c **** {
+ 500              		.loc 1 396 1 is_stmt 1 view -0
+ 501              		.cfi_startproc
+ 502              		@ args = 0, pretend = 0, frame = 24
+ 503              		@ frame_needed = 0, uses_anonymous_args = 0
+ 504 0000 00B5     		push	{lr}
+ 505              	.LCFI0:
+ 506              		.cfi_def_cfa_offset 4
+ 507              		.cfi_offset 14, -4
+ 508 0002 87B0     		sub	sp, sp, #28
+ 509              	.LCFI1:
+ 510              		.cfi_def_cfa_offset 32
+ 397:BSP/wizchip_conf.c ****    uint8_t gw[4], sn[4], sip[4];
+ 511              		.loc 1 397 4 view .LVU100
+ 398:BSP/wizchip_conf.c ****    uint8_t mac[6];
+ 512              		.loc 1 398 4 view .LVU101
+ 399:BSP/wizchip_conf.c **** //A20150601
+ 400:BSP/wizchip_conf.c **** #if _WIZCHIP_IO_MODE_  == _WIZCHIP_IO_MODE_BUS_INDIR_
+ 401:BSP/wizchip_conf.c ****    uint16_t mr = (uint16_t)getMR();
+ 402:BSP/wizchip_conf.c ****    setMR(mr | MR_IND);
+ 403:BSP/wizchip_conf.c **** #endif
+ 404:BSP/wizchip_conf.c **** //
+ 405:BSP/wizchip_conf.c ****    getSHAR(mac);
+ 513              		.loc 1 405 4 view .LVU102
+ 514 0004 0622     		movs	r2, #6
+ 515 0006 01A9     		add	r1, sp, #4
+ 516 0008 4FF41060 		mov	r0, #2304
+ 517 000c FFF7FEFF 		bl	WIZCHIP_READ_BUF
+ 518              	.LVL11:
+ARM GAS  /tmp/cc5ibyYO.s 			page 17
+
+
+ 406:BSP/wizchip_conf.c ****    getGAR(gw);  getSUBR(sn);  getSIPR(sip);
+ 519              		.loc 1 406 4 view .LVU103
+ 520 0010 0422     		movs	r2, #4
+ 521 0012 05A9     		add	r1, sp, #20
+ 522 0014 4FF48070 		mov	r0, #256
+ 523 0018 FFF7FEFF 		bl	WIZCHIP_READ_BUF
+ 524              	.LVL12:
+ 525              		.loc 1 406 17 discriminator 1 view .LVU104
+ 526 001c 0422     		movs	r2, #4
+ 527 001e 04A9     		add	r1, sp, #16
+ 528 0020 4FF4A060 		mov	r0, #1280
+ 529 0024 FFF7FEFF 		bl	WIZCHIP_READ_BUF
+ 530              	.LVL13:
+ 531              		.loc 1 406 31 discriminator 2 view .LVU105
+ 532 0028 0422     		movs	r2, #4
+ 533 002a 03A9     		add	r1, sp, #12
+ 534 002c 4FF47060 		mov	r0, #3840
+ 535 0030 FFF7FEFF 		bl	WIZCHIP_READ_BUF
+ 536              	.LVL14:
+ 407:BSP/wizchip_conf.c ****    setMR(MR_RST);
+ 537              		.loc 1 407 4 view .LVU106
+ 538 0034 8021     		movs	r1, #128
+ 539 0036 0020     		movs	r0, #0
+ 540 0038 FFF7FEFF 		bl	WIZCHIP_WRITE
+ 541              	.LVL15:
+ 408:BSP/wizchip_conf.c ****    getMR(); // for delay
+ 542              		.loc 1 408 4 view .LVU107
+ 543 003c 0020     		movs	r0, #0
+ 544 003e FFF7FEFF 		bl	WIZCHIP_READ
+ 545              	.LVL16:
+ 409:BSP/wizchip_conf.c **** //A2015051 : For indirect bus mode 
+ 410:BSP/wizchip_conf.c **** #if _WIZCHIP_IO_MODE_  == _WIZCHIP_IO_MODE_BUS_INDIR_
+ 411:BSP/wizchip_conf.c ****    setMR(mr | MR_IND);
+ 412:BSP/wizchip_conf.c **** #endif
+ 413:BSP/wizchip_conf.c **** //
+ 414:BSP/wizchip_conf.c ****    setSHAR(mac);
+ 546              		.loc 1 414 4 view .LVU108
+ 547 0042 0622     		movs	r2, #6
+ 548 0044 01A9     		add	r1, sp, #4
+ 549 0046 4FF41060 		mov	r0, #2304
+ 550 004a FFF7FEFF 		bl	WIZCHIP_WRITE_BUF
+ 551              	.LVL17:
+ 415:BSP/wizchip_conf.c ****    setGAR(gw);
+ 552              		.loc 1 415 4 view .LVU109
+ 553 004e 0422     		movs	r2, #4
+ 554 0050 05A9     		add	r1, sp, #20
+ 555 0052 4FF48070 		mov	r0, #256
+ 556 0056 FFF7FEFF 		bl	WIZCHIP_WRITE_BUF
+ 557              	.LVL18:
+ 416:BSP/wizchip_conf.c ****    setSUBR(sn);
+ 558              		.loc 1 416 4 view .LVU110
+ 559 005a 0422     		movs	r2, #4
+ 560 005c 04A9     		add	r1, sp, #16
+ 561 005e 4FF4A060 		mov	r0, #1280
+ 562 0062 FFF7FEFF 		bl	WIZCHIP_WRITE_BUF
+ 563              	.LVL19:
+ 417:BSP/wizchip_conf.c ****    setSIPR(sip);
+ARM GAS  /tmp/cc5ibyYO.s 			page 18
+
+
+ 564              		.loc 1 417 4 view .LVU111
+ 565 0066 0422     		movs	r2, #4
+ 566 0068 03A9     		add	r1, sp, #12
+ 567 006a 4FF47060 		mov	r0, #3840
+ 568 006e FFF7FEFF 		bl	WIZCHIP_WRITE_BUF
+ 569              	.LVL20:
+ 418:BSP/wizchip_conf.c **** }
+ 570              		.loc 1 418 1 is_stmt 0 view .LVU112
+ 571 0072 07B0     		add	sp, sp, #28
+ 572              	.LCFI2:
+ 573              		.cfi_def_cfa_offset 4
+ 574              		@ sp needed
+ 575 0074 5DF804FB 		ldr	pc, [sp], #4
+ 576              		.cfi_endproc
+ 577              	.LFE17:
+ 579              		.section	.text.wizchip_init,"ax",%progbits
+ 580              		.align	1
+ 581              		.global	wizchip_init
+ 582              		.syntax unified
+ 583              		.thumb
+ 584              		.thumb_func
+ 586              	wizchip_init:
+ 587              	.LVL21:
+ 588              	.LFB18:
+ 419:BSP/wizchip_conf.c **** 
+ 420:BSP/wizchip_conf.c **** int8_t wizchip_init(uint8_t* txsize, uint8_t* rxsize)
+ 421:BSP/wizchip_conf.c **** {
+ 589              		.loc 1 421 1 is_stmt 1 view -0
+ 590              		.cfi_startproc
+ 591              		@ args = 0, pretend = 0, frame = 0
+ 592              		@ frame_needed = 0, uses_anonymous_args = 0
+ 593              		.loc 1 421 1 is_stmt 0 view .LVU114
+ 594 0000 70B5     		push	{r4, r5, r6, lr}
+ 595              	.LCFI3:
+ 596              		.cfi_def_cfa_offset 16
+ 597              		.cfi_offset 4, -16
+ 598              		.cfi_offset 5, -12
+ 599              		.cfi_offset 6, -8
+ 600              		.cfi_offset 14, -4
+ 601 0002 0546     		mov	r5, r0
+ 602 0004 0E46     		mov	r6, r1
+ 422:BSP/wizchip_conf.c ****    int8_t i;
+ 603              		.loc 1 422 4 is_stmt 1 view .LVU115
+ 423:BSP/wizchip_conf.c **** #if _WIZCHIP_ < W5200
+ 424:BSP/wizchip_conf.c ****    int8_t j;
+ 425:BSP/wizchip_conf.c **** #endif
+ 426:BSP/wizchip_conf.c ****    int8_t tmp = 0;
+ 604              		.loc 1 426 4 view .LVU116
+ 605              	.LVL22:
+ 427:BSP/wizchip_conf.c ****    wizchip_sw_reset();
+ 606              		.loc 1 427 4 view .LVU117
+ 607 0006 FFF7FEFF 		bl	wizchip_sw_reset
+ 608              	.LVL23:
+ 428:BSP/wizchip_conf.c ****    if(txsize)
+ 609              		.loc 1 428 4 view .LVU118
+ 610              		.loc 1 428 6 is_stmt 0 view .LVU119
+ 611 000a CDB1     		cbz	r5, .L48
+ARM GAS  /tmp/cc5ibyYO.s 			page 19
+
+
+ 429:BSP/wizchip_conf.c ****    {
+ 430:BSP/wizchip_conf.c ****       tmp = 0;
+ 612              		.loc 1 430 11 view .LVU120
+ 613 000c 0022     		movs	r2, #0
+ 431:BSP/wizchip_conf.c **** //M20150601 : For integrating with W5300
+ 432:BSP/wizchip_conf.c **** #if _WIZCHIP_ == W5300
+ 433:BSP/wizchip_conf.c **** 		for(i = 0 ; i < _WIZCHIP_SOCK_NUM_; i++)
+ 434:BSP/wizchip_conf.c **** 		{
+ 435:BSP/wizchip_conf.c **** 			if(txsize[i] > 64) return -1;   //No use 64KB even if W5300 support max 64KB memory allocation
+ 436:BSP/wizchip_conf.c **** 			tmp += txsize[i];
+ 437:BSP/wizchip_conf.c **** 			if(tmp > 128) return -1;
+ 438:BSP/wizchip_conf.c **** 		}
+ 439:BSP/wizchip_conf.c **** 		if(tmp % 8) return -1;
+ 440:BSP/wizchip_conf.c **** #else
+ 441:BSP/wizchip_conf.c **** 		for(i = 0 ; i < _WIZCHIP_SOCK_NUM_; i++)
+ 614              		.loc 1 441 9 view .LVU121
+ 615 000e 1346     		mov	r3, r2
+ 616              	.LVL24:
+ 617              	.L47:
+ 618              		.loc 1 441 17 is_stmt 1 discriminator 1 view .LVU122
+ 619 0010 072B     		cmp	r3, #7
+ 620 0012 07DC     		bgt	.L62
+ 442:BSP/wizchip_conf.c **** 		{
+ 443:BSP/wizchip_conf.c **** 			tmp += txsize[i];
+ 621              		.loc 1 443 4 view .LVU123
+ 622              		.loc 1 443 17 is_stmt 0 view .LVU124
+ 623 0014 E95C     		ldrb	r1, [r5, r3]	@ zero_extendqisi2
+ 624              		.loc 1 443 8 view .LVU125
+ 625 0016 0A44     		add	r2, r2, r1
+ 626              	.LVL25:
+ 627              		.loc 1 443 8 view .LVU126
+ 628 0018 52B2     		sxtb	r2, r2
+ 629              	.LVL26:
+ 444:BSP/wizchip_conf.c **** 
+ 445:BSP/wizchip_conf.c **** #if _WIZCHIP_ < W5200	//2016.10.28 peter add condition for w5100 and w5100s
+ 446:BSP/wizchip_conf.c **** 			if(tmp > 8) return -1;
+ 447:BSP/wizchip_conf.c **** #else
+ 448:BSP/wizchip_conf.c **** 			if(tmp > 16) return -1;
+ 630              		.loc 1 448 4 is_stmt 1 view .LVU127
+ 631              		.loc 1 448 6 is_stmt 0 view .LVU128
+ 632 001a 102A     		cmp	r2, #16
+ 633 001c 2FDC     		bgt	.L58
+ 441:BSP/wizchip_conf.c **** 		{
+ 634              		.loc 1 441 40 is_stmt 1 discriminator 2 view .LVU129
+ 635 001e 0133     		adds	r3, r3, #1
+ 636              	.LVL27:
+ 441:BSP/wizchip_conf.c **** 		{
+ 637              		.loc 1 441 40 is_stmt 0 discriminator 2 view .LVU130
+ 638 0020 5BB2     		sxtb	r3, r3
+ 639              	.LVL28:
+ 441:BSP/wizchip_conf.c **** 		{
+ 640              		.loc 1 441 40 discriminator 2 view .LVU131
+ 641 0022 F5E7     		b	.L47
+ 642              	.L62:
+ 449:BSP/wizchip_conf.c **** #endif
+ 450:BSP/wizchip_conf.c **** 		}
+ 451:BSP/wizchip_conf.c **** #endif
+ARM GAS  /tmp/cc5ibyYO.s 			page 20
+
+
+ 452:BSP/wizchip_conf.c **** 		for(i = 0 ; i < _WIZCHIP_SOCK_NUM_; i++)
+ 643              		.loc 1 452 9 view .LVU132
+ 644 0024 0024     		movs	r4, #0
+ 645 0026 09E0     		b	.L51
+ 646              	.LVL29:
+ 647              	.L52:
+ 453:BSP/wizchip_conf.c **** 		{
+ 454:BSP/wizchip_conf.c **** #if _WIZCHIP_ < W5200	//2016.10.28 peter add condition for w5100
+ 455:BSP/wizchip_conf.c **** 			j = 0;
+ 456:BSP/wizchip_conf.c **** 			while((txsize[i] >> j != 1)&&(txsize[i] !=0)){j++;}
+ 457:BSP/wizchip_conf.c **** 			setSn_TXBUF_SIZE(i, j);
+ 458:BSP/wizchip_conf.c **** #else
+ 459:BSP/wizchip_conf.c **** 			setSn_TXBUF_SIZE(i, txsize[i]);
+ 648              		.loc 1 459 4 is_stmt 1 view .LVU133
+ 649 0028 A000     		lsls	r0, r4, #2
+ 650 002a 0130     		adds	r0, r0, #1
+ 651 002c C000     		lsls	r0, r0, #3
+ 652 002e 295D     		ldrb	r1, [r5, r4]	@ zero_extendqisi2
+ 653 0030 00F5F850 		add	r0, r0, #7936
+ 654 0034 FFF7FEFF 		bl	WIZCHIP_WRITE
+ 655              	.LVL30:
+ 452:BSP/wizchip_conf.c **** 		{
+ 656              		.loc 1 452 40 discriminator 3 view .LVU134
+ 657 0038 0134     		adds	r4, r4, #1
+ 658              	.LVL31:
+ 452:BSP/wizchip_conf.c **** 		{
+ 659              		.loc 1 452 40 is_stmt 0 discriminator 3 view .LVU135
+ 660 003a 64B2     		sxtb	r4, r4
+ 661              	.LVL32:
+ 662              	.L51:
+ 452:BSP/wizchip_conf.c **** 		{
+ 663              		.loc 1 452 17 is_stmt 1 discriminator 1 view .LVU136
+ 664 003c 072C     		cmp	r4, #7
+ 665 003e F3DD     		ble	.L52
+ 666              	.LVL33:
+ 667              	.L48:
+ 460:BSP/wizchip_conf.c **** #endif
+ 461:BSP/wizchip_conf.c **** 		}	
+ 462:BSP/wizchip_conf.c ****    }
+ 463:BSP/wizchip_conf.c **** 
+ 464:BSP/wizchip_conf.c ****    if(rxsize)
+ 668              		.loc 1 464 4 view .LVU137
+ 669              		.loc 1 464 6 is_stmt 0 view .LVU138
+ 670 0040 5EB1     		cbz	r6, .L63
+ 465:BSP/wizchip_conf.c ****    {
+ 466:BSP/wizchip_conf.c ****       tmp = 0;
+ 671              		.loc 1 466 11 view .LVU139
+ 672 0042 0022     		movs	r2, #0
+ 467:BSP/wizchip_conf.c **** #if _WIZCHIP_ == W5300
+ 468:BSP/wizchip_conf.c ****       for(i = 0 ; i < _WIZCHIP_SOCK_NUM_; i++)
+ 469:BSP/wizchip_conf.c **** 		{
+ 470:BSP/wizchip_conf.c **** 			if(rxsize[i] > 64) return -1;   //No use 64KB even if W5300 support max 64KB memory allocation
+ 471:BSP/wizchip_conf.c **** 			tmp += rxsize[i];
+ 472:BSP/wizchip_conf.c **** 			if(tmp > 128) return -1;
+ 473:BSP/wizchip_conf.c **** 		}
+ 474:BSP/wizchip_conf.c **** 		if(tmp % 8) return -1;
+ 475:BSP/wizchip_conf.c **** #else
+ARM GAS  /tmp/cc5ibyYO.s 			page 21
+
+
+ 476:BSP/wizchip_conf.c **** 		for(i = 0 ; i < _WIZCHIP_SOCK_NUM_; i++)
+ 673              		.loc 1 476 9 view .LVU140
+ 674 0044 1346     		mov	r3, r2
+ 675              	.L53:
+ 676              	.LVL34:
+ 677              		.loc 1 476 17 is_stmt 1 discriminator 1 view .LVU141
+ 678 0046 072B     		cmp	r3, #7
+ 679 0048 09DC     		bgt	.L64
+ 477:BSP/wizchip_conf.c **** 		{
+ 478:BSP/wizchip_conf.c **** 			tmp += rxsize[i];
+ 680              		.loc 1 478 4 view .LVU142
+ 681              		.loc 1 478 17 is_stmt 0 view .LVU143
+ 682 004a F15C     		ldrb	r1, [r6, r3]	@ zero_extendqisi2
+ 683              		.loc 1 478 8 view .LVU144
+ 684 004c 0A44     		add	r2, r2, r1
+ 685              	.LVL35:
+ 686              		.loc 1 478 8 view .LVU145
+ 687 004e 52B2     		sxtb	r2, r2
+ 688              	.LVL36:
+ 479:BSP/wizchip_conf.c **** #if _WIZCHIP_ < W5200	//2016.10.28 peter add condition for w5100 and w5100s
+ 480:BSP/wizchip_conf.c **** 			if(tmp > 8) return -1;
+ 481:BSP/wizchip_conf.c **** #else
+ 482:BSP/wizchip_conf.c **** 			if(tmp > 16) return -1;
+ 689              		.loc 1 482 4 is_stmt 1 view .LVU146
+ 690              		.loc 1 482 6 is_stmt 0 view .LVU147
+ 691 0050 102A     		cmp	r2, #16
+ 692 0052 17DC     		bgt	.L60
+ 476:BSP/wizchip_conf.c **** 		{
+ 693              		.loc 1 476 40 is_stmt 1 discriminator 2 view .LVU148
+ 694 0054 0133     		adds	r3, r3, #1
+ 695              	.LVL37:
+ 476:BSP/wizchip_conf.c **** 		{
+ 696              		.loc 1 476 40 is_stmt 0 discriminator 2 view .LVU149
+ 697 0056 5BB2     		sxtb	r3, r3
+ 698              	.LVL38:
+ 476:BSP/wizchip_conf.c **** 		{
+ 699              		.loc 1 476 40 discriminator 2 view .LVU150
+ 700 0058 F5E7     		b	.L53
+ 701              	.LVL39:
+ 702              	.L63:
+ 483:BSP/wizchip_conf.c **** #endif
+ 484:BSP/wizchip_conf.c **** 		}
+ 485:BSP/wizchip_conf.c **** #endif
+ 486:BSP/wizchip_conf.c **** 		for(i = 0 ; i < _WIZCHIP_SOCK_NUM_; i++)
+ 487:BSP/wizchip_conf.c **** 		{
+ 488:BSP/wizchip_conf.c **** #if _WIZCHIP_ < W5200	// add condition for w5100
+ 489:BSP/wizchip_conf.c **** 			j = 0;
+ 490:BSP/wizchip_conf.c **** 			while((rxsize[i] >> j != 1)&&(txsize[i] !=0)){j++;}
+ 491:BSP/wizchip_conf.c **** 			setSn_RXBUF_SIZE(i, j);
+ 492:BSP/wizchip_conf.c **** #else
+ 493:BSP/wizchip_conf.c **** 			setSn_RXBUF_SIZE(i, rxsize[i]);
+ 494:BSP/wizchip_conf.c **** #endif
+ 495:BSP/wizchip_conf.c **** 		}
+ 496:BSP/wizchip_conf.c ****    }
+ 497:BSP/wizchip_conf.c ****    return 0;
+ 703              		.loc 1 497 11 view .LVU151
+ 704 005a 0020     		movs	r0, #0
+ARM GAS  /tmp/cc5ibyYO.s 			page 22
+
+
+ 705 005c 0EE0     		b	.L49
+ 706              	.LVL40:
+ 707              	.L64:
+ 486:BSP/wizchip_conf.c **** 		{
+ 708              		.loc 1 486 9 view .LVU152
+ 709 005e 0024     		movs	r4, #0
+ 710 0060 09E0     		b	.L55
+ 711              	.LVL41:
+ 712              	.L56:
+ 493:BSP/wizchip_conf.c **** #endif
+ 713              		.loc 1 493 4 is_stmt 1 view .LVU153
+ 714 0062 A000     		lsls	r0, r4, #2
+ 715 0064 0130     		adds	r0, r0, #1
+ 716 0066 C000     		lsls	r0, r0, #3
+ 717 0068 315D     		ldrb	r1, [r6, r4]	@ zero_extendqisi2
+ 718 006a 00F5F050 		add	r0, r0, #7680
+ 719 006e FFF7FEFF 		bl	WIZCHIP_WRITE
+ 720              	.LVL42:
+ 486:BSP/wizchip_conf.c **** 		{
+ 721              		.loc 1 486 40 discriminator 3 view .LVU154
+ 722 0072 0134     		adds	r4, r4, #1
+ 723              	.LVL43:
+ 486:BSP/wizchip_conf.c **** 		{
+ 724              		.loc 1 486 40 is_stmt 0 discriminator 3 view .LVU155
+ 725 0074 64B2     		sxtb	r4, r4
+ 726              	.LVL44:
+ 727              	.L55:
+ 486:BSP/wizchip_conf.c **** 		{
+ 728              		.loc 1 486 17 is_stmt 1 discriminator 1 view .LVU156
+ 729 0076 072C     		cmp	r4, #7
+ 730 0078 F3DD     		ble	.L56
+ 731              		.loc 1 497 11 is_stmt 0 view .LVU157
+ 732 007a 0020     		movs	r0, #0
+ 733              	.LVL45:
+ 734              	.L49:
+ 498:BSP/wizchip_conf.c **** }
+ 735              		.loc 1 498 1 view .LVU158
+ 736 007c 70BD     		pop	{r4, r5, r6, pc}
+ 737              	.LVL46:
+ 738              	.L58:
+ 448:BSP/wizchip_conf.c **** #endif
+ 739              		.loc 1 448 24 discriminator 1 view .LVU159
+ 740 007e 4FF0FF30 		mov	r0, #-1
+ 741 0082 FBE7     		b	.L49
+ 742              	.L60:
+ 482:BSP/wizchip_conf.c **** #endif
+ 743              		.loc 1 482 24 discriminator 1 view .LVU160
+ 744 0084 4FF0FF30 		mov	r0, #-1
+ 745 0088 F8E7     		b	.L49
+ 746              		.cfi_endproc
+ 747              	.LFE18:
+ 749              		.section	.text.wizchip_clrinterrupt,"ax",%progbits
+ 750              		.align	1
+ 751              		.global	wizchip_clrinterrupt
+ 752              		.syntax unified
+ 753              		.thumb
+ 754              		.thumb_func
+ARM GAS  /tmp/cc5ibyYO.s 			page 23
+
+
+ 756              	wizchip_clrinterrupt:
+ 757              	.LVL47:
+ 758              	.LFB19:
+ 499:BSP/wizchip_conf.c **** 
+ 500:BSP/wizchip_conf.c **** void wizchip_clrinterrupt(intr_kind intr)
+ 501:BSP/wizchip_conf.c **** {
+ 759              		.loc 1 501 1 is_stmt 1 view -0
+ 760              		.cfi_startproc
+ 761              		@ args = 0, pretend = 0, frame = 0
+ 762              		@ frame_needed = 0, uses_anonymous_args = 0
+ 763              		.loc 1 501 1 is_stmt 0 view .LVU162
+ 764 0000 38B5     		push	{r3, r4, r5, lr}
+ 765              	.LCFI4:
+ 766              		.cfi_def_cfa_offset 16
+ 767              		.cfi_offset 3, -16
+ 768              		.cfi_offset 4, -12
+ 769              		.cfi_offset 5, -8
+ 770              		.cfi_offset 14, -4
+ 502:BSP/wizchip_conf.c ****    uint8_t ir  = (uint8_t)intr;
+ 771              		.loc 1 502 4 is_stmt 1 view .LVU163
+ 772              	.LVL48:
+ 503:BSP/wizchip_conf.c ****    uint8_t sir = (uint8_t)((uint16_t)intr >> 8);
+ 773              		.loc 1 503 4 view .LVU164
+ 774              		.loc 1 503 12 is_stmt 0 view .LVU165
+ 775 0002 050A     		lsrs	r5, r0, #8
+ 776              	.LVL49:
+ 504:BSP/wizchip_conf.c **** #if _WIZCHIP_ < W5500
+ 505:BSP/wizchip_conf.c ****    ir |= (1<<4); // IK_WOL
+ 506:BSP/wizchip_conf.c **** #endif
+ 507:BSP/wizchip_conf.c **** #if _WIZCHIP_ == W5200
+ 508:BSP/wizchip_conf.c ****    ir |= (1 << 6);
+ 509:BSP/wizchip_conf.c **** #endif
+ 510:BSP/wizchip_conf.c ****    
+ 511:BSP/wizchip_conf.c **** #if _WIZCHIP_ < W5200
+ 512:BSP/wizchip_conf.c ****    sir &= 0x0F;
+ 513:BSP/wizchip_conf.c **** #endif
+ 514:BSP/wizchip_conf.c **** 
+ 515:BSP/wizchip_conf.c **** #if _WIZCHIP_ <= W5100S
+ 516:BSP/wizchip_conf.c ****    ir |= sir;
+ 517:BSP/wizchip_conf.c ****    setIR(ir);
+ 518:BSP/wizchip_conf.c **** //A20150601 : For integrating with W5300
+ 519:BSP/wizchip_conf.c **** #elif _WIZCHIP_ == W5300
+ 520:BSP/wizchip_conf.c ****    setIR( ((((uint16_t)ir) << 8) | (((uint16_t)sir) & 0x00FF)) );
+ 521:BSP/wizchip_conf.c **** #else
+ 522:BSP/wizchip_conf.c ****    setIR(ir);
+ 777              		.loc 1 522 4 is_stmt 1 view .LVU166
+ 778 0004 00F0F001 		and	r1, r0, #240
+ 779 0008 4FF4A850 		mov	r0, #5376
+ 780              	.LVL50:
+ 781              		.loc 1 522 4 is_stmt 0 view .LVU167
+ 782 000c FFF7FEFF 		bl	WIZCHIP_WRITE
+ 783              	.LVL51:
+ 523:BSP/wizchip_conf.c **** //M20200227 : For clear
+ 524:BSP/wizchip_conf.c ****    //setSIR(sir);
+ 525:BSP/wizchip_conf.c ****    for(ir=0; ir<8; ir++){
+ 784              		.loc 1 525 4 is_stmt 1 view .LVU168
+ 785              		.loc 1 525 10 is_stmt 0 view .LVU169
+ARM GAS  /tmp/cc5ibyYO.s 			page 24
+
+
+ 786 0010 0024     		movs	r4, #0
+ 787              		.loc 1 525 4 view .LVU170
+ 788 0012 01E0     		b	.L66
+ 789              	.LVL52:
+ 790              	.L67:
+ 791              		.loc 1 525 22 is_stmt 1 discriminator 2 view .LVU171
+ 792 0014 0134     		adds	r4, r4, #1
+ 793              	.LVL53:
+ 794              		.loc 1 525 22 is_stmt 0 discriminator 2 view .LVU172
+ 795 0016 E4B2     		uxtb	r4, r4
+ 796              	.LVL54:
+ 797              	.L66:
+ 798              		.loc 1 525 16 is_stmt 1 discriminator 1 view .LVU173
+ 799 0018 072C     		cmp	r4, #7
+ 800 001a 0DD8     		bhi	.L70
+ 526:BSP/wizchip_conf.c ****        if(sir & (0x01 <<ir) ) setSn_IR(ir, 0xff);
+ 801              		.loc 1 526 8 view .LVU174
+ 802              		.loc 1 526 11 is_stmt 0 view .LVU175
+ 803 001c 45FA04F3 		asr	r3, r5, r4
+ 804              		.loc 1 526 10 view .LVU176
+ 805 0020 13F0010F 		tst	r3, #1
+ 806 0024 F6D0     		beq	.L67
+ 807              		.loc 1 526 31 is_stmt 1 discriminator 1 view .LVU177
+ 808 0026 A000     		lsls	r0, r4, #2
+ 809 0028 0130     		adds	r0, r0, #1
+ 810 002a C000     		lsls	r0, r0, #3
+ 811 002c 1F21     		movs	r1, #31
+ 812 002e 00F50070 		add	r0, r0, #512
+ 813 0032 FFF7FEFF 		bl	WIZCHIP_WRITE
+ 814              	.LVL55:
+ 815 0036 EDE7     		b	.L67
+ 816              	.L70:
+ 527:BSP/wizchip_conf.c ****    }
+ 528:BSP/wizchip_conf.c **** 
+ 529:BSP/wizchip_conf.c **** #endif   
+ 530:BSP/wizchip_conf.c **** }
+ 817              		.loc 1 530 1 is_stmt 0 view .LVU178
+ 818 0038 38BD     		pop	{r3, r4, r5, pc}
+ 819              		.loc 1 530 1 view .LVU179
+ 820              		.cfi_endproc
+ 821              	.LFE19:
+ 823              		.section	.text.wizchip_getinterrupt,"ax",%progbits
+ 824              		.align	1
+ 825              		.global	wizchip_getinterrupt
+ 826              		.syntax unified
+ 827              		.thumb
+ 828              		.thumb_func
+ 830              	wizchip_getinterrupt:
+ 831              	.LFB20:
+ 531:BSP/wizchip_conf.c **** 
+ 532:BSP/wizchip_conf.c **** intr_kind wizchip_getinterrupt(void)
+ 533:BSP/wizchip_conf.c **** {
+ 832              		.loc 1 533 1 is_stmt 1 view -0
+ 833              		.cfi_startproc
+ 834              		@ args = 0, pretend = 0, frame = 0
+ 835              		@ frame_needed = 0, uses_anonymous_args = 0
+ 836 0000 10B5     		push	{r4, lr}
+ARM GAS  /tmp/cc5ibyYO.s 			page 25
+
+
+ 837              	.LCFI5:
+ 838              		.cfi_def_cfa_offset 8
+ 839              		.cfi_offset 4, -8
+ 840              		.cfi_offset 14, -4
+ 534:BSP/wizchip_conf.c ****    uint8_t ir  = 0;
+ 841              		.loc 1 534 4 view .LVU181
+ 842              	.LVL56:
+ 535:BSP/wizchip_conf.c ****    uint8_t sir = 0;
+ 843              		.loc 1 535 4 view .LVU182
+ 536:BSP/wizchip_conf.c ****    uint16_t ret = 0;
+ 844              		.loc 1 536 4 view .LVU183
+ 537:BSP/wizchip_conf.c **** #if _WIZCHIP_ <= W5100S
+ 538:BSP/wizchip_conf.c ****    ir = getIR();
+ 539:BSP/wizchip_conf.c ****    sir = ir & 0x0F;
+ 540:BSP/wizchip_conf.c **** //A20150601 : For integrating with W5300
+ 541:BSP/wizchip_conf.c **** #elif _WIZCHIP_  == W5300
+ 542:BSP/wizchip_conf.c ****    ret = getIR();
+ 543:BSP/wizchip_conf.c ****    ir = (uint8_t)(ret >> 8);
+ 544:BSP/wizchip_conf.c ****    sir = (uint8_t)ret;
+ 545:BSP/wizchip_conf.c **** #else
+ 546:BSP/wizchip_conf.c ****    ir  = getIR();
+ 845              		.loc 1 546 4 view .LVU184
+ 846              		.loc 1 546 10 is_stmt 0 view .LVU185
+ 847 0002 4FF4A850 		mov	r0, #5376
+ 848 0006 FFF7FEFF 		bl	WIZCHIP_READ
+ 849              	.LVL57:
+ 850              		.loc 1 546 8 discriminator 1 view .LVU186
+ 851 000a 00F0F004 		and	r4, r0, #240
+ 852              	.LVL58:
+ 547:BSP/wizchip_conf.c ****    sir = getSIR();
+ 853              		.loc 1 547 4 is_stmt 1 view .LVU187
+ 854              		.loc 1 547 10 is_stmt 0 view .LVU188
+ 855 000e 4FF4B850 		mov	r0, #5888
+ 856 0012 FFF7FEFF 		bl	WIZCHIP_READ
+ 857              	.LVL59:
+ 548:BSP/wizchip_conf.c **** #endif         
+ 549:BSP/wizchip_conf.c **** 
+ 550:BSP/wizchip_conf.c **** //M20150601 : For Integrating with W5300
+ 551:BSP/wizchip_conf.c **** //#if _WIZCHIP_ < W5500
+ 552:BSP/wizchip_conf.c **** #if _WIZCHIP_ < W5200
+ 553:BSP/wizchip_conf.c ****    ir &= ~(1<<4); // IK_WOL
+ 554:BSP/wizchip_conf.c **** #endif
+ 555:BSP/wizchip_conf.c **** #if _WIZCHIP_ == W5200
+ 556:BSP/wizchip_conf.c ****    ir &= ~(1 << 6);
+ 557:BSP/wizchip_conf.c **** #endif
+ 558:BSP/wizchip_conf.c ****   ret = sir;
+ 858              		.loc 1 558 3 is_stmt 1 view .LVU189
+ 559:BSP/wizchip_conf.c ****   ret = (ret << 8) + ir;
+ 859              		.loc 1 559 3 view .LVU190
+ 860              		.loc 1 559 14 is_stmt 0 view .LVU191
+ 861 0016 0002     		lsls	r0, r0, #8
+ 862              	.LVL60:
+ 863              		.loc 1 559 14 view .LVU192
+ 864 0018 80B2     		uxth	r0, r0
+ 865              		.loc 1 559 7 view .LVU193
+ 866 001a 2044     		add	r0, r0, r4
+ 867 001c 80B2     		uxth	r0, r0
+ARM GAS  /tmp/cc5ibyYO.s 			page 26
+
+
+ 868              	.LVL61:
+ 560:BSP/wizchip_conf.c ****   return (intr_kind)ret;
+ 869              		.loc 1 560 3 is_stmt 1 view .LVU194
+ 561:BSP/wizchip_conf.c **** }
+ 870              		.loc 1 561 1 is_stmt 0 view .LVU195
+ 871 001e 10BD     		pop	{r4, pc}
+ 872              		.loc 1 561 1 view .LVU196
+ 873              		.cfi_endproc
+ 874              	.LFE20:
+ 876              		.section	.text.wizchip_setinterruptmask,"ax",%progbits
+ 877              		.align	1
+ 878              		.global	wizchip_setinterruptmask
+ 879              		.syntax unified
+ 880              		.thumb
+ 881              		.thumb_func
+ 883              	wizchip_setinterruptmask:
+ 884              	.LVL62:
+ 885              	.LFB21:
+ 562:BSP/wizchip_conf.c **** 
+ 563:BSP/wizchip_conf.c **** void wizchip_setinterruptmask(intr_kind intr)
+ 564:BSP/wizchip_conf.c **** {
+ 886              		.loc 1 564 1 is_stmt 1 view -0
+ 887              		.cfi_startproc
+ 888              		@ args = 0, pretend = 0, frame = 0
+ 889              		@ frame_needed = 0, uses_anonymous_args = 0
+ 890              		.loc 1 564 1 is_stmt 0 view .LVU198
+ 891 0000 10B5     		push	{r4, lr}
+ 892              	.LCFI6:
+ 893              		.cfi_def_cfa_offset 8
+ 894              		.cfi_offset 4, -8
+ 895              		.cfi_offset 14, -4
+ 565:BSP/wizchip_conf.c ****    uint8_t imr  = (uint8_t)intr;
+ 896              		.loc 1 565 4 is_stmt 1 view .LVU199
+ 897              	.LVL63:
+ 566:BSP/wizchip_conf.c ****    uint8_t simr = (uint8_t)((uint16_t)intr >> 8);
+ 898              		.loc 1 566 4 view .LVU200
+ 899              		.loc 1 566 12 is_stmt 0 view .LVU201
+ 900 0002 040A     		lsrs	r4, r0, #8
+ 901              	.LVL64:
+ 567:BSP/wizchip_conf.c **** #if _WIZCHIP_ < W5500
+ 568:BSP/wizchip_conf.c ****    imr &= ~(1<<4); // IK_WOL
+ 569:BSP/wizchip_conf.c **** #endif
+ 570:BSP/wizchip_conf.c **** #if _WIZCHIP_ == W5200
+ 571:BSP/wizchip_conf.c ****    imr &= ~(1 << 6);
+ 572:BSP/wizchip_conf.c **** #endif
+ 573:BSP/wizchip_conf.c ****    
+ 574:BSP/wizchip_conf.c **** #if _WIZCHIP_ < W5200
+ 575:BSP/wizchip_conf.c ****    simr &= 0x0F;
+ 576:BSP/wizchip_conf.c ****    imr |= simr;
+ 577:BSP/wizchip_conf.c ****    setIMR(imr);
+ 578:BSP/wizchip_conf.c **** //A20150601 : For integrating with W5300
+ 579:BSP/wizchip_conf.c **** #elif _WIZCHIP_ == W5300
+ 580:BSP/wizchip_conf.c ****    setIMR( ((((uint16_t)imr) << 8) | (((uint16_t)simr) & 0x00FF)) );
+ 581:BSP/wizchip_conf.c **** #else
+ 582:BSP/wizchip_conf.c ****    setIMR(imr);
+ 902              		.loc 1 582 4 is_stmt 1 view .LVU202
+ 903 0004 C1B2     		uxtb	r1, r0
+ARM GAS  /tmp/cc5ibyYO.s 			page 27
+
+
+ 904 0006 4FF4B050 		mov	r0, #5632
+ 905              	.LVL65:
+ 906              		.loc 1 582 4 is_stmt 0 view .LVU203
+ 907 000a FFF7FEFF 		bl	WIZCHIP_WRITE
+ 908              	.LVL66:
+ 583:BSP/wizchip_conf.c ****    setSIMR(simr);
+ 909              		.loc 1 583 4 is_stmt 1 view .LVU204
+ 910 000e 2146     		mov	r1, r4
+ 911 0010 4FF4C050 		mov	r0, #6144
+ 912 0014 FFF7FEFF 		bl	WIZCHIP_WRITE
+ 913              	.LVL67:
+ 584:BSP/wizchip_conf.c **** #endif   
+ 585:BSP/wizchip_conf.c **** }
+ 914              		.loc 1 585 1 is_stmt 0 view .LVU205
+ 915 0018 10BD     		pop	{r4, pc}
+ 916              		.loc 1 585 1 view .LVU206
+ 917              		.cfi_endproc
+ 918              	.LFE21:
+ 920              		.section	.text.wizchip_getinterruptmask,"ax",%progbits
+ 921              		.align	1
+ 922              		.global	wizchip_getinterruptmask
+ 923              		.syntax unified
+ 924              		.thumb
+ 925              		.thumb_func
+ 927              	wizchip_getinterruptmask:
+ 928              	.LFB22:
+ 586:BSP/wizchip_conf.c **** 
+ 587:BSP/wizchip_conf.c **** intr_kind wizchip_getinterruptmask(void)
+ 588:BSP/wizchip_conf.c **** {
+ 929              		.loc 1 588 1 is_stmt 1 view -0
+ 930              		.cfi_startproc
+ 931              		@ args = 0, pretend = 0, frame = 0
+ 932              		@ frame_needed = 0, uses_anonymous_args = 0
+ 933 0000 10B5     		push	{r4, lr}
+ 934              	.LCFI7:
+ 935              		.cfi_def_cfa_offset 8
+ 936              		.cfi_offset 4, -8
+ 937              		.cfi_offset 14, -4
+ 589:BSP/wizchip_conf.c ****    uint8_t imr  = 0;
+ 938              		.loc 1 589 4 view .LVU208
+ 939              	.LVL68:
+ 590:BSP/wizchip_conf.c ****    uint8_t simr = 0;
+ 940              		.loc 1 590 4 view .LVU209
+ 591:BSP/wizchip_conf.c ****    uint16_t ret = 0;
+ 941              		.loc 1 591 4 view .LVU210
+ 592:BSP/wizchip_conf.c **** #if _WIZCHIP_ < W5200
+ 593:BSP/wizchip_conf.c ****    imr  = getIMR();
+ 594:BSP/wizchip_conf.c ****    simr = imr & 0x0F;
+ 595:BSP/wizchip_conf.c **** //A20150601 : For integrating with W5300
+ 596:BSP/wizchip_conf.c **** #elif _WIZCHIP_ == W5300
+ 597:BSP/wizchip_conf.c ****    ret = getIMR();
+ 598:BSP/wizchip_conf.c ****    imr = (uint8_t)(ret >> 8);
+ 599:BSP/wizchip_conf.c ****    simr = (uint8_t)ret;
+ 600:BSP/wizchip_conf.c **** #else
+ 601:BSP/wizchip_conf.c ****    imr  = getIMR();
+ 942              		.loc 1 601 4 view .LVU211
+ 943              		.loc 1 601 11 is_stmt 0 view .LVU212
+ARM GAS  /tmp/cc5ibyYO.s 			page 28
+
+
+ 944 0002 4FF4B050 		mov	r0, #5632
+ 945 0006 FFF7FEFF 		bl	WIZCHIP_READ
+ 946              	.LVL69:
+ 947 000a 0446     		mov	r4, r0
+ 948              	.LVL70:
+ 602:BSP/wizchip_conf.c ****    simr = getSIMR();
+ 949              		.loc 1 602 4 is_stmt 1 view .LVU213
+ 950              		.loc 1 602 11 is_stmt 0 view .LVU214
+ 951 000c 4FF4C050 		mov	r0, #6144
+ 952 0010 FFF7FEFF 		bl	WIZCHIP_READ
+ 953              	.LVL71:
+ 603:BSP/wizchip_conf.c **** #endif         
+ 604:BSP/wizchip_conf.c **** 
+ 605:BSP/wizchip_conf.c **** #if _WIZCHIP_ < W5500
+ 606:BSP/wizchip_conf.c ****    imr &= ~(1<<4); // IK_WOL
+ 607:BSP/wizchip_conf.c **** #endif
+ 608:BSP/wizchip_conf.c **** #if _WIZCHIP_ == W5200
+ 609:BSP/wizchip_conf.c ****    imr &= ~(1 << 6);  // IK_DEST_UNREACH
+ 610:BSP/wizchip_conf.c **** #endif
+ 611:BSP/wizchip_conf.c ****   ret = simr;
+ 954              		.loc 1 611 3 is_stmt 1 view .LVU215
+ 612:BSP/wizchip_conf.c ****   ret = (ret << 8) + imr;
+ 955              		.loc 1 612 3 view .LVU216
+ 956              		.loc 1 612 14 is_stmt 0 view .LVU217
+ 957 0014 0302     		lsls	r3, r0, #8
+ 958 0016 9BB2     		uxth	r3, r3
+ 959              		.loc 1 612 7 view .LVU218
+ 960 0018 1819     		adds	r0, r3, r4
+ 961              	.LVL72:
+ 613:BSP/wizchip_conf.c ****   return (intr_kind)ret;
+ 962              		.loc 1 613 3 is_stmt 1 view .LVU219
+ 614:BSP/wizchip_conf.c **** }
+ 963              		.loc 1 614 1 is_stmt 0 view .LVU220
+ 964 001a 80B2     		uxth	r0, r0
+ 965              		.loc 1 614 1 view .LVU221
+ 966 001c 10BD     		pop	{r4, pc}
+ 967              		.loc 1 614 1 view .LVU222
+ 968              		.cfi_endproc
+ 969              	.LFE22:
+ 971              		.section	.text.wizphy_getphylink,"ax",%progbits
+ 972              		.align	1
+ 973              		.global	wizphy_getphylink
+ 974              		.syntax unified
+ 975              		.thumb
+ 976              		.thumb_func
+ 978              	wizphy_getphylink:
+ 979              	.LFB23:
+ 615:BSP/wizchip_conf.c **** 
+ 616:BSP/wizchip_conf.c **** int8_t wizphy_getphylink(void)
+ 617:BSP/wizchip_conf.c **** {
+ 980              		.loc 1 617 1 is_stmt 1 view -0
+ 981              		.cfi_startproc
+ 982              		@ args = 0, pretend = 0, frame = 0
+ 983              		@ frame_needed = 0, uses_anonymous_args = 0
+ 984 0000 08B5     		push	{r3, lr}
+ 985              	.LCFI8:
+ 986              		.cfi_def_cfa_offset 8
+ARM GAS  /tmp/cc5ibyYO.s 			page 29
+
+
+ 987              		.cfi_offset 3, -8
+ 988              		.cfi_offset 14, -4
+ 618:BSP/wizchip_conf.c ****    int8_t tmp = PHY_LINK_OFF;
+ 989              		.loc 1 618 4 view .LVU224
+ 990              	.LVL73:
+ 619:BSP/wizchip_conf.c **** #if _WIZCHIP_ == W5100S
+ 620:BSP/wizchip_conf.c ****    if(getPHYSR() & PHYSR_LNK)
+ 621:BSP/wizchip_conf.c **** 	   tmp = PHY_LINK_ON;
+ 622:BSP/wizchip_conf.c **** #elif   _WIZCHIP_ == W5200
+ 623:BSP/wizchip_conf.c ****    if(getPHYSTATUS() & PHYSTATUS_LINK)
+ 624:BSP/wizchip_conf.c ****       tmp = PHY_LINK_ON;
+ 625:BSP/wizchip_conf.c **** #elif _WIZCHIP_ == W5500
+ 626:BSP/wizchip_conf.c ****    if(getPHYCFGR() & PHYCFGR_LNK_ON)
+ 991              		.loc 1 626 4 view .LVU225
+ 992              		.loc 1 626 7 is_stmt 0 view .LVU226
+ 993 0002 4FF43850 		mov	r0, #11776
+ 994 0006 FFF7FEFF 		bl	WIZCHIP_READ
+ 995              	.LVL74:
+ 996              		.loc 1 626 6 discriminator 1 view .LVU227
+ 997 000a 10F0010F 		tst	r0, #1
+ 998 000e 01D1     		bne	.L79
+ 618:BSP/wizchip_conf.c ****    int8_t tmp = PHY_LINK_OFF;
+ 999              		.loc 1 618 11 view .LVU228
+ 1000 0010 0020     		movs	r0, #0
+ 1001              	.L78:
+ 1002              	.LVL75:
+ 627:BSP/wizchip_conf.c ****       tmp = PHY_LINK_ON;
+ 628:BSP/wizchip_conf.c **** 
+ 629:BSP/wizchip_conf.c **** #else
+ 630:BSP/wizchip_conf.c ****    tmp = -1;
+ 631:BSP/wizchip_conf.c **** #endif
+ 632:BSP/wizchip_conf.c ****    return tmp;
+ 1003              		.loc 1 632 4 is_stmt 1 view .LVU229
+ 633:BSP/wizchip_conf.c **** }
+ 1004              		.loc 1 633 1 is_stmt 0 view .LVU230
+ 1005 0012 08BD     		pop	{r3, pc}
+ 1006              	.LVL76:
+ 1007              	.L79:
+ 627:BSP/wizchip_conf.c ****       tmp = PHY_LINK_ON;
+ 1008              		.loc 1 627 11 view .LVU231
+ 1009 0014 0120     		movs	r0, #1
+ 1010 0016 FCE7     		b	.L78
+ 1011              		.cfi_endproc
+ 1012              	.LFE23:
+ 1014              		.section	.text.wizphy_getphypmode,"ax",%progbits
+ 1015              		.align	1
+ 1016              		.global	wizphy_getphypmode
+ 1017              		.syntax unified
+ 1018              		.thumb
+ 1019              		.thumb_func
+ 1021              	wizphy_getphypmode:
+ 1022              	.LFB24:
+ 634:BSP/wizchip_conf.c **** 
+ 635:BSP/wizchip_conf.c **** #if _WIZCHIP_ > W5100
+ 636:BSP/wizchip_conf.c **** 
+ 637:BSP/wizchip_conf.c **** int8_t wizphy_getphypmode(void)
+ 638:BSP/wizchip_conf.c **** {
+ARM GAS  /tmp/cc5ibyYO.s 			page 30
+
+
+ 1023              		.loc 1 638 1 is_stmt 1 view -0
+ 1024              		.cfi_startproc
+ 1025              		@ args = 0, pretend = 0, frame = 0
+ 1026              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1027 0000 08B5     		push	{r3, lr}
+ 1028              	.LCFI9:
+ 1029              		.cfi_def_cfa_offset 8
+ 1030              		.cfi_offset 3, -8
+ 1031              		.cfi_offset 14, -4
+ 639:BSP/wizchip_conf.c ****    int8_t tmp = 0;
+ 1032              		.loc 1 639 4 view .LVU233
+ 1033              	.LVL77:
+ 640:BSP/wizchip_conf.c ****    #if   _WIZCHIP_ == W5200
+ 641:BSP/wizchip_conf.c ****       if(getPHYSTATUS() & PHYSTATUS_POWERDOWN)
+ 642:BSP/wizchip_conf.c ****          tmp = PHY_POWER_DOWN;
+ 643:BSP/wizchip_conf.c ****       else          
+ 644:BSP/wizchip_conf.c ****          tmp = PHY_POWER_NORM;
+ 645:BSP/wizchip_conf.c ****    #elif _WIZCHIP_ == 5500
+ 646:BSP/wizchip_conf.c ****       if((getPHYCFGR() & PHYCFGR_OPMDC_ALLA) == PHYCFGR_OPMDC_PDOWN)
+ 1034              		.loc 1 646 7 view .LVU234
+ 1035              		.loc 1 646 11 is_stmt 0 view .LVU235
+ 1036 0002 4FF43850 		mov	r0, #11776
+ 1037 0006 FFF7FEFF 		bl	WIZCHIP_READ
+ 1038              	.LVL78:
+ 1039              		.loc 1 646 9 discriminator 1 view .LVU236
+ 1040 000a 00F03800 		and	r0, r0, #56
+ 1041 000e 3028     		cmp	r0, #48
+ 1042 0010 01D0     		beq	.L85
+ 647:BSP/wizchip_conf.c ****          tmp = PHY_POWER_DOWN;
+ 648:BSP/wizchip_conf.c ****       else 
+ 649:BSP/wizchip_conf.c ****          tmp = PHY_POWER_NORM;
+ 1043              		.loc 1 649 14 view .LVU237
+ 1044 0012 0020     		movs	r0, #0
+ 1045              	.L82:
+ 1046              	.LVL79:
+ 650:BSP/wizchip_conf.c ****    #else
+ 651:BSP/wizchip_conf.c ****       tmp = -1;
+ 652:BSP/wizchip_conf.c ****    #endif
+ 653:BSP/wizchip_conf.c ****    return tmp;
+ 1047              		.loc 1 653 4 is_stmt 1 view .LVU238
+ 654:BSP/wizchip_conf.c **** }
+ 1048              		.loc 1 654 1 is_stmt 0 view .LVU239
+ 1049 0014 08BD     		pop	{r3, pc}
+ 1050              	.LVL80:
+ 1051              	.L85:
+ 647:BSP/wizchip_conf.c ****          tmp = PHY_POWER_DOWN;
+ 1052              		.loc 1 647 14 view .LVU240
+ 1053 0016 0120     		movs	r0, #1
+ 1054 0018 FCE7     		b	.L82
+ 1055              		.cfi_endproc
+ 1056              	.LFE24:
+ 1058              		.section	.text.wizphy_reset,"ax",%progbits
+ 1059              		.align	1
+ 1060              		.global	wizphy_reset
+ 1061              		.syntax unified
+ 1062              		.thumb
+ 1063              		.thumb_func
+ARM GAS  /tmp/cc5ibyYO.s 			page 31
+
+
+ 1065              	wizphy_reset:
+ 1066              	.LFB25:
+ 655:BSP/wizchip_conf.c **** #endif
+ 656:BSP/wizchip_conf.c **** 
+ 657:BSP/wizchip_conf.c **** #if _WIZCHIP_ == W5100S
+ 658:BSP/wizchip_conf.c **** void wizphy_reset(void)
+ 659:BSP/wizchip_conf.c **** {
+ 660:BSP/wizchip_conf.c **** 	uint16_t tmp = wiz_mdio_read(PHYMDIO_BMCR);
+ 661:BSP/wizchip_conf.c **** 	tmp |= BMCR_RESET;
+ 662:BSP/wizchip_conf.c **** 	wiz_mdio_write(PHYMDIO_BMCR, tmp);
+ 663:BSP/wizchip_conf.c **** 	while(wiz_mdio_read(PHYMDIO_BMCR)&BMCR_RESET){}
+ 664:BSP/wizchip_conf.c **** }
+ 665:BSP/wizchip_conf.c **** 
+ 666:BSP/wizchip_conf.c **** void wizphy_setphyconf(wiz_PhyConf* phyconf)
+ 667:BSP/wizchip_conf.c **** {
+ 668:BSP/wizchip_conf.c ****    uint16_t tmp = wiz_mdio_read(PHYMDIO_BMCR);
+ 669:BSP/wizchip_conf.c ****    if(phyconf->mode == PHY_MODE_AUTONEGO)
+ 670:BSP/wizchip_conf.c ****       tmp |= BMCR_AUTONEGO;
+ 671:BSP/wizchip_conf.c ****    else
+ 672:BSP/wizchip_conf.c ****    {
+ 673:BSP/wizchip_conf.c **** 	  tmp &= ~BMCR_AUTONEGO;
+ 674:BSP/wizchip_conf.c ****       if(phyconf->duplex == PHY_DUPLEX_FULL)
+ 675:BSP/wizchip_conf.c ****       {
+ 676:BSP/wizchip_conf.c ****     	  tmp |= BMCR_DUP;
+ 677:BSP/wizchip_conf.c ****       }
+ 678:BSP/wizchip_conf.c ****       else
+ 679:BSP/wizchip_conf.c ****       {
+ 680:BSP/wizchip_conf.c ****     	  tmp &= ~BMCR_DUP;
+ 681:BSP/wizchip_conf.c ****       }
+ 682:BSP/wizchip_conf.c ****       if(phyconf->speed == PHY_SPEED_100)
+ 683:BSP/wizchip_conf.c ****       {
+ 684:BSP/wizchip_conf.c ****     	  tmp |= BMCR_SPEED;
+ 685:BSP/wizchip_conf.c ****       }
+ 686:BSP/wizchip_conf.c ****       else
+ 687:BSP/wizchip_conf.c ****       {
+ 688:BSP/wizchip_conf.c ****     	  tmp &= ~BMCR_SPEED;
+ 689:BSP/wizchip_conf.c ****       }
+ 690:BSP/wizchip_conf.c ****    }
+ 691:BSP/wizchip_conf.c ****    wiz_mdio_write(PHYMDIO_BMCR, tmp);
+ 692:BSP/wizchip_conf.c **** }
+ 693:BSP/wizchip_conf.c **** 
+ 694:BSP/wizchip_conf.c **** void wizphy_getphyconf(wiz_PhyConf* phyconf)
+ 695:BSP/wizchip_conf.c **** {
+ 696:BSP/wizchip_conf.c ****    uint16_t tmp = 0;
+ 697:BSP/wizchip_conf.c ****    tmp = wiz_mdio_read(PHYMDIO_BMCR);
+ 698:BSP/wizchip_conf.c ****    phyconf->by   = PHY_CONFBY_SW;
+ 699:BSP/wizchip_conf.c ****    if(tmp & BMCR_AUTONEGO)
+ 700:BSP/wizchip_conf.c ****    {
+ 701:BSP/wizchip_conf.c **** 	   phyconf->mode = PHY_MODE_AUTONEGO;
+ 702:BSP/wizchip_conf.c ****    }
+ 703:BSP/wizchip_conf.c ****    else
+ 704:BSP/wizchip_conf.c ****    {
+ 705:BSP/wizchip_conf.c **** 	   phyconf->mode = PHY_MODE_MANUAL;
+ 706:BSP/wizchip_conf.c **** 	   if(tmp&BMCR_DUP) phyconf->duplex = PHY_DUPLEX_FULL;
+ 707:BSP/wizchip_conf.c **** 	   else phyconf->duplex = PHY_DUPLEX_HALF;
+ 708:BSP/wizchip_conf.c **** 	   if(tmp&BMCR_SPEED) phyconf->speed = PHY_SPEED_100;
+ 709:BSP/wizchip_conf.c **** 	   else phyconf->speed = PHY_SPEED_10;
+ARM GAS  /tmp/cc5ibyYO.s 			page 32
+
+
+ 710:BSP/wizchip_conf.c ****    }
+ 711:BSP/wizchip_conf.c **** }
+ 712:BSP/wizchip_conf.c **** 
+ 713:BSP/wizchip_conf.c **** int8_t wizphy_setphypmode(uint8_t pmode)
+ 714:BSP/wizchip_conf.c **** {
+ 715:BSP/wizchip_conf.c ****    uint16_t tmp = 0;
+ 716:BSP/wizchip_conf.c ****    tmp = wiz_mdio_read(PHYMDIO_BMCR);
+ 717:BSP/wizchip_conf.c ****    if( pmode == PHY_POWER_DOWN)
+ 718:BSP/wizchip_conf.c ****    {
+ 719:BSP/wizchip_conf.c ****       tmp |= BMCR_PWDN;
+ 720:BSP/wizchip_conf.c ****    }
+ 721:BSP/wizchip_conf.c ****    else
+ 722:BSP/wizchip_conf.c ****    {
+ 723:BSP/wizchip_conf.c **** 	   tmp &= ~BMCR_PWDN;
+ 724:BSP/wizchip_conf.c ****    }
+ 725:BSP/wizchip_conf.c ****    wiz_mdio_write(PHYMDIO_BMCR, tmp);
+ 726:BSP/wizchip_conf.c ****    tmp = wiz_mdio_read(PHYMDIO_BMCR);
+ 727:BSP/wizchip_conf.c ****    if( pmode == PHY_POWER_DOWN)
+ 728:BSP/wizchip_conf.c ****    {
+ 729:BSP/wizchip_conf.c ****       if(tmp & BMCR_PWDN) return 0;
+ 730:BSP/wizchip_conf.c ****    }
+ 731:BSP/wizchip_conf.c ****    else
+ 732:BSP/wizchip_conf.c ****    {
+ 733:BSP/wizchip_conf.c ****       if((tmp & BMCR_PWDN) != BMCR_PWDN) return 0;
+ 734:BSP/wizchip_conf.c ****    }
+ 735:BSP/wizchip_conf.c ****    return -1;
+ 736:BSP/wizchip_conf.c **** }
+ 737:BSP/wizchip_conf.c **** 
+ 738:BSP/wizchip_conf.c **** #endif
+ 739:BSP/wizchip_conf.c **** #if _WIZCHIP_ == W5500
+ 740:BSP/wizchip_conf.c **** void wizphy_reset(void)
+ 741:BSP/wizchip_conf.c **** {
+ 1067              		.loc 1 741 1 is_stmt 1 view -0
+ 1068              		.cfi_startproc
+ 1069              		@ args = 0, pretend = 0, frame = 0
+ 1070              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1071 0000 08B5     		push	{r3, lr}
+ 1072              	.LCFI10:
+ 1073              		.cfi_def_cfa_offset 8
+ 1074              		.cfi_offset 3, -8
+ 1075              		.cfi_offset 14, -4
+ 742:BSP/wizchip_conf.c ****    uint8_t tmp = getPHYCFGR();
+ 1076              		.loc 1 742 4 view .LVU242
+ 1077              		.loc 1 742 18 is_stmt 0 view .LVU243
+ 1078 0002 4FF43850 		mov	r0, #11776
+ 1079 0006 FFF7FEFF 		bl	WIZCHIP_READ
+ 1080              	.LVL81:
+ 743:BSP/wizchip_conf.c ****    tmp &= PHYCFGR_RST;
+ 1081              		.loc 1 743 4 is_stmt 1 view .LVU244
+ 744:BSP/wizchip_conf.c ****    setPHYCFGR(tmp);
+ 1082              		.loc 1 744 4 view .LVU245
+ 1083 000a 00F07F01 		and	r1, r0, #127
+ 1084 000e 4FF43850 		mov	r0, #11776
+ 1085              	.LVL82:
+ 1086              		.loc 1 744 4 is_stmt 0 view .LVU246
+ 1087 0012 FFF7FEFF 		bl	WIZCHIP_WRITE
+ 1088              	.LVL83:
+ARM GAS  /tmp/cc5ibyYO.s 			page 33
+
+
+ 745:BSP/wizchip_conf.c ****    tmp = getPHYCFGR();
+ 1089              		.loc 1 745 4 is_stmt 1 view .LVU247
+ 1090              		.loc 1 745 10 is_stmt 0 view .LVU248
+ 1091 0016 4FF43850 		mov	r0, #11776
+ 1092 001a FFF7FEFF 		bl	WIZCHIP_READ
+ 1093              	.LVL84:
+ 746:BSP/wizchip_conf.c ****    tmp |= ~PHYCFGR_RST;
+ 1094              		.loc 1 746 4 is_stmt 1 view .LVU249
+ 1095              		.loc 1 746 8 is_stmt 0 view .LVU250
+ 1096 001e 60F07F01 		orn	r1, r0, #127
+ 1097              	.LVL85:
+ 747:BSP/wizchip_conf.c ****    setPHYCFGR(tmp);
+ 1098              		.loc 1 747 4 is_stmt 1 view .LVU251
+ 1099 0022 C9B2     		uxtb	r1, r1
+ 1100              		.loc 1 747 4 is_stmt 0 view .LVU252
+ 1101 0024 4FF43850 		mov	r0, #11776
+ 1102 0028 FFF7FEFF 		bl	WIZCHIP_WRITE
+ 1103              	.LVL86:
+ 748:BSP/wizchip_conf.c **** }
+ 1104              		.loc 1 748 1 view .LVU253
+ 1105 002c 08BD     		pop	{r3, pc}
+ 1106              		.cfi_endproc
+ 1107              	.LFE25:
+ 1109              		.section	.text.wizphy_setphyconf,"ax",%progbits
+ 1110              		.align	1
+ 1111              		.global	wizphy_setphyconf
+ 1112              		.syntax unified
+ 1113              		.thumb
+ 1114              		.thumb_func
+ 1116              	wizphy_setphyconf:
+ 1117              	.LVL87:
+ 1118              	.LFB26:
+ 749:BSP/wizchip_conf.c **** 
+ 750:BSP/wizchip_conf.c **** void wizphy_setphyconf(wiz_PhyConf* phyconf)
+ 751:BSP/wizchip_conf.c **** {
+ 1119              		.loc 1 751 1 is_stmt 1 view -0
+ 1120              		.cfi_startproc
+ 1121              		@ args = 0, pretend = 0, frame = 0
+ 1122              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1123              		.loc 1 751 1 is_stmt 0 view .LVU255
+ 1124 0000 08B5     		push	{r3, lr}
+ 1125              	.LCFI11:
+ 1126              		.cfi_def_cfa_offset 8
+ 1127              		.cfi_offset 3, -8
+ 1128              		.cfi_offset 14, -4
+ 752:BSP/wizchip_conf.c ****    uint8_t tmp = 0;
+ 1129              		.loc 1 752 4 is_stmt 1 view .LVU256
+ 1130              	.LVL88:
+ 753:BSP/wizchip_conf.c ****    if(phyconf->by == PHY_CONFBY_SW)
+ 1131              		.loc 1 753 4 view .LVU257
+ 1132              		.loc 1 753 14 is_stmt 0 view .LVU258
+ 1133 0002 0378     		ldrb	r3, [r0]	@ zero_extendqisi2
+ 1134              		.loc 1 753 6 view .LVU259
+ 1135 0004 012B     		cmp	r3, #1
+ 1136 0006 0CD0     		beq	.L96
+ 754:BSP/wizchip_conf.c ****       tmp |= PHYCFGR_OPMD;
+ 755:BSP/wizchip_conf.c ****    else
+ARM GAS  /tmp/cc5ibyYO.s 			page 34
+
+
+ 756:BSP/wizchip_conf.c ****       tmp &= ~PHYCFGR_OPMD;
+ 1137              		.loc 1 756 11 view .LVU260
+ 1138 0008 0021     		movs	r1, #0
+ 1139              	.L89:
+ 1140              	.LVL89:
+ 757:BSP/wizchip_conf.c ****    if(phyconf->mode == PHY_MODE_AUTONEGO)
+ 1141              		.loc 1 757 4 is_stmt 1 view .LVU261
+ 1142              		.loc 1 757 14 is_stmt 0 view .LVU262
+ 1143 000a 4378     		ldrb	r3, [r0, #1]	@ zero_extendqisi2
+ 1144              		.loc 1 757 6 view .LVU263
+ 1145 000c 012B     		cmp	r3, #1
+ 1146 000e 0AD0     		beq	.L97
+ 758:BSP/wizchip_conf.c ****       tmp |= PHYCFGR_OPMDC_ALLA;
+ 759:BSP/wizchip_conf.c ****    else
+ 760:BSP/wizchip_conf.c ****    {
+ 761:BSP/wizchip_conf.c ****       if(phyconf->duplex == PHY_DUPLEX_FULL)
+ 1147              		.loc 1 761 7 is_stmt 1 view .LVU264
+ 1148              		.loc 1 761 17 is_stmt 0 view .LVU265
+ 1149 0010 C378     		ldrb	r3, [r0, #3]	@ zero_extendqisi2
+ 1150              		.loc 1 761 9 view .LVU266
+ 1151 0012 012B     		cmp	r3, #1
+ 1152 0014 10D0     		beq	.L98
+ 762:BSP/wizchip_conf.c ****       {
+ 763:BSP/wizchip_conf.c ****          if(phyconf->speed == PHY_SPEED_100)
+ 764:BSP/wizchip_conf.c ****             tmp |= PHYCFGR_OPMDC_100F;
+ 765:BSP/wizchip_conf.c ****          else
+ 766:BSP/wizchip_conf.c ****             tmp |= PHYCFGR_OPMDC_10F;
+ 767:BSP/wizchip_conf.c ****       }   
+ 768:BSP/wizchip_conf.c ****       else
+ 769:BSP/wizchip_conf.c ****       {
+ 770:BSP/wizchip_conf.c ****          if(phyconf->speed == PHY_SPEED_100)
+ 1153              		.loc 1 770 10 is_stmt 1 view .LVU267
+ 1154              		.loc 1 770 20 is_stmt 0 view .LVU268
+ 1155 0016 8378     		ldrb	r3, [r0, #2]	@ zero_extendqisi2
+ 1156              		.loc 1 770 12 view .LVU269
+ 1157 0018 012B     		cmp	r3, #1
+ 1158 001a 06D1     		bne	.L91
+ 771:BSP/wizchip_conf.c ****             tmp |= PHYCFGR_OPMDC_100H;
+ 1159              		.loc 1 771 13 is_stmt 1 view .LVU270
+ 1160              		.loc 1 771 17 is_stmt 0 view .LVU271
+ 1161 001c 41F01001 		orr	r1, r1, #16
+ 1162              	.LVL90:
+ 1163              		.loc 1 771 17 view .LVU272
+ 1164 0020 03E0     		b	.L91
+ 1165              	.LVL91:
+ 1166              	.L96:
+ 754:BSP/wizchip_conf.c ****    else
+ 1167              		.loc 1 754 11 view .LVU273
+ 1168 0022 4021     		movs	r1, #64
+ 1169 0024 F1E7     		b	.L89
+ 1170              	.LVL92:
+ 1171              	.L97:
+ 758:BSP/wizchip_conf.c ****    else
+ 1172              		.loc 1 758 7 is_stmt 1 view .LVU274
+ 758:BSP/wizchip_conf.c ****    else
+ 1173              		.loc 1 758 11 is_stmt 0 view .LVU275
+ 1174 0026 41F03801 		orr	r1, r1, #56
+ARM GAS  /tmp/cc5ibyYO.s 			page 35
+
+
+ 1175              	.LVL93:
+ 1176              	.L91:
+ 772:BSP/wizchip_conf.c ****          else
+ 773:BSP/wizchip_conf.c ****             tmp |= PHYCFGR_OPMDC_10H;
+ 774:BSP/wizchip_conf.c ****       }
+ 775:BSP/wizchip_conf.c ****    }
+ 776:BSP/wizchip_conf.c ****    setPHYCFGR(tmp);
+ 1177              		.loc 1 776 4 is_stmt 1 view .LVU276
+ 1178 002a 4FF43850 		mov	r0, #11776
+ 1179              	.LVL94:
+ 1180              		.loc 1 776 4 is_stmt 0 view .LVU277
+ 1181 002e FFF7FEFF 		bl	WIZCHIP_WRITE
+ 1182              	.LVL95:
+ 777:BSP/wizchip_conf.c ****    wizphy_reset();
+ 1183              		.loc 1 777 4 is_stmt 1 view .LVU278
+ 1184 0032 FFF7FEFF 		bl	wizphy_reset
+ 1185              	.LVL96:
+ 778:BSP/wizchip_conf.c **** }
+ 1186              		.loc 1 778 1 is_stmt 0 view .LVU279
+ 1187 0036 08BD     		pop	{r3, pc}
+ 1188              	.LVL97:
+ 1189              	.L98:
+ 763:BSP/wizchip_conf.c ****             tmp |= PHYCFGR_OPMDC_100F;
+ 1190              		.loc 1 763 10 is_stmt 1 view .LVU280
+ 763:BSP/wizchip_conf.c ****             tmp |= PHYCFGR_OPMDC_100F;
+ 1191              		.loc 1 763 20 is_stmt 0 view .LVU281
+ 1192 0038 8378     		ldrb	r3, [r0, #2]	@ zero_extendqisi2
+ 763:BSP/wizchip_conf.c ****             tmp |= PHYCFGR_OPMDC_100F;
+ 1193              		.loc 1 763 12 view .LVU282
+ 1194 003a 012B     		cmp	r3, #1
+ 1195 003c 02D0     		beq	.L99
+ 766:BSP/wizchip_conf.c ****       }   
+ 1196              		.loc 1 766 13 is_stmt 1 view .LVU283
+ 766:BSP/wizchip_conf.c ****       }   
+ 1197              		.loc 1 766 17 is_stmt 0 view .LVU284
+ 1198 003e 41F00801 		orr	r1, r1, #8
+ 1199              	.LVL98:
+ 766:BSP/wizchip_conf.c ****       }   
+ 1200              		.loc 1 766 17 view .LVU285
+ 1201 0042 F2E7     		b	.L91
+ 1202              	.L99:
+ 764:BSP/wizchip_conf.c ****          else
+ 1203              		.loc 1 764 13 is_stmt 1 view .LVU286
+ 764:BSP/wizchip_conf.c ****          else
+ 1204              		.loc 1 764 17 is_stmt 0 view .LVU287
+ 1205 0044 41F01801 		orr	r1, r1, #24
+ 1206              	.LVL99:
+ 764:BSP/wizchip_conf.c ****          else
+ 1207              		.loc 1 764 17 view .LVU288
+ 1208 0048 EFE7     		b	.L91
+ 1209              		.cfi_endproc
+ 1210              	.LFE26:
+ 1212              		.section	.text.wizphy_getphyconf,"ax",%progbits
+ 1213              		.align	1
+ 1214              		.global	wizphy_getphyconf
+ 1215              		.syntax unified
+ 1216              		.thumb
+ARM GAS  /tmp/cc5ibyYO.s 			page 36
+
+
+ 1217              		.thumb_func
+ 1219              	wizphy_getphyconf:
+ 1220              	.LVL100:
+ 1221              	.LFB27:
+ 779:BSP/wizchip_conf.c **** 
+ 780:BSP/wizchip_conf.c **** void wizphy_getphyconf(wiz_PhyConf* phyconf)
+ 781:BSP/wizchip_conf.c **** {
+ 1222              		.loc 1 781 1 is_stmt 1 view -0
+ 1223              		.cfi_startproc
+ 1224              		@ args = 0, pretend = 0, frame = 0
+ 1225              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1226              		.loc 1 781 1 is_stmt 0 view .LVU290
+ 1227 0000 10B5     		push	{r4, lr}
+ 1228              	.LCFI12:
+ 1229              		.cfi_def_cfa_offset 8
+ 1230              		.cfi_offset 4, -8
+ 1231              		.cfi_offset 14, -4
+ 1232 0002 0446     		mov	r4, r0
+ 782:BSP/wizchip_conf.c ****    uint8_t tmp = 0;
+ 1233              		.loc 1 782 4 is_stmt 1 view .LVU291
+ 1234              	.LVL101:
+ 783:BSP/wizchip_conf.c ****    tmp = getPHYCFGR();
+ 1235              		.loc 1 783 4 view .LVU292
+ 1236              		.loc 1 783 10 is_stmt 0 view .LVU293
+ 1237 0004 4FF43850 		mov	r0, #11776
+ 1238              	.LVL102:
+ 1239              		.loc 1 783 10 view .LVU294
+ 1240 0008 FFF7FEFF 		bl	WIZCHIP_READ
+ 1241              	.LVL103:
+ 784:BSP/wizchip_conf.c ****    phyconf->by   = (tmp & PHYCFGR_OPMD) ? PHY_CONFBY_SW : PHY_CONFBY_HW;
+ 1242              		.loc 1 784 4 is_stmt 1 view .LVU295
+ 1243              		.loc 1 784 57 is_stmt 0 view .LVU296
+ 1244 000c C0F38013 		ubfx	r3, r0, #6, #1
+ 1245              		.loc 1 784 18 view .LVU297
+ 1246 0010 2370     		strb	r3, [r4]
+ 785:BSP/wizchip_conf.c ****    switch(tmp & PHYCFGR_OPMDC_ALLA)
+ 1247              		.loc 1 785 4 is_stmt 1 view .LVU298
+ 1248 0012 00F03803 		and	r3, r0, #56
+ 1249 0016 202B     		cmp	r3, #32
+ 1250 0018 04D0     		beq	.L101
+ 1251 001a 382B     		cmp	r3, #56
+ 1252 001c 02D0     		beq	.L101
+ 786:BSP/wizchip_conf.c ****    {
+ 787:BSP/wizchip_conf.c ****       case PHYCFGR_OPMDC_ALLA:
+ 788:BSP/wizchip_conf.c ****       case PHYCFGR_OPMDC_100FA: 
+ 789:BSP/wizchip_conf.c ****          phyconf->mode = PHY_MODE_AUTONEGO;
+ 790:BSP/wizchip_conf.c ****          break;
+ 791:BSP/wizchip_conf.c ****       default:
+ 792:BSP/wizchip_conf.c ****          phyconf->mode = PHY_MODE_MANUAL;
+ 1253              		.loc 1 792 10 view .LVU299
+ 1254              		.loc 1 792 24 is_stmt 0 view .LVU300
+ 1255 001e 0022     		movs	r2, #0
+ 1256 0020 6270     		strb	r2, [r4, #1]
+ 793:BSP/wizchip_conf.c ****          break;
+ 1257              		.loc 1 793 10 is_stmt 1 view .LVU301
+ 1258 0022 01E0     		b	.L103
+ 1259              	.L101:
+ARM GAS  /tmp/cc5ibyYO.s 			page 37
+
+
+ 789:BSP/wizchip_conf.c ****          break;
+ 1260              		.loc 1 789 10 view .LVU302
+ 789:BSP/wizchip_conf.c ****          break;
+ 1261              		.loc 1 789 24 is_stmt 0 view .LVU303
+ 1262 0024 0122     		movs	r2, #1
+ 1263 0026 6270     		strb	r2, [r4, #1]
+ 790:BSP/wizchip_conf.c ****       default:
+ 1264              		.loc 1 790 10 is_stmt 1 view .LVU304
+ 1265              	.L103:
+ 794:BSP/wizchip_conf.c ****    }
+ 795:BSP/wizchip_conf.c ****    switch(tmp & PHYCFGR_OPMDC_ALLA)
+ 1266              		.loc 1 795 4 view .LVU305
+ 1267 0028 A3F11002 		sub	r2, r3, #16
+ 1268 002c D2B2     		uxtb	r2, r2
+ 1269 002e 102A     		cmp	r2, #16
+ 1270 0030 14D8     		bhi	.L104
+ 1271 0032 0D49     		ldr	r1, .L109
+ 1272 0034 21FA02F2 		lsr	r2, r1, r2
+ 1273 0038 12F0010F 		tst	r2, #1
+ 1274 003c 0ED0     		beq	.L104
+ 796:BSP/wizchip_conf.c ****    {
+ 797:BSP/wizchip_conf.c ****       case PHYCFGR_OPMDC_100FA:
+ 798:BSP/wizchip_conf.c ****       case PHYCFGR_OPMDC_100F:
+ 799:BSP/wizchip_conf.c ****       case PHYCFGR_OPMDC_100H:
+ 800:BSP/wizchip_conf.c ****          phyconf->speed = PHY_SPEED_100;
+ 1275              		.loc 1 800 10 view .LVU306
+ 1276              		.loc 1 800 25 is_stmt 0 view .LVU307
+ 1277 003e 0122     		movs	r2, #1
+ 1278 0040 A270     		strb	r2, [r4, #2]
+ 801:BSP/wizchip_conf.c ****          break;
+ 1279              		.loc 1 801 10 is_stmt 1 view .LVU308
+ 1280              	.L105:
+ 802:BSP/wizchip_conf.c ****       default:
+ 803:BSP/wizchip_conf.c ****          phyconf->speed = PHY_SPEED_10;
+ 804:BSP/wizchip_conf.c ****          break;
+ 805:BSP/wizchip_conf.c ****    }
+ 806:BSP/wizchip_conf.c ****    switch(tmp & PHYCFGR_OPMDC_ALLA)
+ 1281              		.loc 1 806 4 view .LVU309
+ 1282 0042 083B     		subs	r3, r3, #8
+ 1283 0044 DBB2     		uxtb	r3, r3
+ 1284 0046 182B     		cmp	r3, #24
+ 1285 0048 0BD8     		bhi	.L106
+ 1286 004a 084A     		ldr	r2, .L109+4
+ 1287 004c 22FA03F3 		lsr	r3, r2, r3
+ 1288 0050 13F0010F 		tst	r3, #1
+ 1289 0054 05D0     		beq	.L106
+ 807:BSP/wizchip_conf.c ****    {
+ 808:BSP/wizchip_conf.c ****       case PHYCFGR_OPMDC_100FA:
+ 809:BSP/wizchip_conf.c ****       case PHYCFGR_OPMDC_100F:
+ 810:BSP/wizchip_conf.c ****       case PHYCFGR_OPMDC_10F:
+ 811:BSP/wizchip_conf.c ****          phyconf->duplex = PHY_DUPLEX_FULL;
+ 1290              		.loc 1 811 10 view .LVU310
+ 1291              		.loc 1 811 26 is_stmt 0 view .LVU311
+ 1292 0056 0123     		movs	r3, #1
+ 1293 0058 E370     		strb	r3, [r4, #3]
+ 812:BSP/wizchip_conf.c ****          break;
+ 1294              		.loc 1 812 10 is_stmt 1 view .LVU312
+ARM GAS  /tmp/cc5ibyYO.s 			page 38
+
+
+ 1295              	.L100:
+ 813:BSP/wizchip_conf.c ****       default:
+ 814:BSP/wizchip_conf.c ****          phyconf->duplex = PHY_DUPLEX_HALF;
+ 815:BSP/wizchip_conf.c ****          break;
+ 816:BSP/wizchip_conf.c ****    }
+ 817:BSP/wizchip_conf.c **** }
+ 1296              		.loc 1 817 1 is_stmt 0 view .LVU313
+ 1297 005a 10BD     		pop	{r4, pc}
+ 1298              	.LVL104:
+ 1299              	.L104:
+ 803:BSP/wizchip_conf.c ****          break;
+ 1300              		.loc 1 803 10 is_stmt 1 view .LVU314
+ 803:BSP/wizchip_conf.c ****          break;
+ 1301              		.loc 1 803 25 is_stmt 0 view .LVU315
+ 1302 005c 0022     		movs	r2, #0
+ 1303 005e A270     		strb	r2, [r4, #2]
+ 804:BSP/wizchip_conf.c ****    }
+ 1304              		.loc 1 804 10 is_stmt 1 view .LVU316
+ 1305 0060 EFE7     		b	.L105
+ 1306              	.L106:
+ 814:BSP/wizchip_conf.c ****          break;
+ 1307              		.loc 1 814 10 view .LVU317
+ 814:BSP/wizchip_conf.c ****          break;
+ 1308              		.loc 1 814 26 is_stmt 0 view .LVU318
+ 1309 0062 0023     		movs	r3, #0
+ 1310 0064 E370     		strb	r3, [r4, #3]
+ 815:BSP/wizchip_conf.c ****    }
+ 1311              		.loc 1 815 10 is_stmt 1 view .LVU319
+ 1312              		.loc 1 817 1 is_stmt 0 view .LVU320
+ 1313 0066 F8E7     		b	.L100
+ 1314              	.L110:
+ 1315              		.align	2
+ 1316              	.L109:
+ 1317 0068 01010100 		.word	65793
+ 1318 006c 01000101 		.word	16842753
+ 1319              		.cfi_endproc
+ 1320              	.LFE27:
+ 1322              		.section	.text.wizphy_getphystat,"ax",%progbits
+ 1323              		.align	1
+ 1324              		.global	wizphy_getphystat
+ 1325              		.syntax unified
+ 1326              		.thumb
+ 1327              		.thumb_func
+ 1329              	wizphy_getphystat:
+ 1330              	.LVL105:
+ 1331              	.LFB28:
+ 818:BSP/wizchip_conf.c **** 
+ 819:BSP/wizchip_conf.c **** void wizphy_getphystat(wiz_PhyConf* phyconf)
+ 820:BSP/wizchip_conf.c **** {
+ 1332              		.loc 1 820 1 is_stmt 1 view -0
+ 1333              		.cfi_startproc
+ 1334              		@ args = 0, pretend = 0, frame = 0
+ 1335              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1336              		.loc 1 820 1 is_stmt 0 view .LVU322
+ 1337 0000 10B5     		push	{r4, lr}
+ 1338              	.LCFI13:
+ 1339              		.cfi_def_cfa_offset 8
+ARM GAS  /tmp/cc5ibyYO.s 			page 39
+
+
+ 1340              		.cfi_offset 4, -8
+ 1341              		.cfi_offset 14, -4
+ 1342 0002 0446     		mov	r4, r0
+ 821:BSP/wizchip_conf.c ****    uint8_t tmp = getPHYCFGR();
+ 1343              		.loc 1 821 4 is_stmt 1 view .LVU323
+ 1344              		.loc 1 821 18 is_stmt 0 view .LVU324
+ 1345 0004 4FF43850 		mov	r0, #11776
+ 1346              	.LVL106:
+ 1347              		.loc 1 821 18 view .LVU325
+ 1348 0008 FFF7FEFF 		bl	WIZCHIP_READ
+ 1349              	.LVL107:
+ 822:BSP/wizchip_conf.c ****    phyconf->duplex = (tmp & PHYCFGR_DPX_FULL) ? PHY_DUPLEX_FULL : PHY_DUPLEX_HALF;
+ 1350              		.loc 1 822 4 is_stmt 1 view .LVU326
+ 1351              		.loc 1 822 65 is_stmt 0 view .LVU327
+ 1352 000c C0F38003 		ubfx	r3, r0, #2, #1
+ 1353              		.loc 1 822 20 view .LVU328
+ 1354 0010 E370     		strb	r3, [r4, #3]
+ 823:BSP/wizchip_conf.c ****    phyconf->speed  = (tmp & PHYCFGR_SPD_100) ? PHY_SPEED_100 : PHY_SPEED_10;
+ 1355              		.loc 1 823 4 is_stmt 1 view .LVU329
+ 1356              		.loc 1 823 62 is_stmt 0 view .LVU330
+ 1357 0012 C0F34003 		ubfx	r3, r0, #1, #1
+ 1358              		.loc 1 823 20 view .LVU331
+ 1359 0016 A370     		strb	r3, [r4, #2]
+ 824:BSP/wizchip_conf.c **** }
+ 1360              		.loc 1 824 1 view .LVU332
+ 1361 0018 10BD     		pop	{r4, pc}
+ 1362              		.loc 1 824 1 view .LVU333
+ 1363              		.cfi_endproc
+ 1364              	.LFE28:
+ 1366              		.section	.text.wizphy_setphypmode,"ax",%progbits
+ 1367              		.align	1
+ 1368              		.global	wizphy_setphypmode
+ 1369              		.syntax unified
+ 1370              		.thumb
+ 1371              		.thumb_func
+ 1373              	wizphy_setphypmode:
+ 1374              	.LVL108:
+ 1375              	.LFB29:
+ 825:BSP/wizchip_conf.c **** 
+ 826:BSP/wizchip_conf.c **** int8_t wizphy_setphypmode(uint8_t pmode)
+ 827:BSP/wizchip_conf.c **** {
+ 1376              		.loc 1 827 1 is_stmt 1 view -0
+ 1377              		.cfi_startproc
+ 1378              		@ args = 0, pretend = 0, frame = 0
+ 1379              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1380              		.loc 1 827 1 is_stmt 0 view .LVU335
+ 1381 0000 10B5     		push	{r4, lr}
+ 1382              	.LCFI14:
+ 1383              		.cfi_def_cfa_offset 8
+ 1384              		.cfi_offset 4, -8
+ 1385              		.cfi_offset 14, -4
+ 1386 0002 0446     		mov	r4, r0
+ 828:BSP/wizchip_conf.c ****    uint8_t tmp = 0;
+ 1387              		.loc 1 828 4 is_stmt 1 view .LVU336
+ 1388              	.LVL109:
+ 829:BSP/wizchip_conf.c ****    tmp = getPHYCFGR();
+ 1389              		.loc 1 829 4 view .LVU337
+ARM GAS  /tmp/cc5ibyYO.s 			page 40
+
+
+ 1390              		.loc 1 829 10 is_stmt 0 view .LVU338
+ 1391 0004 4FF43850 		mov	r0, #11776
+ 1392              	.LVL110:
+ 1393              		.loc 1 829 10 view .LVU339
+ 1394 0008 FFF7FEFF 		bl	WIZCHIP_READ
+ 1395              	.LVL111:
+ 830:BSP/wizchip_conf.c ****    if((tmp & PHYCFGR_OPMD)== 0) return -1;
+ 1396              		.loc 1 830 4 is_stmt 1 view .LVU340
+ 1397              		.loc 1 830 6 is_stmt 0 view .LVU341
+ 1398 000c 10F0400F 		tst	r0, #64
+ 1399 0010 24D0     		beq	.L118
+ 831:BSP/wizchip_conf.c ****    tmp &= ~PHYCFGR_OPMDC_ALLA;         
+ 1400              		.loc 1 831 4 is_stmt 1 view .LVU342
+ 1401              		.loc 1 831 8 is_stmt 0 view .LVU343
+ 1402 0012 00F0C701 		and	r1, r0, #199
+ 1403              	.LVL112:
+ 832:BSP/wizchip_conf.c ****    if( pmode == PHY_POWER_DOWN)
+ 1404              		.loc 1 832 4 is_stmt 1 view .LVU344
+ 1405              		.loc 1 832 6 is_stmt 0 view .LVU345
+ 1406 0016 012C     		cmp	r4, #1
+ 1407 0018 12D0     		beq	.L122
+ 833:BSP/wizchip_conf.c ****       tmp |= PHYCFGR_OPMDC_PDOWN;
+ 834:BSP/wizchip_conf.c ****    else
+ 835:BSP/wizchip_conf.c ****       tmp |= PHYCFGR_OPMDC_ALLA;
+ 1408              		.loc 1 835 7 is_stmt 1 view .LVU346
+ 1409              		.loc 1 835 11 is_stmt 0 view .LVU347
+ 1410 001a 41F03801 		orr	r1, r1, #56
+ 1411              	.LVL113:
+ 1412              	.L116:
+ 836:BSP/wizchip_conf.c ****    setPHYCFGR(tmp);
+ 1413              		.loc 1 836 4 is_stmt 1 view .LVU348
+ 1414 001e 4FF43850 		mov	r0, #11776
+ 1415 0022 FFF7FEFF 		bl	WIZCHIP_WRITE
+ 1416              	.LVL114:
+ 837:BSP/wizchip_conf.c ****    wizphy_reset();
+ 1417              		.loc 1 837 4 view .LVU349
+ 1418 0026 FFF7FEFF 		bl	wizphy_reset
+ 1419              	.LVL115:
+ 838:BSP/wizchip_conf.c ****    tmp = getPHYCFGR();
+ 1420              		.loc 1 838 4 view .LVU350
+ 1421              		.loc 1 838 10 is_stmt 0 view .LVU351
+ 1422 002a 4FF43850 		mov	r0, #11776
+ 1423 002e FFF7FEFF 		bl	WIZCHIP_READ
+ 1424              	.LVL116:
+ 839:BSP/wizchip_conf.c ****    if( pmode == PHY_POWER_DOWN)
+ 1425              		.loc 1 839 4 is_stmt 1 view .LVU352
+ 1426              		.loc 1 839 6 is_stmt 0 view .LVU353
+ 1427 0032 012C     		cmp	r4, #1
+ 1428 0034 07D0     		beq	.L123
+ 840:BSP/wizchip_conf.c ****    {
+ 841:BSP/wizchip_conf.c ****       if(tmp & PHYCFGR_OPMDC_PDOWN) return 0;
+ 842:BSP/wizchip_conf.c ****    }
+ 843:BSP/wizchip_conf.c ****    else
+ 844:BSP/wizchip_conf.c ****    {
+ 845:BSP/wizchip_conf.c ****       if(tmp & PHYCFGR_OPMDC_ALLA) return 0;
+ 1429              		.loc 1 845 7 is_stmt 1 view .LVU354
+ 1430              		.loc 1 845 9 is_stmt 0 view .LVU355
+ARM GAS  /tmp/cc5ibyYO.s 			page 41
+
+
+ 1431 0036 10F0380F 		tst	r0, #56
+ 1432 003a 0CD0     		beq	.L124
+ 1433              		.loc 1 845 43 discriminator 1 view .LVU356
+ 1434 003c 0020     		movs	r0, #0
+ 1435              	.LVL117:
+ 1436              	.L114:
+ 846:BSP/wizchip_conf.c ****    }
+ 847:BSP/wizchip_conf.c ****    return -1;
+ 848:BSP/wizchip_conf.c **** }
+ 1437              		.loc 1 848 1 view .LVU357
+ 1438 003e 10BD     		pop	{r4, pc}
+ 1439              	.LVL118:
+ 1440              	.L122:
+ 833:BSP/wizchip_conf.c ****    else
+ 1441              		.loc 1 833 7 is_stmt 1 view .LVU358
+ 833:BSP/wizchip_conf.c ****    else
+ 1442              		.loc 1 833 11 is_stmt 0 view .LVU359
+ 1443 0040 41F03001 		orr	r1, r1, #48
+ 1444              	.LVL119:
+ 833:BSP/wizchip_conf.c ****    else
+ 1445              		.loc 1 833 11 view .LVU360
+ 1446 0044 EBE7     		b	.L116
+ 1447              	.LVL120:
+ 1448              	.L123:
+ 841:BSP/wizchip_conf.c ****    }
+ 1449              		.loc 1 841 7 is_stmt 1 view .LVU361
+ 841:BSP/wizchip_conf.c ****    }
+ 1450              		.loc 1 841 9 is_stmt 0 view .LVU362
+ 1451 0046 10F0300F 		tst	r0, #48
+ 1452 004a 01D0     		beq	.L125
+ 841:BSP/wizchip_conf.c ****    }
+ 1453              		.loc 1 841 44 discriminator 1 view .LVU363
+ 1454 004c 0020     		movs	r0, #0
+ 1455              	.LVL121:
+ 841:BSP/wizchip_conf.c ****    }
+ 1456              		.loc 1 841 44 discriminator 1 view .LVU364
+ 1457 004e F6E7     		b	.L114
+ 1458              	.LVL122:
+ 1459              	.L125:
+ 847:BSP/wizchip_conf.c **** }
+ 1460              		.loc 1 847 11 view .LVU365
+ 1461 0050 4FF0FF30 		mov	r0, #-1
+ 1462              	.LVL123:
+ 847:BSP/wizchip_conf.c **** }
+ 1463              		.loc 1 847 11 view .LVU366
+ 1464 0054 F3E7     		b	.L114
+ 1465              	.LVL124:
+ 1466              	.L124:
+ 847:BSP/wizchip_conf.c **** }
+ 1467              		.loc 1 847 11 view .LVU367
+ 1468 0056 4FF0FF30 		mov	r0, #-1
+ 1469              	.LVL125:
+ 847:BSP/wizchip_conf.c **** }
+ 1470              		.loc 1 847 11 view .LVU368
+ 1471 005a F0E7     		b	.L114
+ 1472              	.LVL126:
+ 1473              	.L118:
+ARM GAS  /tmp/cc5ibyYO.s 			page 42
+
+
+ 830:BSP/wizchip_conf.c ****    tmp &= ~PHYCFGR_OPMDC_ALLA;         
+ 1474              		.loc 1 830 40 discriminator 1 view .LVU369
+ 1475 005c 4FF0FF30 		mov	r0, #-1
+ 1476              	.LVL127:
+ 830:BSP/wizchip_conf.c ****    tmp &= ~PHYCFGR_OPMDC_ALLA;         
+ 1477              		.loc 1 830 40 discriminator 1 view .LVU370
+ 1478 0060 EDE7     		b	.L114
+ 1479              		.cfi_endproc
+ 1480              	.LFE29:
+ 1482              		.section	.text.ctlwizchip,"ax",%progbits
+ 1483              		.align	1
+ 1484              		.global	ctlwizchip
+ 1485              		.syntax unified
+ 1486              		.thumb
+ 1487              		.thumb_func
+ 1489              	ctlwizchip:
+ 1490              	.LVL128:
+ 1491              	.LFB15:
+ 285:BSP/wizchip_conf.c **** #if	_WIZCHIP_ == W5100S || _WIZCHIP_ == W5200 || _WIZCHIP_ == W5500
+ 1492              		.loc 1 285 1 is_stmt 1 view -0
+ 1493              		.cfi_startproc
+ 1494              		@ args = 0, pretend = 0, frame = 8
+ 1495              		@ frame_needed = 0, uses_anonymous_args = 0
+ 285:BSP/wizchip_conf.c **** #if	_WIZCHIP_ == W5100S || _WIZCHIP_ == W5200 || _WIZCHIP_ == W5500
+ 1496              		.loc 1 285 1 is_stmt 0 view .LVU372
+ 1497 0000 30B5     		push	{r4, r5, lr}
+ 1498              	.LCFI15:
+ 1499              		.cfi_def_cfa_offset 12
+ 1500              		.cfi_offset 4, -12
+ 1501              		.cfi_offset 5, -8
+ 1502              		.cfi_offset 14, -4
+ 1503 0002 83B0     		sub	sp, sp, #12
+ 1504              	.LCFI16:
+ 1505              		.cfi_def_cfa_offset 24
+ 1506 0004 0C46     		mov	r4, r1
+ 287:BSP/wizchip_conf.c **** #endif
+ 1507              		.loc 1 287 4 is_stmt 1 view .LVU373
+ 1508              	.LVL129:
+ 289:BSP/wizchip_conf.c ****    switch(cwtype)
+ 1509              		.loc 1 289 4 view .LVU374
+ 289:BSP/wizchip_conf.c ****    switch(cwtype)
+ 1510              		.loc 1 289 13 is_stmt 0 view .LVU375
+ 1511 0006 0023     		movs	r3, #0
+ 1512 0008 0093     		str	r3, [sp]
+ 1513 000a 0193     		str	r3, [sp, #4]
+ 290:BSP/wizchip_conf.c ****    {
+ 1514              		.loc 1 290 4 is_stmt 1 view .LVU376
+ 1515 000c 0F28     		cmp	r0, #15
+ 1516 000e 09D8     		bhi	.L127
+ 1517 0010 DFE800F0 		tbb	[pc, r0]
+ 1518              	.L129:
+ 1519 0014 0B       		.byte	(.L144-.L129)/2
+ 1520 0015 0F       		.byte	(.L143-.L129)/2
+ 1521 0016 1D       		.byte	(.L142-.L129)/2
+ 1522 0017 18       		.byte	(.L141-.L129)/2
+ 1523 0018 22       		.byte	(.L140-.L129)/2
+ 1524 0019 27       		.byte	(.L139-.L129)/2
+ARM GAS  /tmp/cc5ibyYO.s 			page 43
+
+
+ 1525 001a 2C       		.byte	(.L138-.L129)/2
+ 1526 001b 39       		.byte	(.L137-.L129)/2
+ 1527 001c 47       		.byte	(.L136-.L129)/2
+ 1528 001d 57       		.byte	(.L135-.L129)/2
+ 1529 001e 5B       		.byte	(.L134-.L129)/2
+ 1530 001f 60       		.byte	(.L133-.L129)/2
+ 1531 0020 79       		.byte	(.L146-.L129)/2
+ 1532 0021 65       		.byte	(.L131-.L129)/2
+ 1533 0022 69       		.byte	(.L130-.L129)/2
+ 1534 0023 71       		.byte	(.L128-.L129)/2
+ 1535              		.p2align 1
+ 1536              	.L127:
+ 1537 0024 4FF0FF30 		mov	r0, #-1
+ 1538              	.LVL130:
+ 290:BSP/wizchip_conf.c ****    {
+ 1539              		.loc 1 290 4 is_stmt 0 view .LVU377
+ 1540 0028 6EE0     		b	.L132
+ 1541              	.LVL131:
+ 1542              	.L144:
+ 293:BSP/wizchip_conf.c ****          break;
+ 1543              		.loc 1 293 10 is_stmt 1 view .LVU378
+ 1544 002a FFF7FEFF 		bl	wizchip_sw_reset
+ 1545              	.LVL132:
+ 294:BSP/wizchip_conf.c ****       case CW_INIT_WIZCHIP:
+ 1546              		.loc 1 294 10 view .LVU379
+ 363:BSP/wizchip_conf.c **** }
+ 1547              		.loc 1 363 11 is_stmt 0 view .LVU380
+ 1548 002e 0020     		movs	r0, #0
+ 294:BSP/wizchip_conf.c ****       case CW_INIT_WIZCHIP:
+ 1549              		.loc 1 294 10 view .LVU381
+ 1550 0030 6AE0     		b	.L132
+ 1551              	.LVL133:
+ 1552              	.L143:
+ 296:BSP/wizchip_conf.c ****          {
+ 1553              		.loc 1 296 10 is_stmt 1 view .LVU382
+ 296:BSP/wizchip_conf.c ****          {
+ 1554              		.loc 1 296 12 is_stmt 0 view .LVU383
+ 1555 0032 11B1     		cbz	r1, .L145
+ 298:BSP/wizchip_conf.c ****             ptmp[1] = ptmp[0] + _WIZCHIP_SOCK_NUM_;
+ 1556              		.loc 1 298 13 is_stmt 1 view .LVU384
+ 298:BSP/wizchip_conf.c ****             ptmp[1] = ptmp[0] + _WIZCHIP_SOCK_NUM_;
+ 1557              		.loc 1 298 21 is_stmt 0 view .LVU385
+ 1558 0034 0091     		str	r1, [sp]
+ 299:BSP/wizchip_conf.c ****          }
+ 1559              		.loc 1 299 13 is_stmt 1 view .LVU386
+ 299:BSP/wizchip_conf.c ****          }
+ 1560              		.loc 1 299 31 is_stmt 0 view .LVU387
+ 1561 0036 0834     		adds	r4, r4, #8
+ 299:BSP/wizchip_conf.c ****          }
+ 1562              		.loc 1 299 21 view .LVU388
+ 1563 0038 0194     		str	r4, [sp, #4]
+ 1564              	.L145:
+ 301:BSP/wizchip_conf.c ****       case CW_CLR_INTERRUPT:
+ 1565              		.loc 1 301 10 is_stmt 1 view .LVU389
+ 301:BSP/wizchip_conf.c ****       case CW_CLR_INTERRUPT:
+ 1566              		.loc 1 301 17 is_stmt 0 view .LVU390
+ 1567 003a 0199     		ldr	r1, [sp, #4]
+ARM GAS  /tmp/cc5ibyYO.s 			page 44
+
+
+ 1568              	.LVL134:
+ 301:BSP/wizchip_conf.c ****       case CW_CLR_INTERRUPT:
+ 1569              		.loc 1 301 17 view .LVU391
+ 1570 003c 0098     		ldr	r0, [sp]
+ 1571              	.LVL135:
+ 301:BSP/wizchip_conf.c ****       case CW_CLR_INTERRUPT:
+ 1572              		.loc 1 301 17 view .LVU392
+ 1573 003e FFF7FEFF 		bl	wizchip_init
+ 1574              	.LVL136:
+ 1575 0042 61E0     		b	.L132
+ 1576              	.LVL137:
+ 1577              	.L141:
+ 303:BSP/wizchip_conf.c ****          break;
+ 1578              		.loc 1 303 10 is_stmt 1 view .LVU393
+ 1579 0044 0888     		ldrh	r0, [r1]
+ 1580              	.LVL138:
+ 303:BSP/wizchip_conf.c ****          break;
+ 1581              		.loc 1 303 10 is_stmt 0 view .LVU394
+ 1582 0046 FFF7FEFF 		bl	wizchip_clrinterrupt
+ 1583              	.LVL139:
+ 304:BSP/wizchip_conf.c ****       case CW_GET_INTERRUPT:
+ 1584              		.loc 1 304 10 is_stmt 1 view .LVU395
+ 363:BSP/wizchip_conf.c **** }
+ 1585              		.loc 1 363 11 is_stmt 0 view .LVU396
+ 1586 004a 0020     		movs	r0, #0
+ 304:BSP/wizchip_conf.c ****       case CW_GET_INTERRUPT:
+ 1587              		.loc 1 304 10 view .LVU397
+ 1588 004c 5CE0     		b	.L132
+ 1589              	.LVL140:
+ 1590              	.L142:
+ 306:BSP/wizchip_conf.c ****          break;
+ 1591              		.loc 1 306 9 is_stmt 1 view .LVU398
+ 306:BSP/wizchip_conf.c ****          break;
+ 1592              		.loc 1 306 30 is_stmt 0 view .LVU399
+ 1593 004e FFF7FEFF 		bl	wizchip_getinterrupt
+ 1594              	.LVL141:
+ 306:BSP/wizchip_conf.c ****          break;
+ 1595              		.loc 1 306 28 discriminator 1 view .LVU400
+ 1596 0052 2080     		strh	r0, [r4]	@ movhi
+ 307:BSP/wizchip_conf.c ****       case CW_SET_INTRMASK:
+ 1597              		.loc 1 307 10 is_stmt 1 view .LVU401
+ 363:BSP/wizchip_conf.c **** }
+ 1598              		.loc 1 363 11 is_stmt 0 view .LVU402
+ 1599 0054 0020     		movs	r0, #0
+ 307:BSP/wizchip_conf.c ****       case CW_SET_INTRMASK:
+ 1600              		.loc 1 307 10 view .LVU403
+ 1601 0056 57E0     		b	.L132
+ 1602              	.LVL142:
+ 1603              	.L140:
+ 309:BSP/wizchip_conf.c ****          break;         
+ 1604              		.loc 1 309 10 is_stmt 1 view .LVU404
+ 1605 0058 0888     		ldrh	r0, [r1]
+ 1606              	.LVL143:
+ 309:BSP/wizchip_conf.c ****          break;         
+ 1607              		.loc 1 309 10 is_stmt 0 view .LVU405
+ 1608 005a FFF7FEFF 		bl	wizchip_setinterruptmask
+ 1609              	.LVL144:
+ARM GAS  /tmp/cc5ibyYO.s 			page 45
+
+
+ 310:BSP/wizchip_conf.c ****       case CW_GET_INTRMASK:
+ 1610              		.loc 1 310 10 is_stmt 1 view .LVU406
+ 363:BSP/wizchip_conf.c **** }
+ 1611              		.loc 1 363 11 is_stmt 0 view .LVU407
+ 1612 005e 0020     		movs	r0, #0
+ 310:BSP/wizchip_conf.c ****       case CW_GET_INTRMASK:
+ 1613              		.loc 1 310 10 view .LVU408
+ 1614 0060 52E0     		b	.L132
+ 1615              	.LVL145:
+ 1616              	.L139:
+ 312:BSP/wizchip_conf.c ****          break;
+ 1617              		.loc 1 312 10 is_stmt 1 view .LVU409
+ 312:BSP/wizchip_conf.c ****          break;
+ 1618              		.loc 1 312 31 is_stmt 0 view .LVU410
+ 1619 0062 FFF7FEFF 		bl	wizchip_getinterruptmask
+ 1620              	.LVL146:
+ 312:BSP/wizchip_conf.c ****          break;
+ 1621              		.loc 1 312 29 discriminator 1 view .LVU411
+ 1622 0066 2080     		strh	r0, [r4]	@ movhi
+ 313:BSP/wizchip_conf.c ****    //M20150601 : This can be supported by W5200, W5500
+ 1623              		.loc 1 313 10 is_stmt 1 view .LVU412
+ 363:BSP/wizchip_conf.c **** }
+ 1624              		.loc 1 363 11 is_stmt 0 view .LVU413
+ 1625 0068 0020     		movs	r0, #0
+ 313:BSP/wizchip_conf.c ****    //M20150601 : This can be supported by W5200, W5500
+ 1626              		.loc 1 313 10 view .LVU414
+ 1627 006a 4DE0     		b	.L132
+ 1628              	.LVL147:
+ 1629              	.L138:
+ 318:BSP/wizchip_conf.c ****          break;
+ 1630              		.loc 1 318 10 is_stmt 1 view .LVU415
+ 1631 006c 0988     		ldrh	r1, [r1]
+ 1632              	.LVL148:
+ 318:BSP/wizchip_conf.c ****          break;
+ 1633              		.loc 1 318 10 is_stmt 0 view .LVU416
+ 1634 006e 090A     		lsrs	r1, r1, #8
+ 1635 0070 4FF49850 		mov	r0, #4864
+ 1636              	.LVL149:
+ 318:BSP/wizchip_conf.c ****          break;
+ 1637              		.loc 1 318 10 view .LVU417
+ 1638 0074 FFF7FEFF 		bl	WIZCHIP_WRITE
+ 1639              	.LVL150:
+ 318:BSP/wizchip_conf.c ****          break;
+ 1640              		.loc 1 318 10 is_stmt 1 discriminator 1 view .LVU418
+ 1641 0078 2178     		ldrb	r1, [r4]	@ zero_extendqisi2
+ 1642 007a 4FF4A050 		mov	r0, #5120
+ 1643 007e FFF7FEFF 		bl	WIZCHIP_WRITE
+ 1644              	.LVL151:
+ 318:BSP/wizchip_conf.c ****          break;
+ 1645              		.loc 1 318 38 discriminator 2 view .LVU419
+ 319:BSP/wizchip_conf.c ****       case CW_GET_INTRTIME:
+ 1646              		.loc 1 319 10 view .LVU420
+ 363:BSP/wizchip_conf.c **** }
+ 1647              		.loc 1 363 11 is_stmt 0 view .LVU421
+ 1648 0082 0020     		movs	r0, #0
+ 319:BSP/wizchip_conf.c ****       case CW_GET_INTRTIME:
+ 1649              		.loc 1 319 10 view .LVU422
+ARM GAS  /tmp/cc5ibyYO.s 			page 46
+
+
+ 1650 0084 40E0     		b	.L132
+ 1651              	.LVL152:
+ 1652              	.L137:
+ 321:BSP/wizchip_conf.c ****          break;
+ 1653              		.loc 1 321 10 is_stmt 1 view .LVU423
+ 321:BSP/wizchip_conf.c ****          break;
+ 1654              		.loc 1 321 28 is_stmt 0 view .LVU424
+ 1655 0086 4FF49850 		mov	r0, #4864
+ 1656              	.LVL153:
+ 321:BSP/wizchip_conf.c ****          break;
+ 1657              		.loc 1 321 28 view .LVU425
+ 1658 008a FFF7FEFF 		bl	WIZCHIP_READ
+ 1659              	.LVL154:
+ 321:BSP/wizchip_conf.c ****          break;
+ 1660              		.loc 1 321 28 discriminator 1 view .LVU426
+ 1661 008e 0502     		lsls	r5, r0, #8
+ 1662 0090 ADB2     		uxth	r5, r5
+ 1663 0092 4FF4A050 		mov	r0, #5120
+ 1664 0096 FFF7FEFF 		bl	WIZCHIP_READ
+ 1665              	.LVL155:
+ 321:BSP/wizchip_conf.c ****          break;
+ 1666              		.loc 1 321 28 discriminator 2 view .LVU427
+ 1667 009a 0544     		add	r5, r5, r0
+ 321:BSP/wizchip_conf.c ****          break;
+ 1668              		.loc 1 321 26 discriminator 2 view .LVU428
+ 1669 009c 2580     		strh	r5, [r4]	@ movhi
+ 322:BSP/wizchip_conf.c ****    #endif
+ 1670              		.loc 1 322 10 is_stmt 1 view .LVU429
+ 363:BSP/wizchip_conf.c **** }
+ 1671              		.loc 1 363 11 is_stmt 0 view .LVU430
+ 1672 009e 0020     		movs	r0, #0
+ 322:BSP/wizchip_conf.c ****    #endif
+ 1673              		.loc 1 322 10 view .LVU431
+ 1674 00a0 32E0     		b	.L132
+ 1675              	.LVL156:
+ 1676              	.L136:
+ 325:BSP/wizchip_conf.c ****          ((uint8_t*)arg)[1] = WIZCHIP.id[1];
+ 1677              		.loc 1 325 10 is_stmt 1 view .LVU432
+ 325:BSP/wizchip_conf.c ****          ((uint8_t*)arg)[1] = WIZCHIP.id[1];
+ 1678              		.loc 1 325 41 is_stmt 0 view .LVU433
+ 1679 00a2 1D4B     		ldr	r3, .L150
+ 1680 00a4 9A78     		ldrb	r2, [r3, #2]	@ zero_extendqisi2
+ 325:BSP/wizchip_conf.c ****          ((uint8_t*)arg)[1] = WIZCHIP.id[1];
+ 1681              		.loc 1 325 29 view .LVU434
+ 1682 00a6 0A70     		strb	r2, [r1]
+ 326:BSP/wizchip_conf.c ****          ((uint8_t*)arg)[2] = WIZCHIP.id[2];
+ 1683              		.loc 1 326 10 is_stmt 1 view .LVU435
+ 326:BSP/wizchip_conf.c ****          ((uint8_t*)arg)[2] = WIZCHIP.id[2];
+ 1684              		.loc 1 326 41 is_stmt 0 view .LVU436
+ 1685 00a8 DA78     		ldrb	r2, [r3, #3]	@ zero_extendqisi2
+ 326:BSP/wizchip_conf.c ****          ((uint8_t*)arg)[2] = WIZCHIP.id[2];
+ 1686              		.loc 1 326 29 view .LVU437
+ 1687 00aa 4A70     		strb	r2, [r1, #1]
+ 327:BSP/wizchip_conf.c ****          ((uint8_t*)arg)[3] = WIZCHIP.id[3];
+ 1688              		.loc 1 327 10 is_stmt 1 view .LVU438
+ 327:BSP/wizchip_conf.c ****          ((uint8_t*)arg)[3] = WIZCHIP.id[3];
+ 1689              		.loc 1 327 41 is_stmt 0 view .LVU439
+ARM GAS  /tmp/cc5ibyYO.s 			page 47
+
+
+ 1690 00ac 1A79     		ldrb	r2, [r3, #4]	@ zero_extendqisi2
+ 327:BSP/wizchip_conf.c ****          ((uint8_t*)arg)[3] = WIZCHIP.id[3];
+ 1691              		.loc 1 327 29 view .LVU440
+ 1692 00ae 8A70     		strb	r2, [r1, #2]
+ 328:BSP/wizchip_conf.c ****          ((uint8_t*)arg)[4] = WIZCHIP.id[4];
+ 1693              		.loc 1 328 10 is_stmt 1 view .LVU441
+ 328:BSP/wizchip_conf.c ****          ((uint8_t*)arg)[4] = WIZCHIP.id[4];
+ 1694              		.loc 1 328 41 is_stmt 0 view .LVU442
+ 1695 00b0 5A79     		ldrb	r2, [r3, #5]	@ zero_extendqisi2
+ 328:BSP/wizchip_conf.c ****          ((uint8_t*)arg)[4] = WIZCHIP.id[4];
+ 1696              		.loc 1 328 29 view .LVU443
+ 1697 00b2 CA70     		strb	r2, [r1, #3]
+ 329:BSP/wizchip_conf.c ****          ((uint8_t*)arg)[5] = WIZCHIP.id[5];
+ 1698              		.loc 1 329 10 is_stmt 1 view .LVU444
+ 329:BSP/wizchip_conf.c ****          ((uint8_t*)arg)[5] = WIZCHIP.id[5];
+ 1699              		.loc 1 329 41 is_stmt 0 view .LVU445
+ 1700 00b4 9A79     		ldrb	r2, [r3, #6]	@ zero_extendqisi2
+ 329:BSP/wizchip_conf.c ****          ((uint8_t*)arg)[5] = WIZCHIP.id[5];
+ 1701              		.loc 1 329 29 view .LVU446
+ 1702 00b6 0A71     		strb	r2, [r1, #4]
+ 330:BSP/wizchip_conf.c ****          ((uint8_t*)arg)[6] = 0;
+ 1703              		.loc 1 330 10 is_stmt 1 view .LVU447
+ 330:BSP/wizchip_conf.c ****          ((uint8_t*)arg)[6] = 0;
+ 1704              		.loc 1 330 41 is_stmt 0 view .LVU448
+ 1705 00b8 DB79     		ldrb	r3, [r3, #7]	@ zero_extendqisi2
+ 330:BSP/wizchip_conf.c ****          ((uint8_t*)arg)[6] = 0;
+ 1706              		.loc 1 330 29 view .LVU449
+ 1707 00ba 4B71     		strb	r3, [r1, #5]
+ 331:BSP/wizchip_conf.c ****          break;
+ 1708              		.loc 1 331 10 is_stmt 1 view .LVU450
+ 331:BSP/wizchip_conf.c ****          break;
+ 1709              		.loc 1 331 29 is_stmt 0 view .LVU451
+ 1710 00bc 0020     		movs	r0, #0
+ 1711              	.LVL157:
+ 331:BSP/wizchip_conf.c ****          break;
+ 1712              		.loc 1 331 29 view .LVU452
+ 1713 00be 8871     		strb	r0, [r1, #6]
+ 332:BSP/wizchip_conf.c ****    #if _WIZCHIP_ == W5100S || _WIZCHIP_ == W5500
+ 1714              		.loc 1 332 10 is_stmt 1 view .LVU453
+ 1715 00c0 22E0     		b	.L132
+ 1716              	.LVL158:
+ 1717              	.L135:
+ 335:BSP/wizchip_conf.c ****          break;
+ 1718              		.loc 1 335 10 view .LVU454
+ 1719 00c2 FFF7FEFF 		bl	wizphy_reset
+ 1720              	.LVL159:
+ 336:BSP/wizchip_conf.c ****       case CW_SET_PHYCONF:
+ 1721              		.loc 1 336 10 view .LVU455
+ 363:BSP/wizchip_conf.c **** }
+ 1722              		.loc 1 363 11 is_stmt 0 view .LVU456
+ 1723 00c6 0020     		movs	r0, #0
+ 336:BSP/wizchip_conf.c ****       case CW_SET_PHYCONF:
+ 1724              		.loc 1 336 10 view .LVU457
+ 1725 00c8 1EE0     		b	.L132
+ 1726              	.LVL160:
+ 1727              	.L134:
+ 338:BSP/wizchip_conf.c ****          break;
+ARM GAS  /tmp/cc5ibyYO.s 			page 48
+
+
+ 1728              		.loc 1 338 10 is_stmt 1 view .LVU458
+ 1729 00ca 0846     		mov	r0, r1
+ 1730              	.LVL161:
+ 338:BSP/wizchip_conf.c ****          break;
+ 1731              		.loc 1 338 10 is_stmt 0 view .LVU459
+ 1732 00cc FFF7FEFF 		bl	wizphy_setphyconf
+ 1733              	.LVL162:
+ 339:BSP/wizchip_conf.c ****       case CW_GET_PHYCONF:
+ 1734              		.loc 1 339 10 is_stmt 1 view .LVU460
+ 363:BSP/wizchip_conf.c **** }
+ 1735              		.loc 1 363 11 is_stmt 0 view .LVU461
+ 1736 00d0 0020     		movs	r0, #0
+ 339:BSP/wizchip_conf.c ****       case CW_GET_PHYCONF:
+ 1737              		.loc 1 339 10 view .LVU462
+ 1738 00d2 19E0     		b	.L132
+ 1739              	.LVL163:
+ 1740              	.L133:
+ 341:BSP/wizchip_conf.c ****          break;
+ 1741              		.loc 1 341 10 is_stmt 1 view .LVU463
+ 1742 00d4 0846     		mov	r0, r1
+ 1743              	.LVL164:
+ 341:BSP/wizchip_conf.c ****          break;
+ 1744              		.loc 1 341 10 is_stmt 0 view .LVU464
+ 1745 00d6 FFF7FEFF 		bl	wizphy_getphyconf
+ 1746              	.LVL165:
+ 342:BSP/wizchip_conf.c ****       case CW_GET_PHYSTATUS:
+ 1747              		.loc 1 342 10 is_stmt 1 view .LVU465
+ 363:BSP/wizchip_conf.c **** }
+ 1748              		.loc 1 363 11 is_stmt 0 view .LVU466
+ 1749 00da 0020     		movs	r0, #0
+ 342:BSP/wizchip_conf.c ****       case CW_GET_PHYSTATUS:
+ 1750              		.loc 1 342 10 view .LVU467
+ 1751 00dc 14E0     		b	.L132
+ 1752              	.LVL166:
+ 1753              	.L131:
+ 346:BSP/wizchip_conf.c ****    #endif
+ 1754              		.loc 1 346 10 is_stmt 1 view .LVU468
+ 346:BSP/wizchip_conf.c ****    #endif
+ 1755              		.loc 1 346 17 is_stmt 0 view .LVU469
+ 1756 00de 0878     		ldrb	r0, [r1]	@ zero_extendqisi2
+ 1757              	.LVL167:
+ 346:BSP/wizchip_conf.c ****    #endif
+ 1758              		.loc 1 346 17 view .LVU470
+ 1759 00e0 FFF7FEFF 		bl	wizphy_setphypmode
+ 1760              	.LVL168:
+ 346:BSP/wizchip_conf.c ****    #endif
+ 1761              		.loc 1 346 17 view .LVU471
+ 1762 00e4 10E0     		b	.L132
+ 1763              	.LVL169:
+ 1764              	.L130:
+ 350:BSP/wizchip_conf.c ****          if((int8_t)tmp == -1) return -1;
+ 1765              		.loc 1 350 10 is_stmt 1 view .LVU472
+ 350:BSP/wizchip_conf.c ****          if((int8_t)tmp == -1) return -1;
+ 1766              		.loc 1 350 16 is_stmt 0 view .LVU473
+ 1767 00e6 FFF7FEFF 		bl	wizphy_getphypmode
+ 1768              	.LVL170:
+ 350:BSP/wizchip_conf.c ****          if((int8_t)tmp == -1) return -1;
+ARM GAS  /tmp/cc5ibyYO.s 			page 49
+
+
+ 1769              		.loc 1 350 14 discriminator 1 view .LVU474
+ 1770 00ea C0B2     		uxtb	r0, r0
+ 1771              	.LVL171:
+ 351:BSP/wizchip_conf.c ****          *(uint8_t*)arg = tmp;
+ 1772              		.loc 1 351 10 is_stmt 1 view .LVU475
+ 351:BSP/wizchip_conf.c ****          *(uint8_t*)arg = tmp;
+ 1773              		.loc 1 351 12 is_stmt 0 view .LVU476
+ 1774 00ec FF28     		cmp	r0, #255
+ 1775 00ee 0DD0     		beq	.L147
+ 352:BSP/wizchip_conf.c ****          break;
+ 1776              		.loc 1 352 10 is_stmt 1 view .LVU477
+ 352:BSP/wizchip_conf.c ****          break;
+ 1777              		.loc 1 352 25 is_stmt 0 view .LVU478
+ 1778 00f0 2070     		strb	r0, [r4]
+ 353:BSP/wizchip_conf.c ****       case CW_GET_PHYLINK:
+ 1779              		.loc 1 353 10 is_stmt 1 view .LVU479
+ 363:BSP/wizchip_conf.c **** }
+ 1780              		.loc 1 363 11 is_stmt 0 view .LVU480
+ 1781 00f2 0020     		movs	r0, #0
+ 1782              	.LVL172:
+ 353:BSP/wizchip_conf.c ****       case CW_GET_PHYLINK:
+ 1783              		.loc 1 353 10 view .LVU481
+ 1784 00f4 08E0     		b	.L132
+ 1785              	.LVL173:
+ 1786              	.L128:
+ 355:BSP/wizchip_conf.c ****          if((int8_t)tmp == -1) return -1;
+ 1787              		.loc 1 355 10 is_stmt 1 view .LVU482
+ 355:BSP/wizchip_conf.c ****          if((int8_t)tmp == -1) return -1;
+ 1788              		.loc 1 355 16 is_stmt 0 view .LVU483
+ 1789 00f6 FFF7FEFF 		bl	wizphy_getphylink
+ 1790              	.LVL174:
+ 355:BSP/wizchip_conf.c ****          if((int8_t)tmp == -1) return -1;
+ 1791              		.loc 1 355 14 discriminator 1 view .LVU484
+ 1792 00fa C0B2     		uxtb	r0, r0
+ 1793              	.LVL175:
+ 356:BSP/wizchip_conf.c ****          *(uint8_t*)arg = tmp;
+ 1794              		.loc 1 356 10 is_stmt 1 view .LVU485
+ 356:BSP/wizchip_conf.c ****          *(uint8_t*)arg = tmp;
+ 1795              		.loc 1 356 12 is_stmt 0 view .LVU486
+ 1796 00fc FF28     		cmp	r0, #255
+ 1797 00fe 08D0     		beq	.L148
+ 357:BSP/wizchip_conf.c ****          break;
+ 1798              		.loc 1 357 10 is_stmt 1 view .LVU487
+ 357:BSP/wizchip_conf.c ****          break;
+ 1799              		.loc 1 357 25 is_stmt 0 view .LVU488
+ 1800 0100 2070     		strb	r0, [r4]
+ 358:BSP/wizchip_conf.c ****    #endif      
+ 1801              		.loc 1 358 10 is_stmt 1 view .LVU489
+ 363:BSP/wizchip_conf.c **** }
+ 1802              		.loc 1 363 11 is_stmt 0 view .LVU490
+ 1803 0102 0020     		movs	r0, #0
+ 1804              	.LVL176:
+ 358:BSP/wizchip_conf.c ****    #endif      
+ 1805              		.loc 1 358 10 view .LVU491
+ 1806 0104 00E0     		b	.L132
+ 1807              	.LVL177:
+ 1808              	.L146:
+ARM GAS  /tmp/cc5ibyYO.s 			page 50
+
+
+ 363:BSP/wizchip_conf.c **** }
+ 1809              		.loc 1 363 11 view .LVU492
+ 1810 0106 0020     		movs	r0, #0
+ 1811              	.LVL178:
+ 1812              	.L132:
+ 364:BSP/wizchip_conf.c **** 
+ 1813              		.loc 1 364 1 view .LVU493
+ 1814 0108 03B0     		add	sp, sp, #12
+ 1815              	.LCFI17:
+ 1816              		.cfi_remember_state
+ 1817              		.cfi_def_cfa_offset 12
+ 1818              		@ sp needed
+ 1819 010a 30BD     		pop	{r4, r5, pc}
+ 1820              	.LVL179:
+ 1821              	.L147:
+ 1822              	.LCFI18:
+ 1823              		.cfi_restore_state
+ 351:BSP/wizchip_conf.c ****          *(uint8_t*)arg = tmp;
+ 1824              		.loc 1 351 39 discriminator 1 view .LVU494
+ 1825 010c 4FF0FF30 		mov	r0, #-1
+ 1826              	.LVL180:
+ 351:BSP/wizchip_conf.c ****          *(uint8_t*)arg = tmp;
+ 1827              		.loc 1 351 39 discriminator 1 view .LVU495
+ 1828 0110 FAE7     		b	.L132
+ 1829              	.LVL181:
+ 1830              	.L148:
+ 356:BSP/wizchip_conf.c ****          *(uint8_t*)arg = tmp;
+ 1831              		.loc 1 356 39 discriminator 1 view .LVU496
+ 1832 0112 4FF0FF30 		mov	r0, #-1
+ 1833              	.LVL182:
+ 356:BSP/wizchip_conf.c ****          *(uint8_t*)arg = tmp;
+ 1834              		.loc 1 356 39 discriminator 1 view .LVU497
+ 1835 0116 F7E7     		b	.L132
+ 1836              	.L151:
+ 1837              		.align	2
+ 1838              	.L150:
+ 1839 0118 00000000 		.word	WIZCHIP
+ 1840              		.cfi_endproc
+ 1841              	.LFE15:
+ 1843              		.section	.text.wizchip_setnetinfo,"ax",%progbits
+ 1844              		.align	1
+ 1845              		.global	wizchip_setnetinfo
+ 1846              		.syntax unified
+ 1847              		.thumb
+ 1848              		.thumb_func
+ 1850              	wizchip_setnetinfo:
+ 1851              	.LVL183:
+ 1852              	.LFB30:
+ 849:BSP/wizchip_conf.c **** #endif
+ 850:BSP/wizchip_conf.c **** 
+ 851:BSP/wizchip_conf.c **** 
+ 852:BSP/wizchip_conf.c **** void wizchip_setnetinfo(wiz_NetInfo* pnetinfo)
+ 853:BSP/wizchip_conf.c **** {
+ 1853              		.loc 1 853 1 is_stmt 1 view -0
+ 1854              		.cfi_startproc
+ 1855              		@ args = 0, pretend = 0, frame = 0
+ 1856              		@ frame_needed = 0, uses_anonymous_args = 0
+ARM GAS  /tmp/cc5ibyYO.s 			page 51
+
+
+ 1857              		.loc 1 853 1 is_stmt 0 view .LVU499
+ 1858 0000 10B5     		push	{r4, lr}
+ 1859              	.LCFI19:
+ 1860              		.cfi_def_cfa_offset 8
+ 1861              		.cfi_offset 4, -8
+ 1862              		.cfi_offset 14, -4
+ 1863 0002 0446     		mov	r4, r0
+ 854:BSP/wizchip_conf.c ****    setSHAR(pnetinfo->mac);
+ 1864              		.loc 1 854 4 is_stmt 1 view .LVU500
+ 1865 0004 0622     		movs	r2, #6
+ 1866 0006 0146     		mov	r1, r0
+ 1867 0008 4FF41060 		mov	r0, #2304
+ 1868              	.LVL184:
+ 1869              		.loc 1 854 4 is_stmt 0 view .LVU501
+ 1870 000c FFF7FEFF 		bl	WIZCHIP_WRITE_BUF
+ 1871              	.LVL185:
+ 855:BSP/wizchip_conf.c ****    setGAR(pnetinfo->gw);
+ 1872              		.loc 1 855 4 is_stmt 1 view .LVU502
+ 1873 0010 0422     		movs	r2, #4
+ 1874 0012 04F10E01 		add	r1, r4, #14
+ 1875 0016 4FF48070 		mov	r0, #256
+ 1876 001a FFF7FEFF 		bl	WIZCHIP_WRITE_BUF
+ 1877              	.LVL186:
+ 856:BSP/wizchip_conf.c ****    setSUBR(pnetinfo->sn);
+ 1878              		.loc 1 856 4 view .LVU503
+ 1879 001e 0422     		movs	r2, #4
+ 1880 0020 04F10A01 		add	r1, r4, #10
+ 1881 0024 4FF4A060 		mov	r0, #1280
+ 1882 0028 FFF7FEFF 		bl	WIZCHIP_WRITE_BUF
+ 1883              	.LVL187:
+ 857:BSP/wizchip_conf.c ****    setSIPR(pnetinfo->ip);
+ 1884              		.loc 1 857 4 view .LVU504
+ 1885 002c 0422     		movs	r2, #4
+ 1886 002e A11D     		adds	r1, r4, #6
+ 1887 0030 4FF47060 		mov	r0, #3840
+ 1888 0034 FFF7FEFF 		bl	WIZCHIP_WRITE_BUF
+ 1889              	.LVL188:
+ 858:BSP/wizchip_conf.c ****    _DNS_[0] = pnetinfo->dns[0];
+ 1890              		.loc 1 858 4 view .LVU505
+ 1891              		.loc 1 858 28 is_stmt 0 view .LVU506
+ 1892 0038 A27C     		ldrb	r2, [r4, #18]	@ zero_extendqisi2
+ 1893              		.loc 1 858 13 view .LVU507
+ 1894 003a 064B     		ldr	r3, .L154
+ 1895 003c 1A70     		strb	r2, [r3]
+ 859:BSP/wizchip_conf.c ****    _DNS_[1] = pnetinfo->dns[1];
+ 1896              		.loc 1 859 4 is_stmt 1 view .LVU508
+ 1897              		.loc 1 859 28 is_stmt 0 view .LVU509
+ 1898 003e E27C     		ldrb	r2, [r4, #19]	@ zero_extendqisi2
+ 1899              		.loc 1 859 13 view .LVU510
+ 1900 0040 5A70     		strb	r2, [r3, #1]
+ 860:BSP/wizchip_conf.c ****    _DNS_[2] = pnetinfo->dns[2];
+ 1901              		.loc 1 860 4 is_stmt 1 view .LVU511
+ 1902              		.loc 1 860 28 is_stmt 0 view .LVU512
+ 1903 0042 227D     		ldrb	r2, [r4, #20]	@ zero_extendqisi2
+ 1904              		.loc 1 860 13 view .LVU513
+ 1905 0044 9A70     		strb	r2, [r3, #2]
+ 861:BSP/wizchip_conf.c ****    _DNS_[3] = pnetinfo->dns[3];
+ARM GAS  /tmp/cc5ibyYO.s 			page 52
+
+
+ 1906              		.loc 1 861 4 is_stmt 1 view .LVU514
+ 1907              		.loc 1 861 28 is_stmt 0 view .LVU515
+ 1908 0046 627D     		ldrb	r2, [r4, #21]	@ zero_extendqisi2
+ 1909              		.loc 1 861 13 view .LVU516
+ 1910 0048 DA70     		strb	r2, [r3, #3]
+ 862:BSP/wizchip_conf.c ****    _DHCP_   = pnetinfo->dhcp;
+ 1911              		.loc 1 862 4 is_stmt 1 view .LVU517
+ 1912              		.loc 1 862 23 is_stmt 0 view .LVU518
+ 1913 004a A27D     		ldrb	r2, [r4, #22]	@ zero_extendqisi2
+ 1914              		.loc 1 862 13 view .LVU519
+ 1915 004c 024B     		ldr	r3, .L154+4
+ 1916 004e 1A70     		strb	r2, [r3]
+ 863:BSP/wizchip_conf.c **** }
+ 1917              		.loc 1 863 1 view .LVU520
+ 1918 0050 10BD     		pop	{r4, pc}
+ 1919              	.LVL189:
+ 1920              	.L155:
+ 1921              		.loc 1 863 1 view .LVU521
+ 1922 0052 00BF     		.align	2
+ 1923              	.L154:
+ 1924 0054 00000000 		.word	_DNS_
+ 1925 0058 00000000 		.word	_DHCP_
+ 1926              		.cfi_endproc
+ 1927              	.LFE30:
+ 1929              		.section	.text.wizchip_getnetinfo,"ax",%progbits
+ 1930              		.align	1
+ 1931              		.global	wizchip_getnetinfo
+ 1932              		.syntax unified
+ 1933              		.thumb
+ 1934              		.thumb_func
+ 1936              	wizchip_getnetinfo:
+ 1937              	.LVL190:
+ 1938              	.LFB31:
+ 864:BSP/wizchip_conf.c **** 
+ 865:BSP/wizchip_conf.c **** void wizchip_getnetinfo(wiz_NetInfo* pnetinfo)
+ 866:BSP/wizchip_conf.c **** {
+ 1939              		.loc 1 866 1 is_stmt 1 view -0
+ 1940              		.cfi_startproc
+ 1941              		@ args = 0, pretend = 0, frame = 0
+ 1942              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1943              		.loc 1 866 1 is_stmt 0 view .LVU523
+ 1944 0000 10B5     		push	{r4, lr}
+ 1945              	.LCFI20:
+ 1946              		.cfi_def_cfa_offset 8
+ 1947              		.cfi_offset 4, -8
+ 1948              		.cfi_offset 14, -4
+ 1949 0002 0446     		mov	r4, r0
+ 867:BSP/wizchip_conf.c ****    getSHAR(pnetinfo->mac);
+ 1950              		.loc 1 867 4 is_stmt 1 view .LVU524
+ 1951 0004 0622     		movs	r2, #6
+ 1952 0006 0146     		mov	r1, r0
+ 1953 0008 4FF41060 		mov	r0, #2304
+ 1954              	.LVL191:
+ 1955              		.loc 1 867 4 is_stmt 0 view .LVU525
+ 1956 000c FFF7FEFF 		bl	WIZCHIP_READ_BUF
+ 1957              	.LVL192:
+ 868:BSP/wizchip_conf.c ****    getGAR(pnetinfo->gw);
+ARM GAS  /tmp/cc5ibyYO.s 			page 53
+
+
+ 1958              		.loc 1 868 4 is_stmt 1 view .LVU526
+ 1959 0010 0422     		movs	r2, #4
+ 1960 0012 04F10E01 		add	r1, r4, #14
+ 1961 0016 4FF48070 		mov	r0, #256
+ 1962 001a FFF7FEFF 		bl	WIZCHIP_READ_BUF
+ 1963              	.LVL193:
+ 869:BSP/wizchip_conf.c ****    getSUBR(pnetinfo->sn);
+ 1964              		.loc 1 869 4 view .LVU527
+ 1965 001e 0422     		movs	r2, #4
+ 1966 0020 04F10A01 		add	r1, r4, #10
+ 1967 0024 4FF4A060 		mov	r0, #1280
+ 1968 0028 FFF7FEFF 		bl	WIZCHIP_READ_BUF
+ 1969              	.LVL194:
+ 870:BSP/wizchip_conf.c ****    getSIPR(pnetinfo->ip);
+ 1970              		.loc 1 870 4 view .LVU528
+ 1971 002c 0422     		movs	r2, #4
+ 1972 002e A11D     		adds	r1, r4, #6
+ 1973 0030 4FF47060 		mov	r0, #3840
+ 1974 0034 FFF7FEFF 		bl	WIZCHIP_READ_BUF
+ 1975              	.LVL195:
+ 871:BSP/wizchip_conf.c ****    pnetinfo->dns[0]= _DNS_[0];
+ 1976              		.loc 1 871 4 view .LVU529
+ 1977              		.loc 1 871 27 is_stmt 0 view .LVU530
+ 1978 0038 064B     		ldr	r3, .L158
+ 1979 003a 1A78     		ldrb	r2, [r3]	@ zero_extendqisi2
+ 1980              		.loc 1 871 20 view .LVU531
+ 1981 003c A274     		strb	r2, [r4, #18]
+ 872:BSP/wizchip_conf.c ****    pnetinfo->dns[1]= _DNS_[1];
+ 1982              		.loc 1 872 4 is_stmt 1 view .LVU532
+ 1983              		.loc 1 872 27 is_stmt 0 view .LVU533
+ 1984 003e 5A78     		ldrb	r2, [r3, #1]	@ zero_extendqisi2
+ 1985              		.loc 1 872 20 view .LVU534
+ 1986 0040 E274     		strb	r2, [r4, #19]
+ 873:BSP/wizchip_conf.c ****    pnetinfo->dns[2]= _DNS_[2];
+ 1987              		.loc 1 873 4 is_stmt 1 view .LVU535
+ 1988              		.loc 1 873 27 is_stmt 0 view .LVU536
+ 1989 0042 9A78     		ldrb	r2, [r3, #2]	@ zero_extendqisi2
+ 1990              		.loc 1 873 20 view .LVU537
+ 1991 0044 2275     		strb	r2, [r4, #20]
+ 874:BSP/wizchip_conf.c ****    pnetinfo->dns[3]= _DNS_[3];
+ 1992              		.loc 1 874 4 is_stmt 1 view .LVU538
+ 1993              		.loc 1 874 27 is_stmt 0 view .LVU539
+ 1994 0046 DB78     		ldrb	r3, [r3, #3]	@ zero_extendqisi2
+ 1995              		.loc 1 874 20 view .LVU540
+ 1996 0048 6375     		strb	r3, [r4, #21]
+ 875:BSP/wizchip_conf.c ****    pnetinfo->dhcp  = _DHCP_;
+ 1997              		.loc 1 875 4 is_stmt 1 view .LVU541
+ 1998              		.loc 1 875 20 is_stmt 0 view .LVU542
+ 1999 004a 034B     		ldr	r3, .L158+4
+ 2000 004c 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 2001 004e A375     		strb	r3, [r4, #22]
+ 876:BSP/wizchip_conf.c **** }
+ 2002              		.loc 1 876 1 view .LVU543
+ 2003 0050 10BD     		pop	{r4, pc}
+ 2004              	.LVL196:
+ 2005              	.L159:
+ 2006              		.loc 1 876 1 view .LVU544
+ARM GAS  /tmp/cc5ibyYO.s 			page 54
+
+
+ 2007 0052 00BF     		.align	2
+ 2008              	.L158:
+ 2009 0054 00000000 		.word	_DNS_
+ 2010 0058 00000000 		.word	_DHCP_
+ 2011              		.cfi_endproc
+ 2012              	.LFE31:
+ 2014              		.section	.text.wizchip_setnetmode,"ax",%progbits
+ 2015              		.align	1
+ 2016              		.global	wizchip_setnetmode
+ 2017              		.syntax unified
+ 2018              		.thumb
+ 2019              		.thumb_func
+ 2021              	wizchip_setnetmode:
+ 2022              	.LVL197:
+ 2023              	.LFB32:
+ 877:BSP/wizchip_conf.c **** 
+ 878:BSP/wizchip_conf.c **** int8_t wizchip_setnetmode(netmode_type netmode)
+ 879:BSP/wizchip_conf.c **** {
+ 2024              		.loc 1 879 1 is_stmt 1 view -0
+ 2025              		.cfi_startproc
+ 2026              		@ args = 0, pretend = 0, frame = 0
+ 2027              		@ frame_needed = 0, uses_anonymous_args = 0
+ 880:BSP/wizchip_conf.c ****    uint8_t tmp = 0;
+ 2028              		.loc 1 880 4 view .LVU546
+ 881:BSP/wizchip_conf.c **** #if _WIZCHIP_ != W5500
+ 882:BSP/wizchip_conf.c ****    if(netmode & ~(NM_WAKEONLAN | NM_PPPOE | NM_PINGBLOCK)) return -1;
+ 883:BSP/wizchip_conf.c **** #else
+ 884:BSP/wizchip_conf.c ****    if(netmode & ~(NM_WAKEONLAN | NM_PPPOE | NM_PINGBLOCK | NM_FORCEARP)) return -1;
+ 2029              		.loc 1 884 4 view .LVU547
+ 2030              		.loc 1 884 6 is_stmt 0 view .LVU548
+ 2031 0000 30F03A03 		bics	r3, r0, #58
+ 2032 0004 0CD1     		bne	.L162
+ 879:BSP/wizchip_conf.c ****    uint8_t tmp = 0;
+ 2033              		.loc 1 879 1 view .LVU549
+ 2034 0006 10B5     		push	{r4, lr}
+ 2035              	.LCFI21:
+ 2036              		.cfi_def_cfa_offset 8
+ 2037              		.cfi_offset 4, -8
+ 2038              		.cfi_offset 14, -4
+ 2039 0008 0446     		mov	r4, r0
+ 885:BSP/wizchip_conf.c **** #endif      
+ 886:BSP/wizchip_conf.c ****    tmp = getMR();
+ 2040              		.loc 1 886 4 is_stmt 1 view .LVU550
+ 2041              		.loc 1 886 10 is_stmt 0 view .LVU551
+ 2042 000a 0020     		movs	r0, #0
+ 2043              	.LVL198:
+ 2044              		.loc 1 886 10 view .LVU552
+ 2045 000c FFF7FEFF 		bl	WIZCHIP_READ
+ 2046              	.LVL199:
+ 887:BSP/wizchip_conf.c ****    tmp |= (uint8_t)netmode;
+ 2047              		.loc 1 887 4 is_stmt 1 view .LVU553
+ 2048              		.loc 1 887 8 is_stmt 0 view .LVU554
+ 2049 0010 44EA0001 		orr	r1, r4, r0
+ 2050              	.LVL200:
+ 888:BSP/wizchip_conf.c ****    setMR(tmp);
+ 2051              		.loc 1 888 4 is_stmt 1 view .LVU555
+ 2052 0014 C9B2     		uxtb	r1, r1
+ARM GAS  /tmp/cc5ibyYO.s 			page 55
+
+
+ 2053              		.loc 1 888 4 is_stmt 0 view .LVU556
+ 2054 0016 0020     		movs	r0, #0
+ 2055 0018 FFF7FEFF 		bl	WIZCHIP_WRITE
+ 2056              	.LVL201:
+ 889:BSP/wizchip_conf.c ****    return 0;
+ 2057              		.loc 1 889 4 is_stmt 1 view .LVU557
+ 2058              		.loc 1 889 11 is_stmt 0 view .LVU558
+ 2059 001c 0020     		movs	r0, #0
+ 890:BSP/wizchip_conf.c **** }
+ 2060              		.loc 1 890 1 view .LVU559
+ 2061 001e 10BD     		pop	{r4, pc}
+ 2062              	.LVL202:
+ 2063              	.L162:
+ 2064              	.LCFI22:
+ 2065              		.cfi_def_cfa_offset 0
+ 2066              		.cfi_restore 4
+ 2067              		.cfi_restore 14
+ 884:BSP/wizchip_conf.c **** #endif      
+ 2068              		.loc 1 884 81 discriminator 1 view .LVU560
+ 2069 0020 4FF0FF30 		mov	r0, #-1
+ 2070              	.LVL203:
+ 2071              		.loc 1 890 1 view .LVU561
+ 2072 0024 7047     		bx	lr
+ 2073              		.cfi_endproc
+ 2074              	.LFE32:
+ 2076              		.section	.text.wizchip_getnetmode,"ax",%progbits
+ 2077              		.align	1
+ 2078              		.global	wizchip_getnetmode
+ 2079              		.syntax unified
+ 2080              		.thumb
+ 2081              		.thumb_func
+ 2083              	wizchip_getnetmode:
+ 2084              	.LFB33:
+ 891:BSP/wizchip_conf.c **** 
+ 892:BSP/wizchip_conf.c **** netmode_type wizchip_getnetmode(void)
+ 893:BSP/wizchip_conf.c **** {
+ 2085              		.loc 1 893 1 is_stmt 1 view -0
+ 2086              		.cfi_startproc
+ 2087              		@ args = 0, pretend = 0, frame = 0
+ 2088              		@ frame_needed = 0, uses_anonymous_args = 0
+ 2089 0000 08B5     		push	{r3, lr}
+ 2090              	.LCFI23:
+ 2091              		.cfi_def_cfa_offset 8
+ 2092              		.cfi_offset 3, -8
+ 2093              		.cfi_offset 14, -4
+ 894:BSP/wizchip_conf.c ****    return (netmode_type) getMR();
+ 2094              		.loc 1 894 4 view .LVU563
+ 2095              		.loc 1 894 26 is_stmt 0 view .LVU564
+ 2096 0002 0020     		movs	r0, #0
+ 2097 0004 FFF7FEFF 		bl	WIZCHIP_READ
+ 2098              	.LVL204:
+ 895:BSP/wizchip_conf.c **** }
+ 2099              		.loc 1 895 1 view .LVU565
+ 2100 0008 08BD     		pop	{r3, pc}
+ 2101              		.cfi_endproc
+ 2102              	.LFE33:
+ 2104              		.section	.text.wizchip_settimeout,"ax",%progbits
+ARM GAS  /tmp/cc5ibyYO.s 			page 56
+
+
+ 2105              		.align	1
+ 2106              		.global	wizchip_settimeout
+ 2107              		.syntax unified
+ 2108              		.thumb
+ 2109              		.thumb_func
+ 2111              	wizchip_settimeout:
+ 2112              	.LVL205:
+ 2113              	.LFB34:
+ 896:BSP/wizchip_conf.c **** 
+ 897:BSP/wizchip_conf.c **** void wizchip_settimeout(wiz_NetTimeout* nettime)
+ 898:BSP/wizchip_conf.c **** {
+ 2114              		.loc 1 898 1 is_stmt 1 view -0
+ 2115              		.cfi_startproc
+ 2116              		@ args = 0, pretend = 0, frame = 0
+ 2117              		@ frame_needed = 0, uses_anonymous_args = 0
+ 2118              		.loc 1 898 1 is_stmt 0 view .LVU567
+ 2119 0000 10B5     		push	{r4, lr}
+ 2120              	.LCFI24:
+ 2121              		.cfi_def_cfa_offset 8
+ 2122              		.cfi_offset 4, -8
+ 2123              		.cfi_offset 14, -4
+ 2124 0002 0446     		mov	r4, r0
+ 899:BSP/wizchip_conf.c ****    setRCR(nettime->retry_cnt);
+ 2125              		.loc 1 899 4 is_stmt 1 view .LVU568
+ 2126 0004 0178     		ldrb	r1, [r0]	@ zero_extendqisi2
+ 2127 0006 4FF4D850 		mov	r0, #6912
+ 2128              	.LVL206:
+ 2129              		.loc 1 899 4 is_stmt 0 view .LVU569
+ 2130 000a FFF7FEFF 		bl	WIZCHIP_WRITE
+ 2131              	.LVL207:
+ 900:BSP/wizchip_conf.c ****    setRTR(nettime->time_100us);
+ 2132              		.loc 1 900 4 is_stmt 1 view .LVU570
+ 2133 000e 6188     		ldrh	r1, [r4, #2]
+ 2134 0010 090A     		lsrs	r1, r1, #8
+ 2135 0012 4FF4C850 		mov	r0, #6400
+ 2136 0016 FFF7FEFF 		bl	WIZCHIP_WRITE
+ 2137              	.LVL208:
+ 2138              		.loc 1 900 4 discriminator 1 view .LVU571
+ 2139 001a A178     		ldrb	r1, [r4, #2]	@ zero_extendqisi2
+ 2140 001c 4FF4D050 		mov	r0, #6656
+ 2141 0020 FFF7FEFF 		bl	WIZCHIP_WRITE
+ 2142              	.LVL209:
+ 2143              		.loc 1 900 31 discriminator 2 view .LVU572
+ 901:BSP/wizchip_conf.c **** }
+ 2144              		.loc 1 901 1 is_stmt 0 view .LVU573
+ 2145 0024 10BD     		pop	{r4, pc}
+ 2146              		.loc 1 901 1 view .LVU574
+ 2147              		.cfi_endproc
+ 2148              	.LFE34:
+ 2150              		.section	.text.wizchip_gettimeout,"ax",%progbits
+ 2151              		.align	1
+ 2152              		.global	wizchip_gettimeout
+ 2153              		.syntax unified
+ 2154              		.thumb
+ 2155              		.thumb_func
+ 2157              	wizchip_gettimeout:
+ 2158              	.LVL210:
+ARM GAS  /tmp/cc5ibyYO.s 			page 57
+
+
+ 2159              	.LFB35:
+ 902:BSP/wizchip_conf.c **** 
+ 903:BSP/wizchip_conf.c **** void wizchip_gettimeout(wiz_NetTimeout* nettime)
+ 904:BSP/wizchip_conf.c **** {
+ 2160              		.loc 1 904 1 is_stmt 1 view -0
+ 2161              		.cfi_startproc
+ 2162              		@ args = 0, pretend = 0, frame = 0
+ 2163              		@ frame_needed = 0, uses_anonymous_args = 0
+ 2164              		.loc 1 904 1 is_stmt 0 view .LVU576
+ 2165 0000 38B5     		push	{r3, r4, r5, lr}
+ 2166              	.LCFI25:
+ 2167              		.cfi_def_cfa_offset 16
+ 2168              		.cfi_offset 3, -16
+ 2169              		.cfi_offset 4, -12
+ 2170              		.cfi_offset 5, -8
+ 2171              		.cfi_offset 14, -4
+ 2172 0002 0546     		mov	r5, r0
+ 905:BSP/wizchip_conf.c ****    nettime->retry_cnt = getRCR();
+ 2173              		.loc 1 905 4 is_stmt 1 view .LVU577
+ 2174              		.loc 1 905 25 is_stmt 0 view .LVU578
+ 2175 0004 4FF4D850 		mov	r0, #6912
+ 2176              	.LVL211:
+ 2177              		.loc 1 905 25 view .LVU579
+ 2178 0008 FFF7FEFF 		bl	WIZCHIP_READ
+ 2179              	.LVL212:
+ 2180              		.loc 1 905 23 discriminator 1 view .LVU580
+ 2181 000c 2870     		strb	r0, [r5]
+ 906:BSP/wizchip_conf.c ****    nettime->time_100us = getRTR();
+ 2182              		.loc 1 906 4 is_stmt 1 view .LVU581
+ 2183              		.loc 1 906 26 is_stmt 0 view .LVU582
+ 2184 000e 4FF4C850 		mov	r0, #6400
+ 2185 0012 FFF7FEFF 		bl	WIZCHIP_READ
+ 2186              	.LVL213:
+ 2187              		.loc 1 906 26 discriminator 1 view .LVU583
+ 2188 0016 0402     		lsls	r4, r0, #8
+ 2189 0018 A4B2     		uxth	r4, r4
+ 2190 001a 4FF4D050 		mov	r0, #6656
+ 2191 001e FFF7FEFF 		bl	WIZCHIP_READ
+ 2192              	.LVL214:
+ 2193              		.loc 1 906 26 discriminator 2 view .LVU584
+ 2194 0022 0444     		add	r4, r4, r0
+ 2195              		.loc 1 906 24 discriminator 2 view .LVU585
+ 2196 0024 6C80     		strh	r4, [r5, #2]	@ movhi
+ 907:BSP/wizchip_conf.c **** }
+ 2197              		.loc 1 907 1 view .LVU586
+ 2198 0026 38BD     		pop	{r3, r4, r5, pc}
+ 2199              		.loc 1 907 1 view .LVU587
+ 2200              		.cfi_endproc
+ 2201              	.LFE35:
+ 2203              		.section	.text.ctlnetwork,"ax",%progbits
+ 2204              		.align	1
+ 2205              		.global	ctlnetwork
+ 2206              		.syntax unified
+ 2207              		.thumb
+ 2208              		.thumb_func
+ 2210              	ctlnetwork:
+ 2211              	.LVL215:
+ARM GAS  /tmp/cc5ibyYO.s 			page 58
+
+
+ 2212              	.LFB16:
+ 368:BSP/wizchip_conf.c ****    
+ 2213              		.loc 1 368 1 is_stmt 1 view -0
+ 2214              		.cfi_startproc
+ 2215              		@ args = 0, pretend = 0, frame = 0
+ 2216              		@ frame_needed = 0, uses_anonymous_args = 0
+ 368:BSP/wizchip_conf.c ****    
+ 2217              		.loc 1 368 1 is_stmt 0 view .LVU589
+ 2218 0000 10B5     		push	{r4, lr}
+ 2219              	.LCFI26:
+ 2220              		.cfi_def_cfa_offset 8
+ 2221              		.cfi_offset 4, -8
+ 2222              		.cfi_offset 14, -4
+ 2223 0002 0C46     		mov	r4, r1
+ 370:BSP/wizchip_conf.c ****    {
+ 2224              		.loc 1 370 4 is_stmt 1 view .LVU590
+ 2225 0004 0528     		cmp	r0, #5
+ 2226 0006 21D8     		bhi	.L182
+ 2227 0008 DFE800F0 		tbb	[pc, r0]
+ 2228              	.L176:
+ 2229 000c 03       		.byte	(.L181-.L176)/2
+ 2230 000d 08       		.byte	(.L180-.L176)/2
+ 2231 000e 0D       		.byte	(.L179-.L176)/2
+ 2232 000f 11       		.byte	(.L178-.L176)/2
+ 2233 0010 16       		.byte	(.L177-.L176)/2
+ 2234 0011 1B       		.byte	(.L175-.L176)/2
+ 2235              		.p2align 1
+ 2236              	.L181:
+ 373:BSP/wizchip_conf.c ****          break;
+ 2237              		.loc 1 373 10 view .LVU591
+ 2238 0012 0846     		mov	r0, r1
+ 2239              	.LVL216:
+ 373:BSP/wizchip_conf.c ****          break;
+ 2240              		.loc 1 373 10 is_stmt 0 view .LVU592
+ 2241 0014 FFF7FEFF 		bl	wizchip_setnetinfo
+ 2242              	.LVL217:
+ 374:BSP/wizchip_conf.c ****       case CN_GET_NETINFO:
+ 2243              		.loc 1 374 10 is_stmt 1 view .LVU593
+ 392:BSP/wizchip_conf.c **** }
+ 2244              		.loc 1 392 11 is_stmt 0 view .LVU594
+ 2245 0018 0020     		movs	r0, #0
+ 2246              	.L174:
+ 393:BSP/wizchip_conf.c **** 
+ 2247              		.loc 1 393 1 view .LVU595
+ 2248 001a 10BD     		pop	{r4, pc}
+ 2249              	.LVL218:
+ 2250              	.L180:
+ 376:BSP/wizchip_conf.c ****          break;
+ 2251              		.loc 1 376 10 is_stmt 1 view .LVU596
+ 2252 001c 0846     		mov	r0, r1
+ 2253              	.LVL219:
+ 376:BSP/wizchip_conf.c ****          break;
+ 2254              		.loc 1 376 10 is_stmt 0 view .LVU597
+ 2255 001e FFF7FEFF 		bl	wizchip_getnetinfo
+ 2256              	.LVL220:
+ 377:BSP/wizchip_conf.c ****       case CN_SET_NETMODE:
+ 2257              		.loc 1 377 10 is_stmt 1 view .LVU598
+ARM GAS  /tmp/cc5ibyYO.s 			page 59
+
+
+ 392:BSP/wizchip_conf.c **** }
+ 2258              		.loc 1 392 11 is_stmt 0 view .LVU599
+ 2259 0022 0020     		movs	r0, #0
+ 377:BSP/wizchip_conf.c ****       case CN_SET_NETMODE:
+ 2260              		.loc 1 377 10 view .LVU600
+ 2261 0024 F9E7     		b	.L174
+ 2262              	.LVL221:
+ 2263              	.L179:
+ 379:BSP/wizchip_conf.c ****       case CN_GET_NETMODE:
+ 2264              		.loc 1 379 10 is_stmt 1 view .LVU601
+ 379:BSP/wizchip_conf.c ****       case CN_GET_NETMODE:
+ 2265              		.loc 1 379 17 is_stmt 0 view .LVU602
+ 2266 0026 0878     		ldrb	r0, [r1]	@ zero_extendqisi2
+ 2267              	.LVL222:
+ 379:BSP/wizchip_conf.c ****       case CN_GET_NETMODE:
+ 2268              		.loc 1 379 17 view .LVU603
+ 2269 0028 FFF7FEFF 		bl	wizchip_setnetmode
+ 2270              	.LVL223:
+ 379:BSP/wizchip_conf.c ****       case CN_GET_NETMODE:
+ 2271              		.loc 1 379 17 view .LVU604
+ 2272 002c F5E7     		b	.L174
+ 2273              	.LVL224:
+ 2274              	.L178:
+ 381:BSP/wizchip_conf.c ****          break;
+ 2275              		.loc 1 381 10 is_stmt 1 view .LVU605
+ 381:BSP/wizchip_conf.c ****          break;
+ 2276              		.loc 1 381 32 is_stmt 0 view .LVU606
+ 2277 002e FFF7FEFF 		bl	wizchip_getnetmode
+ 2278              	.LVL225:
+ 381:BSP/wizchip_conf.c ****          break;
+ 2279              		.loc 1 381 30 discriminator 1 view .LVU607
+ 2280 0032 2070     		strb	r0, [r4]
+ 382:BSP/wizchip_conf.c ****       case CN_SET_TIMEOUT:
+ 2281              		.loc 1 382 10 is_stmt 1 view .LVU608
+ 392:BSP/wizchip_conf.c **** }
+ 2282              		.loc 1 392 11 is_stmt 0 view .LVU609
+ 2283 0034 0020     		movs	r0, #0
+ 382:BSP/wizchip_conf.c ****       case CN_SET_TIMEOUT:
+ 2284              		.loc 1 382 10 view .LVU610
+ 2285 0036 F0E7     		b	.L174
+ 2286              	.LVL226:
+ 2287              	.L177:
+ 384:BSP/wizchip_conf.c ****          break;
+ 2288              		.loc 1 384 10 is_stmt 1 view .LVU611
+ 2289 0038 0846     		mov	r0, r1
+ 2290              	.LVL227:
+ 384:BSP/wizchip_conf.c ****          break;
+ 2291              		.loc 1 384 10 is_stmt 0 view .LVU612
+ 2292 003a FFF7FEFF 		bl	wizchip_settimeout
+ 2293              	.LVL228:
+ 385:BSP/wizchip_conf.c ****       case CN_GET_TIMEOUT:
+ 2294              		.loc 1 385 10 is_stmt 1 view .LVU613
+ 392:BSP/wizchip_conf.c **** }
+ 2295              		.loc 1 392 11 is_stmt 0 view .LVU614
+ 2296 003e 0020     		movs	r0, #0
+ 385:BSP/wizchip_conf.c ****       case CN_GET_TIMEOUT:
+ 2297              		.loc 1 385 10 view .LVU615
+ARM GAS  /tmp/cc5ibyYO.s 			page 60
+
+
+ 2298 0040 EBE7     		b	.L174
+ 2299              	.LVL229:
+ 2300              	.L175:
+ 387:BSP/wizchip_conf.c ****          break;
+ 2301              		.loc 1 387 10 is_stmt 1 view .LVU616
+ 2302 0042 0846     		mov	r0, r1
+ 2303              	.LVL230:
+ 387:BSP/wizchip_conf.c ****          break;
+ 2304              		.loc 1 387 10 is_stmt 0 view .LVU617
+ 2305 0044 FFF7FEFF 		bl	wizchip_gettimeout
+ 2306              	.LVL231:
+ 388:BSP/wizchip_conf.c ****       default:
+ 2307              		.loc 1 388 10 is_stmt 1 view .LVU618
+ 392:BSP/wizchip_conf.c **** }
+ 2308              		.loc 1 392 11 is_stmt 0 view .LVU619
+ 2309 0048 0020     		movs	r0, #0
+ 388:BSP/wizchip_conf.c ****       default:
+ 2310              		.loc 1 388 10 view .LVU620
+ 2311 004a E6E7     		b	.L174
+ 2312              	.LVL232:
+ 2313              	.L182:
+ 370:BSP/wizchip_conf.c ****    {
+ 2314              		.loc 1 370 4 view .LVU621
+ 2315 004c 4FF0FF30 		mov	r0, #-1
+ 2316              	.LVL233:
+ 370:BSP/wizchip_conf.c ****    {
+ 2317              		.loc 1 370 4 view .LVU622
+ 2318 0050 E3E7     		b	.L174
+ 2319              		.cfi_endproc
+ 2320              	.LFE16:
+ 2322              		.section	.bss._DHCP_,"aw",%nobits
+ 2325              	_DHCP_:
+ 2326 0000 00       		.space	1
+ 2327              		.section	.bss._DNS_,"aw",%nobits
+ 2328              		.align	2
+ 2331              	_DNS_:
+ 2332 0000 00000000 		.space	4
+ 2333              		.global	WIZCHIP
+ 2334              		.section	.data.WIZCHIP,"aw"
+ 2335              		.align	2
+ 2338              	WIZCHIP:
+ 2339 0000 0102     		.short	513
+ 2340 0002 57353530 		.ascii	"W5500\000\000"
+ 2340      300000
+ 2341 0009 00       		.space	1
+ 2342 000a 0000     		.space	2
+ 2343 000c 00000000 		.word	wizchip_cris_enter
+ 2344 0010 00000000 		.word	wizchip_cris_exit
+ 2345 0014 00000000 		.word	wizchip_cs_select
+ 2346 0018 00000000 		.word	wizchip_cs_deselect
+ 2347 001c 00000000 		.word	wizchip_bus_readdata
+ 2348 0020 00000000 		.word	wizchip_bus_writedata
+ 2349 0024 00000000 		.space	8
+ 2349      00000000 
+ 2350              		.text
+ 2351              	.Letext0:
+ 2352              		.file 2 "/usr/lib/gcc/arm-none-eabi/13.2.1/include/stddef.h"
+ARM GAS  /tmp/cc5ibyYO.s 			page 61
+
+
+ 2353              		.file 3 "/usr/lib/gcc/arm-none-eabi/13.2.1/include/stdint.h"
+ 2354              		.file 4 "BSP/wizchip_conf.h"
+ 2355              		.file 5 "BSP/W5500/w5500.h"
+ARM GAS  /tmp/cc5ibyYO.s 			page 62
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 wizchip_conf.c
+     /tmp/cc5ibyYO.s:19     .text.wizchip_cris_enter:00000000 $t
+     /tmp/cc5ibyYO.s:25     .text.wizchip_cris_enter:00000000 wizchip_cris_enter
+     /tmp/cc5ibyYO.s:38     .text.wizchip_cris_exit:00000000 $t
+     /tmp/cc5ibyYO.s:44     .text.wizchip_cris_exit:00000000 wizchip_cris_exit
+     /tmp/cc5ibyYO.s:57     .text.wizchip_cs_select:00000000 $t
+     /tmp/cc5ibyYO.s:63     .text.wizchip_cs_select:00000000 wizchip_cs_select
+     /tmp/cc5ibyYO.s:76     .text.wizchip_cs_deselect:00000000 $t
+     /tmp/cc5ibyYO.s:82     .text.wizchip_cs_deselect:00000000 wizchip_cs_deselect
+     /tmp/cc5ibyYO.s:95     .text.wizchip_bus_readdata:00000000 $t
+     /tmp/cc5ibyYO.s:101    .text.wizchip_bus_readdata:00000000 wizchip_bus_readdata
+     /tmp/cc5ibyYO.s:119    .text.wizchip_bus_writedata:00000000 $t
+     /tmp/cc5ibyYO.s:125    .text.wizchip_bus_writedata:00000000 wizchip_bus_writedata
+     /tmp/cc5ibyYO.s:142    .text.wizchip_spi_readbyte:00000000 $t
+     /tmp/cc5ibyYO.s:148    .text.wizchip_spi_readbyte:00000000 wizchip_spi_readbyte
+     /tmp/cc5ibyYO.s:163    .text.wizchip_spi_writebyte:00000000 $t
+     /tmp/cc5ibyYO.s:169    .text.wizchip_spi_writebyte:00000000 wizchip_spi_writebyte
+     /tmp/cc5ibyYO.s:183    .text.wizchip_spi_readburst:00000000 $t
+     /tmp/cc5ibyYO.s:189    .text.wizchip_spi_readburst:00000000 wizchip_spi_readburst
+     /tmp/cc5ibyYO.s:203    .text.wizchip_spi_writeburst:00000000 $t
+     /tmp/cc5ibyYO.s:209    .text.wizchip_spi_writeburst:00000000 wizchip_spi_writeburst
+     /tmp/cc5ibyYO.s:223    .text.reg_wizchip_cris_cbfunc:00000000 $t
+     /tmp/cc5ibyYO.s:229    .text.reg_wizchip_cris_cbfunc:00000000 reg_wizchip_cris_cbfunc
+     /tmp/cc5ibyYO.s:265    .text.reg_wizchip_cris_cbfunc:00000018 $d
+     /tmp/cc5ibyYO.s:2338   .data.WIZCHIP:00000000 WIZCHIP
+     /tmp/cc5ibyYO.s:272    .text.reg_wizchip_cs_cbfunc:00000000 $t
+     /tmp/cc5ibyYO.s:278    .text.reg_wizchip_cs_cbfunc:00000000 reg_wizchip_cs_cbfunc
+     /tmp/cc5ibyYO.s:314    .text.reg_wizchip_cs_cbfunc:00000018 $d
+     /tmp/cc5ibyYO.s:321    .text.reg_wizchip_bus_cbfunc:00000000 $t
+     /tmp/cc5ibyYO.s:327    .text.reg_wizchip_bus_cbfunc:00000000 reg_wizchip_bus_cbfunc
+     /tmp/cc5ibyYO.s:371    .text.reg_wizchip_bus_cbfunc:00000024 $d
+     /tmp/cc5ibyYO.s:378    .text.reg_wizchip_spi_cbfunc:00000000 $t
+     /tmp/cc5ibyYO.s:384    .text.reg_wizchip_spi_cbfunc:00000000 reg_wizchip_spi_cbfunc
+     /tmp/cc5ibyYO.s:428    .text.reg_wizchip_spi_cbfunc:00000024 $d
+     /tmp/cc5ibyYO.s:435    .text.reg_wizchip_spiburst_cbfunc:00000000 $t
+     /tmp/cc5ibyYO.s:441    .text.reg_wizchip_spiburst_cbfunc:00000000 reg_wizchip_spiburst_cbfunc
+     /tmp/cc5ibyYO.s:485    .text.reg_wizchip_spiburst_cbfunc:00000024 $d
+     /tmp/cc5ibyYO.s:492    .text.wizchip_sw_reset:00000000 $t
+     /tmp/cc5ibyYO.s:498    .text.wizchip_sw_reset:00000000 wizchip_sw_reset
+     /tmp/cc5ibyYO.s:580    .text.wizchip_init:00000000 $t
+     /tmp/cc5ibyYO.s:586    .text.wizchip_init:00000000 wizchip_init
+     /tmp/cc5ibyYO.s:750    .text.wizchip_clrinterrupt:00000000 $t
+     /tmp/cc5ibyYO.s:756    .text.wizchip_clrinterrupt:00000000 wizchip_clrinterrupt
+     /tmp/cc5ibyYO.s:824    .text.wizchip_getinterrupt:00000000 $t
+     /tmp/cc5ibyYO.s:830    .text.wizchip_getinterrupt:00000000 wizchip_getinterrupt
+     /tmp/cc5ibyYO.s:877    .text.wizchip_setinterruptmask:00000000 $t
+     /tmp/cc5ibyYO.s:883    .text.wizchip_setinterruptmask:00000000 wizchip_setinterruptmask
+     /tmp/cc5ibyYO.s:921    .text.wizchip_getinterruptmask:00000000 $t
+     /tmp/cc5ibyYO.s:927    .text.wizchip_getinterruptmask:00000000 wizchip_getinterruptmask
+     /tmp/cc5ibyYO.s:972    .text.wizphy_getphylink:00000000 $t
+     /tmp/cc5ibyYO.s:978    .text.wizphy_getphylink:00000000 wizphy_getphylink
+     /tmp/cc5ibyYO.s:1015   .text.wizphy_getphypmode:00000000 $t
+     /tmp/cc5ibyYO.s:1021   .text.wizphy_getphypmode:00000000 wizphy_getphypmode
+     /tmp/cc5ibyYO.s:1059   .text.wizphy_reset:00000000 $t
+     /tmp/cc5ibyYO.s:1065   .text.wizphy_reset:00000000 wizphy_reset
+     /tmp/cc5ibyYO.s:1110   .text.wizphy_setphyconf:00000000 $t
+ARM GAS  /tmp/cc5ibyYO.s 			page 63
+
+
+     /tmp/cc5ibyYO.s:1116   .text.wizphy_setphyconf:00000000 wizphy_setphyconf
+     /tmp/cc5ibyYO.s:1213   .text.wizphy_getphyconf:00000000 $t
+     /tmp/cc5ibyYO.s:1219   .text.wizphy_getphyconf:00000000 wizphy_getphyconf
+     /tmp/cc5ibyYO.s:1317   .text.wizphy_getphyconf:00000068 $d
+     /tmp/cc5ibyYO.s:1323   .text.wizphy_getphystat:00000000 $t
+     /tmp/cc5ibyYO.s:1329   .text.wizphy_getphystat:00000000 wizphy_getphystat
+     /tmp/cc5ibyYO.s:1367   .text.wizphy_setphypmode:00000000 $t
+     /tmp/cc5ibyYO.s:1373   .text.wizphy_setphypmode:00000000 wizphy_setphypmode
+     /tmp/cc5ibyYO.s:1483   .text.ctlwizchip:00000000 $t
+     /tmp/cc5ibyYO.s:1489   .text.ctlwizchip:00000000 ctlwizchip
+     /tmp/cc5ibyYO.s:1519   .text.ctlwizchip:00000014 $d
+     /tmp/cc5ibyYO.s:1535   .text.ctlwizchip:00000024 $t
+     /tmp/cc5ibyYO.s:1839   .text.ctlwizchip:00000118 $d
+     /tmp/cc5ibyYO.s:1844   .text.wizchip_setnetinfo:00000000 $t
+     /tmp/cc5ibyYO.s:1850   .text.wizchip_setnetinfo:00000000 wizchip_setnetinfo
+     /tmp/cc5ibyYO.s:1924   .text.wizchip_setnetinfo:00000054 $d
+     /tmp/cc5ibyYO.s:2331   .bss._DNS_:00000000 _DNS_
+     /tmp/cc5ibyYO.s:2325   .bss._DHCP_:00000000 _DHCP_
+     /tmp/cc5ibyYO.s:1930   .text.wizchip_getnetinfo:00000000 $t
+     /tmp/cc5ibyYO.s:1936   .text.wizchip_getnetinfo:00000000 wizchip_getnetinfo
+     /tmp/cc5ibyYO.s:2009   .text.wizchip_getnetinfo:00000054 $d
+     /tmp/cc5ibyYO.s:2015   .text.wizchip_setnetmode:00000000 $t
+     /tmp/cc5ibyYO.s:2021   .text.wizchip_setnetmode:00000000 wizchip_setnetmode
+     /tmp/cc5ibyYO.s:2077   .text.wizchip_getnetmode:00000000 $t
+     /tmp/cc5ibyYO.s:2083   .text.wizchip_getnetmode:00000000 wizchip_getnetmode
+     /tmp/cc5ibyYO.s:2105   .text.wizchip_settimeout:00000000 $t
+     /tmp/cc5ibyYO.s:2111   .text.wizchip_settimeout:00000000 wizchip_settimeout
+     /tmp/cc5ibyYO.s:2151   .text.wizchip_gettimeout:00000000 $t
+     /tmp/cc5ibyYO.s:2157   .text.wizchip_gettimeout:00000000 wizchip_gettimeout
+     /tmp/cc5ibyYO.s:2204   .text.ctlnetwork:00000000 $t
+     /tmp/cc5ibyYO.s:2210   .text.ctlnetwork:00000000 ctlnetwork
+     /tmp/cc5ibyYO.s:2229   .text.ctlnetwork:0000000c $d
+     /tmp/cc5ibyYO.s:2235   .text.ctlnetwork:00000012 $t
+     /tmp/cc5ibyYO.s:2326   .bss._DHCP_:00000000 $d
+     /tmp/cc5ibyYO.s:2328   .bss._DNS_:00000000 $d
+     /tmp/cc5ibyYO.s:2335   .data.WIZCHIP:00000000 $d
+
+UNDEFINED SYMBOLS
+WIZCHIP_READ_BUF
+WIZCHIP_WRITE
+WIZCHIP_READ
+WIZCHIP_WRITE_BUF

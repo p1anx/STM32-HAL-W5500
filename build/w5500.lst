@@ -1,0 +1,1497 @@
+ARM GAS  /tmp/cc9IdMPI.s 			page 1
+
+
+   1              		.cpu cortex-m3
+   2              		.arch armv7-m
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"w5500.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.file 1 "BSP/W5500/w5500.c"
+  18              		.section	.text.WIZCHIP_READ,"ax",%progbits
+  19              		.align	1
+  20              		.global	WIZCHIP_READ
+  21              		.syntax unified
+  22              		.thumb
+  23              		.thumb_func
+  25              	WIZCHIP_READ:
+  26              	.LVL0:
+  27              	.LFB0:
+   1:BSP/W5500/w5500.c **** //*****************************************************************************
+   2:BSP/W5500/w5500.c **** //
+   3:BSP/W5500/w5500.c **** //! \file w5500.c
+   4:BSP/W5500/w5500.c **** //! \brief W5500 HAL Interface.
+   5:BSP/W5500/w5500.c **** //! \version 1.0.2
+   6:BSP/W5500/w5500.c **** //! \date 2013/10/21
+   7:BSP/W5500/w5500.c **** //! \par  Revision history
+   8:BSP/W5500/w5500.c **** //!       <2015/02/05> Notice
+   9:BSP/W5500/w5500.c **** //!        The version history is not updated after this point.
+  10:BSP/W5500/w5500.c **** //!        Download the latest version directly from GitHub. Please visit the our GitHub repository
+  11:BSP/W5500/w5500.c **** //!        >> https://github.com/Wiznet/ioLibrary_Driver
+  12:BSP/W5500/w5500.c **** //!       <2014/05/01> V1.0.2
+  13:BSP/W5500/w5500.c **** //!         1. Implicit type casting -> Explicit type casting. Refer to M20140501
+  14:BSP/W5500/w5500.c **** //!            Fixed the problem on porting into under 32bit MCU
+  15:BSP/W5500/w5500.c **** //!            Issued by Mathias ClauBen, wizwiki forum ID Think01 and bobh
+  16:BSP/W5500/w5500.c **** //!            Thank for your interesting and serious advices.
+  17:BSP/W5500/w5500.c **** //!       <2013/12/20> V1.0.1
+  18:BSP/W5500/w5500.c **** //!         1. Remove warning
+  19:BSP/W5500/w5500.c **** //!         2. WIZCHIP_READ_BUF WIZCHIP_WRITE_BUF in case _WIZCHIP_IO_MODE_SPI_FDM_
+  20:BSP/W5500/w5500.c **** //!            for loop optimized(removed). refer to M20131220
+  21:BSP/W5500/w5500.c **** //!       <2013/10/21> 1st Release
+  22:BSP/W5500/w5500.c **** //! \author MidnightCow
+  23:BSP/W5500/w5500.c **** //! \copyright
+  24:BSP/W5500/w5500.c **** //!
+  25:BSP/W5500/w5500.c **** //! Copyright (c)  2013, WIZnet Co., LTD.
+  26:BSP/W5500/w5500.c **** //! All rights reserved.
+  27:BSP/W5500/w5500.c **** //! 
+  28:BSP/W5500/w5500.c **** //! Redistribution and use in source and binary forms, with or without 
+  29:BSP/W5500/w5500.c **** //! modification, are permitted provided that the following conditions 
+  30:BSP/W5500/w5500.c **** //! are met: 
+  31:BSP/W5500/w5500.c **** //! 
+ARM GAS  /tmp/cc9IdMPI.s 			page 2
+
+
+  32:BSP/W5500/w5500.c **** //!     * Redistributions of source code must retain the above copyright 
+  33:BSP/W5500/w5500.c **** //! notice, this list of conditions and the following disclaimer. 
+  34:BSP/W5500/w5500.c **** //!     * Redistributions in binary form must reproduce the above copyright
+  35:BSP/W5500/w5500.c **** //! notice, this list of conditions and the following disclaimer in the
+  36:BSP/W5500/w5500.c **** //! documentation and/or other materials provided with the distribution. 
+  37:BSP/W5500/w5500.c **** //!     * Neither the name of the <ORGANIZATION> nor the names of its 
+  38:BSP/W5500/w5500.c **** //! contributors may be used to endorse or promote products derived 
+  39:BSP/W5500/w5500.c **** //! from this software without specific prior written permission. 
+  40:BSP/W5500/w5500.c **** //! 
+  41:BSP/W5500/w5500.c **** //! THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+  42:BSP/W5500/w5500.c **** //! AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE 
+  43:BSP/W5500/w5500.c **** //! IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+  44:BSP/W5500/w5500.c **** //! ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE 
+  45:BSP/W5500/w5500.c **** //! LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR 
+  46:BSP/W5500/w5500.c **** //! CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF 
+  47:BSP/W5500/w5500.c **** //! SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+  48:BSP/W5500/w5500.c **** //! INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN 
+  49:BSP/W5500/w5500.c **** //! CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
+  50:BSP/W5500/w5500.c **** //! ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF 
+  51:BSP/W5500/w5500.c **** //! THE POSSIBILITY OF SUCH DAMAGE.
+  52:BSP/W5500/w5500.c **** //
+  53:BSP/W5500/w5500.c **** //*****************************************************************************
+  54:BSP/W5500/w5500.c **** //#include <stdio.h>
+  55:BSP/W5500/w5500.c **** #include "w5500.h"
+  56:BSP/W5500/w5500.c **** 
+  57:BSP/W5500/w5500.c **** #define _W5500_SPI_VDM_OP_          0x00
+  58:BSP/W5500/w5500.c **** #define _W5500_SPI_FDM_OP_LEN1_     0x01
+  59:BSP/W5500/w5500.c **** #define _W5500_SPI_FDM_OP_LEN2_     0x02
+  60:BSP/W5500/w5500.c **** #define _W5500_SPI_FDM_OP_LEN4_     0x03
+  61:BSP/W5500/w5500.c **** 
+  62:BSP/W5500/w5500.c **** #if   (_WIZCHIP_ == 5500)
+  63:BSP/W5500/w5500.c **** ////////////////////////////////////////////////////
+  64:BSP/W5500/w5500.c **** 
+  65:BSP/W5500/w5500.c **** uint8_t  WIZCHIP_READ(uint32_t AddrSel)
+  66:BSP/W5500/w5500.c **** {
+  28              		.loc 1 66 1 view -0
+  29              		.cfi_startproc
+  30              		@ args = 0, pretend = 0, frame = 8
+  31              		@ frame_needed = 0, uses_anonymous_args = 0
+  32              		.loc 1 66 1 is_stmt 0 view .LVU1
+  33 0000 30B5     		push	{r4, r5, lr}
+  34              	.LCFI0:
+  35              		.cfi_def_cfa_offset 12
+  36              		.cfi_offset 4, -12
+  37              		.cfi_offset 5, -8
+  38              		.cfi_offset 14, -4
+  39 0002 83B0     		sub	sp, sp, #12
+  40              	.LCFI1:
+  41              		.cfi_def_cfa_offset 24
+  42 0004 0446     		mov	r4, r0
+  67:BSP/W5500/w5500.c ****    uint8_t ret;
+  43              		.loc 1 67 4 is_stmt 1 view .LVU2
+  68:BSP/W5500/w5500.c ****    uint8_t spi_data[3];
+  44              		.loc 1 68 4 view .LVU3
+  69:BSP/W5500/w5500.c **** 
+  70:BSP/W5500/w5500.c ****    WIZCHIP_CRITICAL_ENTER();
+  45              		.loc 1 70 4 view .LVU4
+ARM GAS  /tmp/cc9IdMPI.s 			page 3
+
+
+  46 0006 164D     		ldr	r5, .L6
+  47 0008 EB68     		ldr	r3, [r5, #12]
+  48 000a 9847     		blx	r3
+  49              	.LVL1:
+  71:BSP/W5500/w5500.c ****    WIZCHIP.CS._select();
+  50              		.loc 1 71 4 view .LVU5
+  51              		.loc 1 71 14 is_stmt 0 view .LVU6
+  52 000c 6B69     		ldr	r3, [r5, #20]
+  53              		.loc 1 71 4 view .LVU7
+  54 000e 9847     		blx	r3
+  55              	.LVL2:
+  72:BSP/W5500/w5500.c **** 
+  73:BSP/W5500/w5500.c ****    AddrSel |= (_W5500_SPI_READ_ | _W5500_SPI_VDM_OP_);
+  56              		.loc 1 73 4 is_stmt 1 view .LVU8
+  74:BSP/W5500/w5500.c **** 
+  75:BSP/W5500/w5500.c ****    if(!WIZCHIP.IF.SPI._read_burst || !WIZCHIP.IF.SPI._write_burst) 	// byte operation
+  57              		.loc 1 75 4 view .LVU9
+  58              		.loc 1 75 22 is_stmt 0 view .LVU10
+  59 0010 6B6A     		ldr	r3, [r5, #36]
+  60              		.loc 1 75 6 view .LVU11
+  61 0012 6BB1     		cbz	r3, .L2
+  62              		.loc 1 75 53 discriminator 1 view .LVU12
+  63 0014 AB6A     		ldr	r3, [r5, #40]
+  64              		.loc 1 75 35 discriminator 1 view .LVU13
+  65 0016 5BB1     		cbz	r3, .L2
+  76:BSP/W5500/w5500.c ****    {
+  77:BSP/W5500/w5500.c **** 	   WIZCHIP.IF.SPI._write_byte((AddrSel & 0x00FF0000) >> 16);
+  78:BSP/W5500/w5500.c **** 		WIZCHIP.IF.SPI._write_byte((AddrSel & 0x0000FF00) >>  8);
+  79:BSP/W5500/w5500.c **** 		WIZCHIP.IF.SPI._write_byte((AddrSel & 0x000000FF) >>  0);
+  80:BSP/W5500/w5500.c ****    }
+  81:BSP/W5500/w5500.c ****    else																// burst operation
+  82:BSP/W5500/w5500.c ****    {
+  83:BSP/W5500/w5500.c **** 		spi_data[0] = (AddrSel & 0x00FF0000) >> 16;
+  66              		.loc 1 83 3 is_stmt 1 view .LVU14
+  67              		.loc 1 83 40 is_stmt 0 view .LVU15
+  68 0018 220C     		lsrs	r2, r4, #16
+  69              		.loc 1 83 15 view .LVU16
+  70 001a 8DF80420 		strb	r2, [sp, #4]
+  84:BSP/W5500/w5500.c **** 		spi_data[1] = (AddrSel & 0x0000FF00) >> 8;
+  71              		.loc 1 84 3 is_stmt 1 view .LVU17
+  72              		.loc 1 84 40 is_stmt 0 view .LVU18
+  73 001e 220A     		lsrs	r2, r4, #8
+  74              		.loc 1 84 15 view .LVU19
+  75 0020 8DF80520 		strb	r2, [sp, #5]
+  85:BSP/W5500/w5500.c **** 		spi_data[2] = (AddrSel & 0x000000FF) >> 0;
+  76              		.loc 1 85 3 is_stmt 1 view .LVU20
+  77              		.loc 1 85 15 is_stmt 0 view .LVU21
+  78 0024 8DF80640 		strb	r4, [sp, #6]
+  86:BSP/W5500/w5500.c **** 		WIZCHIP.IF.SPI._write_burst(spi_data, 3);
+  79              		.loc 1 86 3 is_stmt 1 view .LVU22
+  80 0028 0321     		movs	r1, #3
+  81 002a 01A8     		add	r0, sp, #4
+  82 002c 9847     		blx	r3
+  83              	.LVL3:
+  84 002e 0BE0     		b	.L4
+  85              	.L2:
+  77:BSP/W5500/w5500.c **** 		WIZCHIP.IF.SPI._write_byte((AddrSel & 0x0000FF00) >>  8);
+ARM GAS  /tmp/cc9IdMPI.s 			page 4
+
+
+  86              		.loc 1 77 5 view .LVU23
+  77:BSP/W5500/w5500.c **** 		WIZCHIP.IF.SPI._write_byte((AddrSel & 0x0000FF00) >>  8);
+  87              		.loc 1 77 19 is_stmt 0 view .LVU24
+  88 0030 0B4D     		ldr	r5, .L6
+  89 0032 2B6A     		ldr	r3, [r5, #32]
+  77:BSP/W5500/w5500.c **** 		WIZCHIP.IF.SPI._write_byte((AddrSel & 0x0000FF00) >>  8);
+  90              		.loc 1 77 5 view .LVU25
+  91 0034 C4F30740 		ubfx	r0, r4, #16, #8
+  92 0038 9847     		blx	r3
+  93              	.LVL4:
+  78:BSP/W5500/w5500.c **** 		WIZCHIP.IF.SPI._write_byte((AddrSel & 0x000000FF) >>  0);
+  94              		.loc 1 78 3 is_stmt 1 view .LVU26
+  78:BSP/W5500/w5500.c **** 		WIZCHIP.IF.SPI._write_byte((AddrSel & 0x000000FF) >>  0);
+  95              		.loc 1 78 17 is_stmt 0 view .LVU27
+  96 003a 2B6A     		ldr	r3, [r5, #32]
+  78:BSP/W5500/w5500.c **** 		WIZCHIP.IF.SPI._write_byte((AddrSel & 0x000000FF) >>  0);
+  97              		.loc 1 78 3 view .LVU28
+  98 003c C4F30720 		ubfx	r0, r4, #8, #8
+  99 0040 9847     		blx	r3
+ 100              	.LVL5:
+  79:BSP/W5500/w5500.c ****    }
+ 101              		.loc 1 79 3 is_stmt 1 view .LVU29
+  79:BSP/W5500/w5500.c ****    }
+ 102              		.loc 1 79 17 is_stmt 0 view .LVU30
+ 103 0042 2B6A     		ldr	r3, [r5, #32]
+  79:BSP/W5500/w5500.c ****    }
+ 104              		.loc 1 79 3 view .LVU31
+ 105 0044 E0B2     		uxtb	r0, r4
+ 106 0046 9847     		blx	r3
+ 107              	.LVL6:
+ 108              	.L4:
+  87:BSP/W5500/w5500.c ****    }
+  88:BSP/W5500/w5500.c ****    ret = WIZCHIP.IF.SPI._read_byte();
+ 109              		.loc 1 88 4 is_stmt 1 view .LVU32
+ 110              		.loc 1 88 24 is_stmt 0 view .LVU33
+ 111 0048 054D     		ldr	r5, .L6
+ 112 004a EB69     		ldr	r3, [r5, #28]
+ 113              		.loc 1 88 10 view .LVU34
+ 114 004c 9847     		blx	r3
+ 115              	.LVL7:
+ 116 004e 0446     		mov	r4, r0
+ 117              	.LVL8:
+  89:BSP/W5500/w5500.c **** 
+  90:BSP/W5500/w5500.c ****    WIZCHIP.CS._deselect();
+ 118              		.loc 1 90 4 is_stmt 1 view .LVU35
+ 119              		.loc 1 90 14 is_stmt 0 view .LVU36
+ 120 0050 AB69     		ldr	r3, [r5, #24]
+ 121              		.loc 1 90 4 view .LVU37
+ 122 0052 9847     		blx	r3
+ 123              	.LVL9:
+  91:BSP/W5500/w5500.c ****    WIZCHIP_CRITICAL_EXIT();
+ 124              		.loc 1 91 4 is_stmt 1 view .LVU38
+ 125 0054 2B69     		ldr	r3, [r5, #16]
+ 126 0056 9847     		blx	r3
+ 127              	.LVL10:
+  92:BSP/W5500/w5500.c ****    return ret;
+ 128              		.loc 1 92 4 view .LVU39
+ARM GAS  /tmp/cc9IdMPI.s 			page 5
+
+
+  93:BSP/W5500/w5500.c **** }
+ 129              		.loc 1 93 1 is_stmt 0 view .LVU40
+ 130 0058 2046     		mov	r0, r4
+ 131 005a 03B0     		add	sp, sp, #12
+ 132              	.LCFI2:
+ 133              		.cfi_def_cfa_offset 12
+ 134              		@ sp needed
+ 135 005c 30BD     		pop	{r4, r5, pc}
+ 136              	.LVL11:
+ 137              	.L7:
+ 138              		.loc 1 93 1 view .LVU41
+ 139 005e 00BF     		.align	2
+ 140              	.L6:
+ 141 0060 00000000 		.word	WIZCHIP
+ 142              		.cfi_endproc
+ 143              	.LFE0:
+ 145              		.section	.text.WIZCHIP_WRITE,"ax",%progbits
+ 146              		.align	1
+ 147              		.global	WIZCHIP_WRITE
+ 148              		.syntax unified
+ 149              		.thumb
+ 150              		.thumb_func
+ 152              	WIZCHIP_WRITE:
+ 153              	.LVL12:
+ 154              	.LFB1:
+  94:BSP/W5500/w5500.c **** 
+  95:BSP/W5500/w5500.c **** void     WIZCHIP_WRITE(uint32_t AddrSel, uint8_t wb )
+  96:BSP/W5500/w5500.c **** {
+ 155              		.loc 1 96 1 is_stmt 1 view -0
+ 156              		.cfi_startproc
+ 157              		@ args = 0, pretend = 0, frame = 8
+ 158              		@ frame_needed = 0, uses_anonymous_args = 0
+ 159              		.loc 1 96 1 is_stmt 0 view .LVU43
+ 160 0000 70B5     		push	{r4, r5, r6, lr}
+ 161              	.LCFI3:
+ 162              		.cfi_def_cfa_offset 16
+ 163              		.cfi_offset 4, -16
+ 164              		.cfi_offset 5, -12
+ 165              		.cfi_offset 6, -8
+ 166              		.cfi_offset 14, -4
+ 167 0002 82B0     		sub	sp, sp, #8
+ 168              	.LCFI4:
+ 169              		.cfi_def_cfa_offset 24
+ 170 0004 0446     		mov	r4, r0
+ 171 0006 0E46     		mov	r6, r1
+  97:BSP/W5500/w5500.c ****    uint8_t spi_data[4];
+ 172              		.loc 1 97 4 is_stmt 1 view .LVU44
+  98:BSP/W5500/w5500.c **** 
+  99:BSP/W5500/w5500.c ****    WIZCHIP_CRITICAL_ENTER();
+ 173              		.loc 1 99 4 view .LVU45
+ 174 0008 164D     		ldr	r5, .L13
+ 175 000a EB68     		ldr	r3, [r5, #12]
+ 176 000c 9847     		blx	r3
+ 177              	.LVL13:
+ 100:BSP/W5500/w5500.c ****    WIZCHIP.CS._select();
+ 178              		.loc 1 100 4 view .LVU46
+ 179              		.loc 1 100 14 is_stmt 0 view .LVU47
+ARM GAS  /tmp/cc9IdMPI.s 			page 6
+
+
+ 180 000e 6B69     		ldr	r3, [r5, #20]
+ 181              		.loc 1 100 4 view .LVU48
+ 182 0010 9847     		blx	r3
+ 183              	.LVL14:
+ 101:BSP/W5500/w5500.c **** 
+ 102:BSP/W5500/w5500.c ****    AddrSel |= (_W5500_SPI_WRITE_ | _W5500_SPI_VDM_OP_);
+ 184              		.loc 1 102 4 is_stmt 1 view .LVU49
+ 185              		.loc 1 102 12 is_stmt 0 view .LVU50
+ 186 0012 44F00404 		orr	r4, r4, #4
+ 187              	.LVL15:
+ 103:BSP/W5500/w5500.c **** 
+ 104:BSP/W5500/w5500.c ****    //if(!WIZCHIP.IF.SPI._read_burst || !WIZCHIP.IF.SPI._write_burst) 	// byte operation
+ 105:BSP/W5500/w5500.c ****    if(!WIZCHIP.IF.SPI._write_burst) 	// byte operation
+ 188              		.loc 1 105 4 is_stmt 1 view .LVU51
+ 189              		.loc 1 105 22 is_stmt 0 view .LVU52
+ 190 0016 AB6A     		ldr	r3, [r5, #40]
+ 191              		.loc 1 105 6 view .LVU53
+ 192 0018 A3B1     		cbz	r3, .L12
+ 106:BSP/W5500/w5500.c ****    {
+ 107:BSP/W5500/w5500.c **** 		WIZCHIP.IF.SPI._write_byte((AddrSel & 0x00FF0000) >> 16);
+ 108:BSP/W5500/w5500.c **** 		WIZCHIP.IF.SPI._write_byte((AddrSel & 0x0000FF00) >>  8);
+ 109:BSP/W5500/w5500.c **** 		WIZCHIP.IF.SPI._write_byte((AddrSel & 0x000000FF) >>  0);
+ 110:BSP/W5500/w5500.c **** 		WIZCHIP.IF.SPI._write_byte(wb);
+ 111:BSP/W5500/w5500.c ****    }
+ 112:BSP/W5500/w5500.c ****    else									// burst operation
+ 113:BSP/W5500/w5500.c ****    {
+ 114:BSP/W5500/w5500.c **** 		spi_data[0] = (AddrSel & 0x00FF0000) >> 16;
+ 193              		.loc 1 114 3 is_stmt 1 view .LVU54
+ 194              		.loc 1 114 40 is_stmt 0 view .LVU55
+ 195 001a 220C     		lsrs	r2, r4, #16
+ 196              		.loc 1 114 15 view .LVU56
+ 197 001c 8DF80420 		strb	r2, [sp, #4]
+ 115:BSP/W5500/w5500.c **** 		spi_data[1] = (AddrSel & 0x0000FF00) >> 8;
+ 198              		.loc 1 115 3 is_stmt 1 view .LVU57
+ 199              		.loc 1 115 40 is_stmt 0 view .LVU58
+ 200 0020 220A     		lsrs	r2, r4, #8
+ 201              		.loc 1 115 15 view .LVU59
+ 202 0022 8DF80520 		strb	r2, [sp, #5]
+ 116:BSP/W5500/w5500.c **** 		spi_data[2] = (AddrSel & 0x000000FF) >> 0;
+ 203              		.loc 1 116 3 is_stmt 1 view .LVU60
+ 204              		.loc 1 116 15 is_stmt 0 view .LVU61
+ 205 0026 8DF80640 		strb	r4, [sp, #6]
+ 117:BSP/W5500/w5500.c **** 		spi_data[3] = wb;
+ 206              		.loc 1 117 3 is_stmt 1 view .LVU62
+ 207              		.loc 1 117 15 is_stmt 0 view .LVU63
+ 208 002a 8DF80760 		strb	r6, [sp, #7]
+ 118:BSP/W5500/w5500.c **** 		WIZCHIP.IF.SPI._write_burst(spi_data, 4);
+ 209              		.loc 1 118 3 is_stmt 1 view .LVU64
+ 210 002e 0421     		movs	r1, #4
+ 211 0030 0DEB0100 		add	r0, sp, r1
+ 212 0034 9847     		blx	r3
+ 213              	.LVL16:
+ 214              	.L10:
+ 119:BSP/W5500/w5500.c ****    }
+ 120:BSP/W5500/w5500.c **** 
+ 121:BSP/W5500/w5500.c ****    WIZCHIP.CS._deselect();
+ 215              		.loc 1 121 4 view .LVU65
+ARM GAS  /tmp/cc9IdMPI.s 			page 7
+
+
+ 216              		.loc 1 121 14 is_stmt 0 view .LVU66
+ 217 0036 0B4C     		ldr	r4, .L13
+ 218              	.LVL17:
+ 219              		.loc 1 121 14 view .LVU67
+ 220 0038 A369     		ldr	r3, [r4, #24]
+ 221              		.loc 1 121 4 view .LVU68
+ 222 003a 9847     		blx	r3
+ 223              	.LVL18:
+ 122:BSP/W5500/w5500.c ****    WIZCHIP_CRITICAL_EXIT();
+ 224              		.loc 1 122 4 is_stmt 1 view .LVU69
+ 225 003c 2369     		ldr	r3, [r4, #16]
+ 226 003e 9847     		blx	r3
+ 227              	.LVL19:
+ 123:BSP/W5500/w5500.c **** }
+ 228              		.loc 1 123 1 is_stmt 0 view .LVU70
+ 229 0040 02B0     		add	sp, sp, #8
+ 230              	.LCFI5:
+ 231              		.cfi_remember_state
+ 232              		.cfi_def_cfa_offset 16
+ 233              		@ sp needed
+ 234 0042 70BD     		pop	{r4, r5, r6, pc}
+ 235              	.LVL20:
+ 236              	.L12:
+ 237              	.LCFI6:
+ 238              		.cfi_restore_state
+ 107:BSP/W5500/w5500.c **** 		WIZCHIP.IF.SPI._write_byte((AddrSel & 0x0000FF00) >>  8);
+ 239              		.loc 1 107 3 is_stmt 1 view .LVU71
+ 107:BSP/W5500/w5500.c **** 		WIZCHIP.IF.SPI._write_byte((AddrSel & 0x0000FF00) >>  8);
+ 240              		.loc 1 107 17 is_stmt 0 view .LVU72
+ 241 0044 2B6A     		ldr	r3, [r5, #32]
+ 107:BSP/W5500/w5500.c **** 		WIZCHIP.IF.SPI._write_byte((AddrSel & 0x0000FF00) >>  8);
+ 242              		.loc 1 107 3 view .LVU73
+ 243 0046 C4F30740 		ubfx	r0, r4, #16, #8
+ 244 004a 9847     		blx	r3
+ 245              	.LVL21:
+ 108:BSP/W5500/w5500.c **** 		WIZCHIP.IF.SPI._write_byte((AddrSel & 0x000000FF) >>  0);
+ 246              		.loc 1 108 3 is_stmt 1 view .LVU74
+ 108:BSP/W5500/w5500.c **** 		WIZCHIP.IF.SPI._write_byte((AddrSel & 0x000000FF) >>  0);
+ 247              		.loc 1 108 17 is_stmt 0 view .LVU75
+ 248 004c 2B6A     		ldr	r3, [r5, #32]
+ 108:BSP/W5500/w5500.c **** 		WIZCHIP.IF.SPI._write_byte((AddrSel & 0x000000FF) >>  0);
+ 249              		.loc 1 108 3 view .LVU76
+ 250 004e C4F30720 		ubfx	r0, r4, #8, #8
+ 251 0052 9847     		blx	r3
+ 252              	.LVL22:
+ 109:BSP/W5500/w5500.c **** 		WIZCHIP.IF.SPI._write_byte(wb);
+ 253              		.loc 1 109 3 is_stmt 1 view .LVU77
+ 109:BSP/W5500/w5500.c **** 		WIZCHIP.IF.SPI._write_byte(wb);
+ 254              		.loc 1 109 17 is_stmt 0 view .LVU78
+ 255 0054 2B6A     		ldr	r3, [r5, #32]
+ 109:BSP/W5500/w5500.c **** 		WIZCHIP.IF.SPI._write_byte(wb);
+ 256              		.loc 1 109 3 view .LVU79
+ 257 0056 E0B2     		uxtb	r0, r4
+ 258 0058 9847     		blx	r3
+ 259              	.LVL23:
+ 110:BSP/W5500/w5500.c ****    }
+ 260              		.loc 1 110 3 is_stmt 1 view .LVU80
+ARM GAS  /tmp/cc9IdMPI.s 			page 8
+
+
+ 110:BSP/W5500/w5500.c ****    }
+ 261              		.loc 1 110 17 is_stmt 0 view .LVU81
+ 262 005a 2B6A     		ldr	r3, [r5, #32]
+ 110:BSP/W5500/w5500.c ****    }
+ 263              		.loc 1 110 3 view .LVU82
+ 264 005c 3046     		mov	r0, r6
+ 265 005e 9847     		blx	r3
+ 266              	.LVL24:
+ 267 0060 E9E7     		b	.L10
+ 268              	.L14:
+ 269 0062 00BF     		.align	2
+ 270              	.L13:
+ 271 0064 00000000 		.word	WIZCHIP
+ 272              		.cfi_endproc
+ 273              	.LFE1:
+ 275              		.section	.text.WIZCHIP_READ_BUF,"ax",%progbits
+ 276              		.align	1
+ 277              		.global	WIZCHIP_READ_BUF
+ 278              		.syntax unified
+ 279              		.thumb
+ 280              		.thumb_func
+ 282              	WIZCHIP_READ_BUF:
+ 283              	.LVL25:
+ 284              	.LFB2:
+ 124:BSP/W5500/w5500.c ****          
+ 125:BSP/W5500/w5500.c **** void     WIZCHIP_READ_BUF (uint32_t AddrSel, uint8_t* pBuf, uint16_t len)
+ 126:BSP/W5500/w5500.c **** {
+ 285              		.loc 1 126 1 is_stmt 1 view -0
+ 286              		.cfi_startproc
+ 287              		@ args = 0, pretend = 0, frame = 8
+ 288              		@ frame_needed = 0, uses_anonymous_args = 0
+ 289              		.loc 1 126 1 is_stmt 0 view .LVU84
+ 290 0000 F0B5     		push	{r4, r5, r6, r7, lr}
+ 291              	.LCFI7:
+ 292              		.cfi_def_cfa_offset 20
+ 293              		.cfi_offset 4, -20
+ 294              		.cfi_offset 5, -16
+ 295              		.cfi_offset 6, -12
+ 296              		.cfi_offset 7, -8
+ 297              		.cfi_offset 14, -4
+ 298 0002 83B0     		sub	sp, sp, #12
+ 299              	.LCFI8:
+ 300              		.cfi_def_cfa_offset 32
+ 301 0004 0446     		mov	r4, r0
+ 302 0006 0E46     		mov	r6, r1
+ 303 0008 1546     		mov	r5, r2
+ 127:BSP/W5500/w5500.c ****    uint8_t spi_data[3];
+ 304              		.loc 1 127 4 is_stmt 1 view .LVU85
+ 128:BSP/W5500/w5500.c ****    uint16_t i;
+ 305              		.loc 1 128 4 view .LVU86
+ 129:BSP/W5500/w5500.c **** 
+ 130:BSP/W5500/w5500.c ****    WIZCHIP_CRITICAL_ENTER();
+ 306              		.loc 1 130 4 view .LVU87
+ 307 000a 1B4F     		ldr	r7, .L22
+ 308 000c FB68     		ldr	r3, [r7, #12]
+ 309 000e 9847     		blx	r3
+ 310              	.LVL26:
+ARM GAS  /tmp/cc9IdMPI.s 			page 9
+
+
+ 131:BSP/W5500/w5500.c ****    WIZCHIP.CS._select();
+ 311              		.loc 1 131 4 view .LVU88
+ 312              		.loc 1 131 14 is_stmt 0 view .LVU89
+ 313 0010 7B69     		ldr	r3, [r7, #20]
+ 314              		.loc 1 131 4 view .LVU90
+ 315 0012 9847     		blx	r3
+ 316              	.LVL27:
+ 132:BSP/W5500/w5500.c **** 
+ 133:BSP/W5500/w5500.c ****    AddrSel |= (_W5500_SPI_READ_ | _W5500_SPI_VDM_OP_);
+ 317              		.loc 1 133 4 is_stmt 1 view .LVU91
+ 134:BSP/W5500/w5500.c **** 
+ 135:BSP/W5500/w5500.c ****    if(!WIZCHIP.IF.SPI._read_burst || !WIZCHIP.IF.SPI._write_burst) 	// byte operation
+ 318              		.loc 1 135 4 view .LVU92
+ 319              		.loc 1 135 22 is_stmt 0 view .LVU93
+ 320 0014 7B6A     		ldr	r3, [r7, #36]
+ 321              		.loc 1 135 6 view .LVU94
+ 322 0016 93B1     		cbz	r3, .L16
+ 323              		.loc 1 135 53 discriminator 1 view .LVU95
+ 324 0018 BB6A     		ldr	r3, [r7, #40]
+ 325              		.loc 1 135 35 discriminator 1 view .LVU96
+ 326 001a 83B1     		cbz	r3, .L16
+ 136:BSP/W5500/w5500.c ****    {
+ 137:BSP/W5500/w5500.c **** 		WIZCHIP.IF.SPI._write_byte((AddrSel & 0x00FF0000) >> 16);
+ 138:BSP/W5500/w5500.c **** 		WIZCHIP.IF.SPI._write_byte((AddrSel & 0x0000FF00) >>  8);
+ 139:BSP/W5500/w5500.c **** 		WIZCHIP.IF.SPI._write_byte((AddrSel & 0x000000FF) >>  0);
+ 140:BSP/W5500/w5500.c **** 		for(i = 0; i < len; i++)
+ 141:BSP/W5500/w5500.c **** 		   pBuf[i] = WIZCHIP.IF.SPI._read_byte();
+ 142:BSP/W5500/w5500.c ****    }
+ 143:BSP/W5500/w5500.c ****    else																// burst operation
+ 144:BSP/W5500/w5500.c ****    {
+ 145:BSP/W5500/w5500.c **** 		spi_data[0] = (AddrSel & 0x00FF0000) >> 16;
+ 327              		.loc 1 145 3 is_stmt 1 view .LVU97
+ 328              		.loc 1 145 40 is_stmt 0 view .LVU98
+ 329 001c 220C     		lsrs	r2, r4, #16
+ 330              		.loc 1 145 15 view .LVU99
+ 331 001e 8DF80420 		strb	r2, [sp, #4]
+ 146:BSP/W5500/w5500.c **** 		spi_data[1] = (AddrSel & 0x0000FF00) >> 8;
+ 332              		.loc 1 146 3 is_stmt 1 view .LVU100
+ 333              		.loc 1 146 40 is_stmt 0 view .LVU101
+ 334 0022 220A     		lsrs	r2, r4, #8
+ 335              		.loc 1 146 15 view .LVU102
+ 336 0024 8DF80520 		strb	r2, [sp, #5]
+ 147:BSP/W5500/w5500.c **** 		spi_data[2] = (AddrSel & 0x000000FF) >> 0;
+ 337              		.loc 1 147 3 is_stmt 1 view .LVU103
+ 338              		.loc 1 147 15 is_stmt 0 view .LVU104
+ 339 0028 8DF80640 		strb	r4, [sp, #6]
+ 148:BSP/W5500/w5500.c **** 		WIZCHIP.IF.SPI._write_burst(spi_data, 3);
+ 340              		.loc 1 148 3 is_stmt 1 view .LVU105
+ 341 002c 0321     		movs	r1, #3
+ 342 002e 01A8     		add	r0, sp, #4
+ 343 0030 9847     		blx	r3
+ 344              	.LVL28:
+ 149:BSP/W5500/w5500.c **** 		WIZCHIP.IF.SPI._read_burst(pBuf, len);
+ 345              		.loc 1 149 3 view .LVU106
+ 346              		.loc 1 149 17 is_stmt 0 view .LVU107
+ 347 0032 114B     		ldr	r3, .L22
+ 348 0034 5B6A     		ldr	r3, [r3, #36]
+ARM GAS  /tmp/cc9IdMPI.s 			page 10
+
+
+ 349              		.loc 1 149 3 view .LVU108
+ 350 0036 2946     		mov	r1, r5
+ 351 0038 3046     		mov	r0, r6
+ 352 003a 9847     		blx	r3
+ 353              	.LVL29:
+ 354 003c 15E0     		b	.L20
+ 355              	.L16:
+ 137:BSP/W5500/w5500.c **** 		WIZCHIP.IF.SPI._write_byte((AddrSel & 0x0000FF00) >>  8);
+ 356              		.loc 1 137 3 is_stmt 1 view .LVU109
+ 137:BSP/W5500/w5500.c **** 		WIZCHIP.IF.SPI._write_byte((AddrSel & 0x0000FF00) >>  8);
+ 357              		.loc 1 137 17 is_stmt 0 view .LVU110
+ 358 003e 0E4F     		ldr	r7, .L22
+ 359 0040 3B6A     		ldr	r3, [r7, #32]
+ 137:BSP/W5500/w5500.c **** 		WIZCHIP.IF.SPI._write_byte((AddrSel & 0x0000FF00) >>  8);
+ 360              		.loc 1 137 3 view .LVU111
+ 361 0042 C4F30740 		ubfx	r0, r4, #16, #8
+ 362 0046 9847     		blx	r3
+ 363              	.LVL30:
+ 138:BSP/W5500/w5500.c **** 		WIZCHIP.IF.SPI._write_byte((AddrSel & 0x000000FF) >>  0);
+ 364              		.loc 1 138 3 is_stmt 1 view .LVU112
+ 138:BSP/W5500/w5500.c **** 		WIZCHIP.IF.SPI._write_byte((AddrSel & 0x000000FF) >>  0);
+ 365              		.loc 1 138 17 is_stmt 0 view .LVU113
+ 366 0048 3B6A     		ldr	r3, [r7, #32]
+ 138:BSP/W5500/w5500.c **** 		WIZCHIP.IF.SPI._write_byte((AddrSel & 0x000000FF) >>  0);
+ 367              		.loc 1 138 3 view .LVU114
+ 368 004a C4F30720 		ubfx	r0, r4, #8, #8
+ 369 004e 9847     		blx	r3
+ 370              	.LVL31:
+ 139:BSP/W5500/w5500.c **** 		for(i = 0; i < len; i++)
+ 371              		.loc 1 139 3 is_stmt 1 view .LVU115
+ 139:BSP/W5500/w5500.c **** 		for(i = 0; i < len; i++)
+ 372              		.loc 1 139 17 is_stmt 0 view .LVU116
+ 373 0050 3B6A     		ldr	r3, [r7, #32]
+ 139:BSP/W5500/w5500.c **** 		for(i = 0; i < len; i++)
+ 374              		.loc 1 139 3 view .LVU117
+ 375 0052 E0B2     		uxtb	r0, r4
+ 376 0054 9847     		blx	r3
+ 377              	.LVL32:
+ 140:BSP/W5500/w5500.c **** 		   pBuf[i] = WIZCHIP.IF.SPI._read_byte();
+ 378              		.loc 1 140 3 is_stmt 1 view .LVU118
+ 140:BSP/W5500/w5500.c **** 		   pBuf[i] = WIZCHIP.IF.SPI._read_byte();
+ 379              		.loc 1 140 9 is_stmt 0 view .LVU119
+ 380 0056 0024     		movs	r4, #0
+ 381              	.LVL33:
+ 140:BSP/W5500/w5500.c **** 		   pBuf[i] = WIZCHIP.IF.SPI._read_byte();
+ 382              		.loc 1 140 3 view .LVU120
+ 383 0058 05E0     		b	.L18
+ 384              	.LVL34:
+ 385              	.L19:
+ 141:BSP/W5500/w5500.c ****    }
+ 386              		.loc 1 141 6 is_stmt 1 view .LVU121
+ 141:BSP/W5500/w5500.c ****    }
+ 387              		.loc 1 141 30 is_stmt 0 view .LVU122
+ 388 005a 074B     		ldr	r3, .L22
+ 389 005c DB69     		ldr	r3, [r3, #28]
+ 141:BSP/W5500/w5500.c ****    }
+ 390              		.loc 1 141 16 view .LVU123
+ARM GAS  /tmp/cc9IdMPI.s 			page 11
+
+
+ 391 005e 9847     		blx	r3
+ 392              	.LVL35:
+ 141:BSP/W5500/w5500.c ****    }
+ 393              		.loc 1 141 14 discriminator 1 view .LVU124
+ 394 0060 3055     		strb	r0, [r6, r4]
+ 140:BSP/W5500/w5500.c **** 		   pBuf[i] = WIZCHIP.IF.SPI._read_byte();
+ 395              		.loc 1 140 24 is_stmt 1 discriminator 3 view .LVU125
+ 396 0062 0134     		adds	r4, r4, #1
+ 397              	.LVL36:
+ 140:BSP/W5500/w5500.c **** 		   pBuf[i] = WIZCHIP.IF.SPI._read_byte();
+ 398              		.loc 1 140 24 is_stmt 0 discriminator 3 view .LVU126
+ 399 0064 A4B2     		uxth	r4, r4
+ 400              	.LVL37:
+ 401              	.L18:
+ 140:BSP/W5500/w5500.c **** 		   pBuf[i] = WIZCHIP.IF.SPI._read_byte();
+ 402              		.loc 1 140 16 is_stmt 1 discriminator 1 view .LVU127
+ 403 0066 AC42     		cmp	r4, r5
+ 404 0068 F7D3     		bcc	.L19
+ 405              	.LVL38:
+ 406              	.L20:
+ 150:BSP/W5500/w5500.c ****    }
+ 151:BSP/W5500/w5500.c **** 
+ 152:BSP/W5500/w5500.c ****    WIZCHIP.CS._deselect();
+ 407              		.loc 1 152 4 view .LVU128
+ 408              		.loc 1 152 14 is_stmt 0 view .LVU129
+ 409 006a 034C     		ldr	r4, .L22
+ 410 006c A369     		ldr	r3, [r4, #24]
+ 411              		.loc 1 152 4 view .LVU130
+ 412 006e 9847     		blx	r3
+ 413              	.LVL39:
+ 153:BSP/W5500/w5500.c ****    WIZCHIP_CRITICAL_EXIT();
+ 414              		.loc 1 153 4 is_stmt 1 view .LVU131
+ 415 0070 2369     		ldr	r3, [r4, #16]
+ 416 0072 9847     		blx	r3
+ 417              	.LVL40:
+ 154:BSP/W5500/w5500.c **** }
+ 418              		.loc 1 154 1 is_stmt 0 view .LVU132
+ 419 0074 03B0     		add	sp, sp, #12
+ 420              	.LCFI9:
+ 421              		.cfi_def_cfa_offset 20
+ 422              		@ sp needed
+ 423 0076 F0BD     		pop	{r4, r5, r6, r7, pc}
+ 424              	.LVL41:
+ 425              	.L23:
+ 426              		.loc 1 154 1 view .LVU133
+ 427              		.align	2
+ 428              	.L22:
+ 429 0078 00000000 		.word	WIZCHIP
+ 430              		.cfi_endproc
+ 431              	.LFE2:
+ 433              		.section	.text.WIZCHIP_WRITE_BUF,"ax",%progbits
+ 434              		.align	1
+ 435              		.global	WIZCHIP_WRITE_BUF
+ 436              		.syntax unified
+ 437              		.thumb
+ 438              		.thumb_func
+ 440              	WIZCHIP_WRITE_BUF:
+ARM GAS  /tmp/cc9IdMPI.s 			page 12
+
+
+ 441              	.LVL42:
+ 442              	.LFB3:
+ 155:BSP/W5500/w5500.c **** 
+ 156:BSP/W5500/w5500.c **** void     WIZCHIP_WRITE_BUF(uint32_t AddrSel, uint8_t* pBuf, uint16_t len)
+ 157:BSP/W5500/w5500.c **** {
+ 443              		.loc 1 157 1 is_stmt 1 view -0
+ 444              		.cfi_startproc
+ 445              		@ args = 0, pretend = 0, frame = 8
+ 446              		@ frame_needed = 0, uses_anonymous_args = 0
+ 447              		.loc 1 157 1 is_stmt 0 view .LVU135
+ 448 0000 F0B5     		push	{r4, r5, r6, r7, lr}
+ 449              	.LCFI10:
+ 450              		.cfi_def_cfa_offset 20
+ 451              		.cfi_offset 4, -20
+ 452              		.cfi_offset 5, -16
+ 453              		.cfi_offset 6, -12
+ 454              		.cfi_offset 7, -8
+ 455              		.cfi_offset 14, -4
+ 456 0002 83B0     		sub	sp, sp, #12
+ 457              	.LCFI11:
+ 458              		.cfi_def_cfa_offset 32
+ 459 0004 0446     		mov	r4, r0
+ 460 0006 0E46     		mov	r6, r1
+ 461 0008 1546     		mov	r5, r2
+ 158:BSP/W5500/w5500.c ****    uint8_t spi_data[3];
+ 462              		.loc 1 158 4 is_stmt 1 view .LVU136
+ 159:BSP/W5500/w5500.c ****    uint16_t i;
+ 463              		.loc 1 159 4 view .LVU137
+ 160:BSP/W5500/w5500.c **** 
+ 161:BSP/W5500/w5500.c ****    WIZCHIP_CRITICAL_ENTER();
+ 464              		.loc 1 161 4 view .LVU138
+ 465 000a 1B4F     		ldr	r7, .L31
+ 466 000c FB68     		ldr	r3, [r7, #12]
+ 467 000e 9847     		blx	r3
+ 468              	.LVL43:
+ 162:BSP/W5500/w5500.c ****    WIZCHIP.CS._select();
+ 469              		.loc 1 162 4 view .LVU139
+ 470              		.loc 1 162 14 is_stmt 0 view .LVU140
+ 471 0010 7B69     		ldr	r3, [r7, #20]
+ 472              		.loc 1 162 4 view .LVU141
+ 473 0012 9847     		blx	r3
+ 474              	.LVL44:
+ 163:BSP/W5500/w5500.c **** 
+ 164:BSP/W5500/w5500.c ****    AddrSel |= (_W5500_SPI_WRITE_ | _W5500_SPI_VDM_OP_);
+ 475              		.loc 1 164 4 is_stmt 1 view .LVU142
+ 476              		.loc 1 164 12 is_stmt 0 view .LVU143
+ 477 0014 44F00404 		orr	r4, r4, #4
+ 478              	.LVL45:
+ 165:BSP/W5500/w5500.c **** 
+ 166:BSP/W5500/w5500.c ****    if(!WIZCHIP.IF.SPI._write_burst) 	// byte operation
+ 479              		.loc 1 166 4 is_stmt 1 view .LVU144
+ 480              		.loc 1 166 22 is_stmt 0 view .LVU145
+ 481 0018 BB6A     		ldr	r3, [r7, #40]
+ 482              		.loc 1 166 6 view .LVU146
+ 483 001a B3B1     		cbz	r3, .L30
+ 167:BSP/W5500/w5500.c ****    {
+ 168:BSP/W5500/w5500.c **** 		WIZCHIP.IF.SPI._write_byte((AddrSel & 0x00FF0000) >> 16);
+ARM GAS  /tmp/cc9IdMPI.s 			page 13
+
+
+ 169:BSP/W5500/w5500.c **** 		WIZCHIP.IF.SPI._write_byte((AddrSel & 0x0000FF00) >>  8);
+ 170:BSP/W5500/w5500.c **** 		WIZCHIP.IF.SPI._write_byte((AddrSel & 0x000000FF) >>  0);
+ 171:BSP/W5500/w5500.c **** 		for(i = 0; i < len; i++)
+ 172:BSP/W5500/w5500.c **** 			WIZCHIP.IF.SPI._write_byte(pBuf[i]);
+ 173:BSP/W5500/w5500.c ****    }
+ 174:BSP/W5500/w5500.c ****    else									// burst operation
+ 175:BSP/W5500/w5500.c ****    {
+ 176:BSP/W5500/w5500.c **** 		spi_data[0] = (AddrSel & 0x00FF0000) >> 16;
+ 484              		.loc 1 176 3 is_stmt 1 view .LVU147
+ 485              		.loc 1 176 40 is_stmt 0 view .LVU148
+ 486 001c 220C     		lsrs	r2, r4, #16
+ 487              		.loc 1 176 15 view .LVU149
+ 488 001e 8DF80420 		strb	r2, [sp, #4]
+ 177:BSP/W5500/w5500.c **** 		spi_data[1] = (AddrSel & 0x0000FF00) >> 8;
+ 489              		.loc 1 177 3 is_stmt 1 view .LVU150
+ 490              		.loc 1 177 40 is_stmt 0 view .LVU151
+ 491 0022 220A     		lsrs	r2, r4, #8
+ 492              		.loc 1 177 15 view .LVU152
+ 493 0024 8DF80520 		strb	r2, [sp, #5]
+ 178:BSP/W5500/w5500.c **** 		spi_data[2] = (AddrSel & 0x000000FF) >> 0;
+ 494              		.loc 1 178 3 is_stmt 1 view .LVU153
+ 495              		.loc 1 178 15 is_stmt 0 view .LVU154
+ 496 0028 8DF80640 		strb	r4, [sp, #6]
+ 179:BSP/W5500/w5500.c **** 		WIZCHIP.IF.SPI._write_burst(spi_data, 3);
+ 497              		.loc 1 179 3 is_stmt 1 view .LVU155
+ 498 002c 0321     		movs	r1, #3
+ 499 002e 01A8     		add	r0, sp, #4
+ 500 0030 9847     		blx	r3
+ 501              	.LVL46:
+ 180:BSP/W5500/w5500.c **** 		WIZCHIP.IF.SPI._write_burst(pBuf, len);
+ 502              		.loc 1 180 3 view .LVU156
+ 503              		.loc 1 180 17 is_stmt 0 view .LVU157
+ 504 0032 114B     		ldr	r3, .L31
+ 505 0034 9B6A     		ldr	r3, [r3, #40]
+ 506              		.loc 1 180 3 view .LVU158
+ 507 0036 2946     		mov	r1, r5
+ 508 0038 3046     		mov	r0, r6
+ 509 003a 9847     		blx	r3
+ 510              	.LVL47:
+ 511              	.L28:
+ 181:BSP/W5500/w5500.c ****    }
+ 182:BSP/W5500/w5500.c **** 
+ 183:BSP/W5500/w5500.c ****    WIZCHIP.CS._deselect();
+ 512              		.loc 1 183 4 is_stmt 1 view .LVU159
+ 513              		.loc 1 183 14 is_stmt 0 view .LVU160
+ 514 003c 0E4C     		ldr	r4, .L31
+ 515 003e A369     		ldr	r3, [r4, #24]
+ 516              		.loc 1 183 4 view .LVU161
+ 517 0040 9847     		blx	r3
+ 518              	.LVL48:
+ 184:BSP/W5500/w5500.c ****    WIZCHIP_CRITICAL_EXIT();
+ 519              		.loc 1 184 4 is_stmt 1 view .LVU162
+ 520 0042 2369     		ldr	r3, [r4, #16]
+ 521 0044 9847     		blx	r3
+ 522              	.LVL49:
+ 185:BSP/W5500/w5500.c **** }
+ 523              		.loc 1 185 1 is_stmt 0 view .LVU163
+ARM GAS  /tmp/cc9IdMPI.s 			page 14
+
+
+ 524 0046 03B0     		add	sp, sp, #12
+ 525              	.LCFI12:
+ 526              		.cfi_remember_state
+ 527              		.cfi_def_cfa_offset 20
+ 528              		@ sp needed
+ 529 0048 F0BD     		pop	{r4, r5, r6, r7, pc}
+ 530              	.LVL50:
+ 531              	.L30:
+ 532              	.LCFI13:
+ 533              		.cfi_restore_state
+ 168:BSP/W5500/w5500.c **** 		WIZCHIP.IF.SPI._write_byte((AddrSel & 0x0000FF00) >>  8);
+ 534              		.loc 1 168 3 is_stmt 1 view .LVU164
+ 168:BSP/W5500/w5500.c **** 		WIZCHIP.IF.SPI._write_byte((AddrSel & 0x0000FF00) >>  8);
+ 535              		.loc 1 168 17 is_stmt 0 view .LVU165
+ 536 004a 3B6A     		ldr	r3, [r7, #32]
+ 168:BSP/W5500/w5500.c **** 		WIZCHIP.IF.SPI._write_byte((AddrSel & 0x0000FF00) >>  8);
+ 537              		.loc 1 168 3 view .LVU166
+ 538 004c C4F30740 		ubfx	r0, r4, #16, #8
+ 539 0050 9847     		blx	r3
+ 540              	.LVL51:
+ 169:BSP/W5500/w5500.c **** 		WIZCHIP.IF.SPI._write_byte((AddrSel & 0x000000FF) >>  0);
+ 541              		.loc 1 169 3 is_stmt 1 view .LVU167
+ 169:BSP/W5500/w5500.c **** 		WIZCHIP.IF.SPI._write_byte((AddrSel & 0x000000FF) >>  0);
+ 542              		.loc 1 169 17 is_stmt 0 view .LVU168
+ 543 0052 3B6A     		ldr	r3, [r7, #32]
+ 169:BSP/W5500/w5500.c **** 		WIZCHIP.IF.SPI._write_byte((AddrSel & 0x000000FF) >>  0);
+ 544              		.loc 1 169 3 view .LVU169
+ 545 0054 C4F30720 		ubfx	r0, r4, #8, #8
+ 546 0058 9847     		blx	r3
+ 547              	.LVL52:
+ 170:BSP/W5500/w5500.c **** 		for(i = 0; i < len; i++)
+ 548              		.loc 1 170 3 is_stmt 1 view .LVU170
+ 170:BSP/W5500/w5500.c **** 		for(i = 0; i < len; i++)
+ 549              		.loc 1 170 17 is_stmt 0 view .LVU171
+ 550 005a 3B6A     		ldr	r3, [r7, #32]
+ 170:BSP/W5500/w5500.c **** 		for(i = 0; i < len; i++)
+ 551              		.loc 1 170 3 view .LVU172
+ 552 005c E0B2     		uxtb	r0, r4
+ 553 005e 9847     		blx	r3
+ 554              	.LVL53:
+ 171:BSP/W5500/w5500.c **** 			WIZCHIP.IF.SPI._write_byte(pBuf[i]);
+ 555              		.loc 1 171 3 is_stmt 1 view .LVU173
+ 171:BSP/W5500/w5500.c **** 			WIZCHIP.IF.SPI._write_byte(pBuf[i]);
+ 556              		.loc 1 171 9 is_stmt 0 view .LVU174
+ 557 0060 0024     		movs	r4, #0
+ 558              	.LVL54:
+ 171:BSP/W5500/w5500.c **** 			WIZCHIP.IF.SPI._write_byte(pBuf[i]);
+ 559              		.loc 1 171 3 view .LVU175
+ 560 0062 05E0     		b	.L26
+ 561              	.LVL55:
+ 562              	.L27:
+ 172:BSP/W5500/w5500.c ****    }
+ 563              		.loc 1 172 4 is_stmt 1 view .LVU176
+ 172:BSP/W5500/w5500.c ****    }
+ 564              		.loc 1 172 18 is_stmt 0 view .LVU177
+ 565 0064 044B     		ldr	r3, .L31
+ 566 0066 1B6A     		ldr	r3, [r3, #32]
+ARM GAS  /tmp/cc9IdMPI.s 			page 15
+
+
+ 172:BSP/W5500/w5500.c ****    }
+ 567              		.loc 1 172 4 view .LVU178
+ 568 0068 305D     		ldrb	r0, [r6, r4]	@ zero_extendqisi2
+ 569 006a 9847     		blx	r3
+ 570              	.LVL56:
+ 171:BSP/W5500/w5500.c **** 			WIZCHIP.IF.SPI._write_byte(pBuf[i]);
+ 571              		.loc 1 171 24 is_stmt 1 discriminator 3 view .LVU179
+ 572 006c 0134     		adds	r4, r4, #1
+ 573              	.LVL57:
+ 171:BSP/W5500/w5500.c **** 			WIZCHIP.IF.SPI._write_byte(pBuf[i]);
+ 574              		.loc 1 171 24 is_stmt 0 discriminator 3 view .LVU180
+ 575 006e A4B2     		uxth	r4, r4
+ 576              	.LVL58:
+ 577              	.L26:
+ 171:BSP/W5500/w5500.c **** 			WIZCHIP.IF.SPI._write_byte(pBuf[i]);
+ 578              		.loc 1 171 16 is_stmt 1 discriminator 1 view .LVU181
+ 579 0070 AC42     		cmp	r4, r5
+ 580 0072 F7D3     		bcc	.L27
+ 581 0074 E2E7     		b	.L28
+ 582              	.L32:
+ 583 0076 00BF     		.align	2
+ 584              	.L31:
+ 585 0078 00000000 		.word	WIZCHIP
+ 586              		.cfi_endproc
+ 587              	.LFE3:
+ 589              		.section	.text.getSn_TX_FSR,"ax",%progbits
+ 590              		.align	1
+ 591              		.global	getSn_TX_FSR
+ 592              		.syntax unified
+ 593              		.thumb
+ 594              		.thumb_func
+ 596              	getSn_TX_FSR:
+ 597              	.LVL59:
+ 598              	.LFB4:
+ 186:BSP/W5500/w5500.c **** 
+ 187:BSP/W5500/w5500.c **** 
+ 188:BSP/W5500/w5500.c **** uint16_t getSn_TX_FSR(uint8_t sn)
+ 189:BSP/W5500/w5500.c **** {
+ 599              		.loc 1 189 1 view -0
+ 600              		.cfi_startproc
+ 601              		@ args = 0, pretend = 0, frame = 0
+ 602              		@ frame_needed = 0, uses_anonymous_args = 0
+ 603              		.loc 1 189 1 is_stmt 0 view .LVU183
+ 604 0000 2DE9F041 		push	{r4, r5, r6, r7, r8, lr}
+ 605              	.LCFI14:
+ 606              		.cfi_def_cfa_offset 24
+ 607              		.cfi_offset 4, -24
+ 608              		.cfi_offset 5, -20
+ 609              		.cfi_offset 6, -16
+ 610              		.cfi_offset 7, -12
+ 611              		.cfi_offset 8, -8
+ 612              		.cfi_offset 14, -4
+ 613 0004 0746     		mov	r7, r0
+ 190:BSP/W5500/w5500.c ****    uint16_t val=0,val1=0;
+ 614              		.loc 1 190 4 is_stmt 1 view .LVU184
+ 615              	.LVL60:
+ 616              		.loc 1 190 13 is_stmt 0 view .LVU185
+ARM GAS  /tmp/cc9IdMPI.s 			page 16
+
+
+ 617 0006 0025     		movs	r5, #0
+ 618 0008 01E0     		b	.L35
+ 619              	.LVL61:
+ 620              	.L34:
+ 191:BSP/W5500/w5500.c **** 
+ 192:BSP/W5500/w5500.c ****    do
+ 193:BSP/W5500/w5500.c ****    {
+ 194:BSP/W5500/w5500.c ****       val1 = WIZCHIP_READ(Sn_TX_FSR(sn));
+ 195:BSP/W5500/w5500.c ****       val1 = (val1 << 8) + WIZCHIP_READ(WIZCHIP_OFFSET_INC(Sn_TX_FSR(sn),1));
+ 196:BSP/W5500/w5500.c ****       if (val1 != 0)
+ 197:BSP/W5500/w5500.c ****       {
+ 198:BSP/W5500/w5500.c ****         val = WIZCHIP_READ(Sn_TX_FSR(sn));
+ 199:BSP/W5500/w5500.c ****         val = (val << 8) + WIZCHIP_READ(WIZCHIP_OFFSET_INC(Sn_TX_FSR(sn),1));
+ 200:BSP/W5500/w5500.c ****       }
+ 201:BSP/W5500/w5500.c ****    }while (val != val1);
+ 621              		.loc 1 201 16 is_stmt 1 view .LVU186
+ 622 000a A542     		cmp	r5, r4
+ 623 000c 20D0     		beq	.L37
+ 624              	.LVL62:
+ 625              	.L35:
+ 192:BSP/W5500/w5500.c ****    {
+ 626              		.loc 1 192 4 view .LVU187
+ 194:BSP/W5500/w5500.c ****       val1 = (val1 << 8) + WIZCHIP_READ(WIZCHIP_OFFSET_INC(Sn_TX_FSR(sn),1));
+ 627              		.loc 1 194 7 view .LVU188
+ 194:BSP/W5500/w5500.c ****       val1 = (val1 << 8) + WIZCHIP_READ(WIZCHIP_OFFSET_INC(Sn_TX_FSR(sn),1));
+ 628              		.loc 1 194 27 is_stmt 0 view .LVU189
+ 629 000e 4FEA8708 		lsl	r8, r7, #2
+ 630 0012 08F10108 		add	r8, r8, #1
+ 631 0016 4FEAC808 		lsl	r8, r8, #3
+ 632 001a 08F50056 		add	r6, r8, #8192
+ 194:BSP/W5500/w5500.c ****       val1 = (val1 << 8) + WIZCHIP_READ(WIZCHIP_OFFSET_INC(Sn_TX_FSR(sn),1));
+ 633              		.loc 1 194 14 view .LVU190
+ 634 001e 3046     		mov	r0, r6
+ 635 0020 FFF7FEFF 		bl	WIZCHIP_READ
+ 636              	.LVL63:
+ 195:BSP/W5500/w5500.c ****       if (val1 != 0)
+ 637              		.loc 1 195 7 is_stmt 1 view .LVU191
+ 195:BSP/W5500/w5500.c ****       if (val1 != 0)
+ 638              		.loc 1 195 20 is_stmt 0 view .LVU192
+ 639 0024 0402     		lsls	r4, r0, #8
+ 640 0026 A4B2     		uxth	r4, r4
+ 195:BSP/W5500/w5500.c ****       if (val1 != 0)
+ 641              		.loc 1 195 41 view .LVU193
+ 642 0028 08F50458 		add	r8, r8, #8448
+ 195:BSP/W5500/w5500.c ****       if (val1 != 0)
+ 643              		.loc 1 195 28 view .LVU194
+ 644 002c 4046     		mov	r0, r8
+ 645              	.LVL64:
+ 195:BSP/W5500/w5500.c ****       if (val1 != 0)
+ 646              		.loc 1 195 28 view .LVU195
+ 647 002e FFF7FEFF 		bl	WIZCHIP_READ
+ 648              	.LVL65:
+ 195:BSP/W5500/w5500.c ****       if (val1 != 0)
+ 649              		.loc 1 195 12 discriminator 1 view .LVU196
+ 650 0032 0444     		add	r4, r4, r0
+ 651 0034 A4B2     		uxth	r4, r4
+ 652              	.LVL66:
+ARM GAS  /tmp/cc9IdMPI.s 			page 17
+
+
+ 196:BSP/W5500/w5500.c ****       {
+ 653              		.loc 1 196 7 is_stmt 1 view .LVU197
+ 196:BSP/W5500/w5500.c ****       {
+ 654              		.loc 1 196 10 is_stmt 0 view .LVU198
+ 655 0036 002C     		cmp	r4, #0
+ 656 0038 E7D0     		beq	.L34
+ 198:BSP/W5500/w5500.c ****         val = (val << 8) + WIZCHIP_READ(WIZCHIP_OFFSET_INC(Sn_TX_FSR(sn),1));
+ 657              		.loc 1 198 9 is_stmt 1 view .LVU199
+ 198:BSP/W5500/w5500.c ****         val = (val << 8) + WIZCHIP_READ(WIZCHIP_OFFSET_INC(Sn_TX_FSR(sn),1));
+ 658              		.loc 1 198 15 is_stmt 0 view .LVU200
+ 659 003a 3046     		mov	r0, r6
+ 660 003c FFF7FEFF 		bl	WIZCHIP_READ
+ 661              	.LVL67:
+ 199:BSP/W5500/w5500.c ****       }
+ 662              		.loc 1 199 9 is_stmt 1 view .LVU201
+ 199:BSP/W5500/w5500.c ****       }
+ 663              		.loc 1 199 20 is_stmt 0 view .LVU202
+ 664 0040 0502     		lsls	r5, r0, #8
+ 665 0042 ADB2     		uxth	r5, r5
+ 199:BSP/W5500/w5500.c ****       }
+ 666              		.loc 1 199 28 view .LVU203
+ 667 0044 4046     		mov	r0, r8
+ 668              	.LVL68:
+ 199:BSP/W5500/w5500.c ****       }
+ 669              		.loc 1 199 28 view .LVU204
+ 670 0046 FFF7FEFF 		bl	WIZCHIP_READ
+ 671              	.LVL69:
+ 199:BSP/W5500/w5500.c ****       }
+ 672              		.loc 1 199 13 discriminator 1 view .LVU205
+ 673 004a 0544     		add	r5, r5, r0
+ 674 004c ADB2     		uxth	r5, r5
+ 675              	.LVL70:
+ 199:BSP/W5500/w5500.c ****       }
+ 676              		.loc 1 199 13 discriminator 1 view .LVU206
+ 677 004e DCE7     		b	.L34
+ 678              	.L37:
+ 202:BSP/W5500/w5500.c ****    return val;
+ 679              		.loc 1 202 4 is_stmt 1 view .LVU207
+ 203:BSP/W5500/w5500.c **** }
+ 680              		.loc 1 203 1 is_stmt 0 view .LVU208
+ 681 0050 2846     		mov	r0, r5
+ 682 0052 BDE8F081 		pop	{r4, r5, r6, r7, r8, pc}
+ 683              		.loc 1 203 1 view .LVU209
+ 684              		.cfi_endproc
+ 685              	.LFE4:
+ 687              		.section	.text.getSn_RX_RSR,"ax",%progbits
+ 688              		.align	1
+ 689              		.global	getSn_RX_RSR
+ 690              		.syntax unified
+ 691              		.thumb
+ 692              		.thumb_func
+ 694              	getSn_RX_RSR:
+ 695              	.LVL71:
+ 696              	.LFB5:
+ 204:BSP/W5500/w5500.c **** 
+ 205:BSP/W5500/w5500.c **** 
+ 206:BSP/W5500/w5500.c **** uint16_t getSn_RX_RSR(uint8_t sn)
+ARM GAS  /tmp/cc9IdMPI.s 			page 18
+
+
+ 207:BSP/W5500/w5500.c **** {
+ 697              		.loc 1 207 1 is_stmt 1 view -0
+ 698              		.cfi_startproc
+ 699              		@ args = 0, pretend = 0, frame = 0
+ 700              		@ frame_needed = 0, uses_anonymous_args = 0
+ 701              		.loc 1 207 1 is_stmt 0 view .LVU211
+ 702 0000 2DE9F041 		push	{r4, r5, r6, r7, r8, lr}
+ 703              	.LCFI15:
+ 704              		.cfi_def_cfa_offset 24
+ 705              		.cfi_offset 4, -24
+ 706              		.cfi_offset 5, -20
+ 707              		.cfi_offset 6, -16
+ 708              		.cfi_offset 7, -12
+ 709              		.cfi_offset 8, -8
+ 710              		.cfi_offset 14, -4
+ 711 0004 0746     		mov	r7, r0
+ 208:BSP/W5500/w5500.c ****    uint16_t val=0,val1=0;
+ 712              		.loc 1 208 4 is_stmt 1 view .LVU212
+ 713              	.LVL72:
+ 714              		.loc 1 208 13 is_stmt 0 view .LVU213
+ 715 0006 0025     		movs	r5, #0
+ 716 0008 01E0     		b	.L40
+ 717              	.LVL73:
+ 718              	.L39:
+ 209:BSP/W5500/w5500.c **** 
+ 210:BSP/W5500/w5500.c ****    do
+ 211:BSP/W5500/w5500.c ****    {
+ 212:BSP/W5500/w5500.c ****       val1 = WIZCHIP_READ(Sn_RX_RSR(sn));
+ 213:BSP/W5500/w5500.c ****       val1 = (val1 << 8) + WIZCHIP_READ(WIZCHIP_OFFSET_INC(Sn_RX_RSR(sn),1));
+ 214:BSP/W5500/w5500.c ****       if (val1 != 0)
+ 215:BSP/W5500/w5500.c ****       {
+ 216:BSP/W5500/w5500.c ****         val = WIZCHIP_READ(Sn_RX_RSR(sn));
+ 217:BSP/W5500/w5500.c ****         val = (val << 8) + WIZCHIP_READ(WIZCHIP_OFFSET_INC(Sn_RX_RSR(sn),1));
+ 218:BSP/W5500/w5500.c ****       }
+ 219:BSP/W5500/w5500.c ****    }while (val != val1);
+ 719              		.loc 1 219 16 is_stmt 1 view .LVU214
+ 720 000a A542     		cmp	r5, r4
+ 721 000c 20D0     		beq	.L42
+ 722              	.LVL74:
+ 723              	.L40:
+ 210:BSP/W5500/w5500.c ****    {
+ 724              		.loc 1 210 4 view .LVU215
+ 212:BSP/W5500/w5500.c ****       val1 = (val1 << 8) + WIZCHIP_READ(WIZCHIP_OFFSET_INC(Sn_RX_RSR(sn),1));
+ 725              		.loc 1 212 7 view .LVU216
+ 212:BSP/W5500/w5500.c ****       val1 = (val1 << 8) + WIZCHIP_READ(WIZCHIP_OFFSET_INC(Sn_RX_RSR(sn),1));
+ 726              		.loc 1 212 27 is_stmt 0 view .LVU217
+ 727 000e 4FEA8708 		lsl	r8, r7, #2
+ 728 0012 08F10108 		add	r8, r8, #1
+ 729 0016 4FEAC808 		lsl	r8, r8, #3
+ 730 001a 08F51856 		add	r6, r8, #9728
+ 212:BSP/W5500/w5500.c ****       val1 = (val1 << 8) + WIZCHIP_READ(WIZCHIP_OFFSET_INC(Sn_RX_RSR(sn),1));
+ 731              		.loc 1 212 14 view .LVU218
+ 732 001e 3046     		mov	r0, r6
+ 733 0020 FFF7FEFF 		bl	WIZCHIP_READ
+ 734              	.LVL75:
+ 213:BSP/W5500/w5500.c ****       if (val1 != 0)
+ 735              		.loc 1 213 7 is_stmt 1 view .LVU219
+ARM GAS  /tmp/cc9IdMPI.s 			page 19
+
+
+ 213:BSP/W5500/w5500.c ****       if (val1 != 0)
+ 736              		.loc 1 213 20 is_stmt 0 view .LVU220
+ 737 0024 0402     		lsls	r4, r0, #8
+ 738 0026 A4B2     		uxth	r4, r4
+ 213:BSP/W5500/w5500.c ****       if (val1 != 0)
+ 739              		.loc 1 213 41 view .LVU221
+ 740 0028 08F51C58 		add	r8, r8, #9984
+ 213:BSP/W5500/w5500.c ****       if (val1 != 0)
+ 741              		.loc 1 213 28 view .LVU222
+ 742 002c 4046     		mov	r0, r8
+ 743              	.LVL76:
+ 213:BSP/W5500/w5500.c ****       if (val1 != 0)
+ 744              		.loc 1 213 28 view .LVU223
+ 745 002e FFF7FEFF 		bl	WIZCHIP_READ
+ 746              	.LVL77:
+ 213:BSP/W5500/w5500.c ****       if (val1 != 0)
+ 747              		.loc 1 213 12 discriminator 1 view .LVU224
+ 748 0032 0444     		add	r4, r4, r0
+ 749 0034 A4B2     		uxth	r4, r4
+ 750              	.LVL78:
+ 214:BSP/W5500/w5500.c ****       {
+ 751              		.loc 1 214 7 is_stmt 1 view .LVU225
+ 214:BSP/W5500/w5500.c ****       {
+ 752              		.loc 1 214 10 is_stmt 0 view .LVU226
+ 753 0036 002C     		cmp	r4, #0
+ 754 0038 E7D0     		beq	.L39
+ 216:BSP/W5500/w5500.c ****         val = (val << 8) + WIZCHIP_READ(WIZCHIP_OFFSET_INC(Sn_RX_RSR(sn),1));
+ 755              		.loc 1 216 9 is_stmt 1 view .LVU227
+ 216:BSP/W5500/w5500.c ****         val = (val << 8) + WIZCHIP_READ(WIZCHIP_OFFSET_INC(Sn_RX_RSR(sn),1));
+ 756              		.loc 1 216 15 is_stmt 0 view .LVU228
+ 757 003a 3046     		mov	r0, r6
+ 758 003c FFF7FEFF 		bl	WIZCHIP_READ
+ 759              	.LVL79:
+ 217:BSP/W5500/w5500.c ****       }
+ 760              		.loc 1 217 9 is_stmt 1 view .LVU229
+ 217:BSP/W5500/w5500.c ****       }
+ 761              		.loc 1 217 20 is_stmt 0 view .LVU230
+ 762 0040 0502     		lsls	r5, r0, #8
+ 763 0042 ADB2     		uxth	r5, r5
+ 217:BSP/W5500/w5500.c ****       }
+ 764              		.loc 1 217 28 view .LVU231
+ 765 0044 4046     		mov	r0, r8
+ 766              	.LVL80:
+ 217:BSP/W5500/w5500.c ****       }
+ 767              		.loc 1 217 28 view .LVU232
+ 768 0046 FFF7FEFF 		bl	WIZCHIP_READ
+ 769              	.LVL81:
+ 217:BSP/W5500/w5500.c ****       }
+ 770              		.loc 1 217 13 discriminator 1 view .LVU233
+ 771 004a 0544     		add	r5, r5, r0
+ 772 004c ADB2     		uxth	r5, r5
+ 773              	.LVL82:
+ 217:BSP/W5500/w5500.c ****       }
+ 774              		.loc 1 217 13 discriminator 1 view .LVU234
+ 775 004e DCE7     		b	.L39
+ 776              	.L42:
+ 220:BSP/W5500/w5500.c ****    return val;
+ARM GAS  /tmp/cc9IdMPI.s 			page 20
+
+
+ 777              		.loc 1 220 4 is_stmt 1 view .LVU235
+ 221:BSP/W5500/w5500.c **** }
+ 778              		.loc 1 221 1 is_stmt 0 view .LVU236
+ 779 0050 2846     		mov	r0, r5
+ 780 0052 BDE8F081 		pop	{r4, r5, r6, r7, r8, pc}
+ 781              		.loc 1 221 1 view .LVU237
+ 782              		.cfi_endproc
+ 783              	.LFE5:
+ 785              		.section	.text.wiz_send_data,"ax",%progbits
+ 786              		.align	1
+ 787              		.global	wiz_send_data
+ 788              		.syntax unified
+ 789              		.thumb
+ 790              		.thumb_func
+ 792              	wiz_send_data:
+ 793              	.LVL83:
+ 794              	.LFB6:
+ 222:BSP/W5500/w5500.c **** 
+ 223:BSP/W5500/w5500.c **** void wiz_send_data(uint8_t sn, uint8_t *wizdata, uint16_t len)
+ 224:BSP/W5500/w5500.c **** {
+ 795              		.loc 1 224 1 is_stmt 1 view -0
+ 796              		.cfi_startproc
+ 797              		@ args = 0, pretend = 0, frame = 0
+ 798              		@ frame_needed = 0, uses_anonymous_args = 0
+ 225:BSP/W5500/w5500.c ****    uint16_t ptr = 0;
+ 799              		.loc 1 225 4 view .LVU239
+ 226:BSP/W5500/w5500.c ****    uint32_t addrsel = 0;
+ 800              		.loc 1 226 4 view .LVU240
+ 227:BSP/W5500/w5500.c **** 
+ 228:BSP/W5500/w5500.c ****    if(len == 0)  return;
+ 801              		.loc 1 228 4 view .LVU241
+ 802              		.loc 1 228 6 is_stmt 0 view .LVU242
+ 803 0000 02B9     		cbnz	r2, .L49
+ 804 0002 7047     		bx	lr
+ 805              	.L49:
+ 224:BSP/W5500/w5500.c ****    uint16_t ptr = 0;
+ 806              		.loc 1 224 1 view .LVU243
+ 807 0004 2DE9F843 		push	{r3, r4, r5, r6, r7, r8, r9, lr}
+ 808              	.LCFI16:
+ 809              		.cfi_def_cfa_offset 32
+ 810              		.cfi_offset 3, -32
+ 811              		.cfi_offset 4, -28
+ 812              		.cfi_offset 5, -24
+ 813              		.cfi_offset 6, -20
+ 814              		.cfi_offset 7, -16
+ 815              		.cfi_offset 8, -12
+ 816              		.cfi_offset 9, -8
+ 817              		.cfi_offset 14, -4
+ 818 0008 0E46     		mov	r6, r1
+ 819 000a 1746     		mov	r7, r2
+ 229:BSP/W5500/w5500.c ****    ptr = getSn_TX_WR(sn);
+ 820              		.loc 1 229 4 is_stmt 1 view .LVU244
+ 821              		.loc 1 229 10 is_stmt 0 view .LVU245
+ 822 000c 8400     		lsls	r4, r0, #2
+ 823 000e 04F10109 		add	r9, r4, #1
+ 824 0012 4FEAC909 		lsl	r9, r9, #3
+ 825 0016 09F51058 		add	r8, r9, #9216
+ARM GAS  /tmp/cc9IdMPI.s 			page 21
+
+
+ 826 001a 4046     		mov	r0, r8
+ 827              	.LVL84:
+ 828              		.loc 1 229 10 view .LVU246
+ 829 001c FFF7FEFF 		bl	WIZCHIP_READ
+ 830              	.LVL85:
+ 831              		.loc 1 229 10 discriminator 1 view .LVU247
+ 832 0020 0502     		lsls	r5, r0, #8
+ 833 0022 ADB2     		uxth	r5, r5
+ 834 0024 09F51459 		add	r9, r9, #9472
+ 835 0028 4846     		mov	r0, r9
+ 836 002a FFF7FEFF 		bl	WIZCHIP_READ
+ 837              	.LVL86:
+ 838              		.loc 1 229 8 discriminator 2 view .LVU248
+ 839 002e 0544     		add	r5, r5, r0
+ 840 0030 ADB2     		uxth	r5, r5
+ 841              	.LVL87:
+ 230:BSP/W5500/w5500.c ****    //M20140501 : implict type casting -> explict type casting
+ 231:BSP/W5500/w5500.c ****    //addrsel = (ptr << 8) + (WIZCHIP_TXBUF_BLOCK(sn) << 3);
+ 232:BSP/W5500/w5500.c ****    addrsel = ((uint32_t)ptr << 8) + (WIZCHIP_TXBUF_BLOCK(sn) << 3);
+ 842              		.loc 1 232 4 is_stmt 1 view .LVU249
+ 843              		.loc 1 232 38 is_stmt 0 view .LVU250
+ 844 0032 A01C     		adds	r0, r4, #2
+ 845              		.loc 1 232 62 view .LVU251
+ 846 0034 C000     		lsls	r0, r0, #3
+ 847              	.LVL88:
+ 233:BSP/W5500/w5500.c ****    //
+ 234:BSP/W5500/w5500.c ****    WIZCHIP_WRITE_BUF(addrsel,wizdata, len);
+ 848              		.loc 1 234 4 is_stmt 1 view .LVU252
+ 849 0036 3A46     		mov	r2, r7
+ 850 0038 3146     		mov	r1, r6
+ 851 003a 00EB0520 		add	r0, r0, r5, lsl #8
+ 852              	.LVL89:
+ 853              		.loc 1 234 4 is_stmt 0 view .LVU253
+ 854 003e FFF7FEFF 		bl	WIZCHIP_WRITE_BUF
+ 855              	.LVL90:
+ 235:BSP/W5500/w5500.c ****    
+ 236:BSP/W5500/w5500.c ****    ptr += len;
+ 856              		.loc 1 236 4 is_stmt 1 view .LVU254
+ 857              		.loc 1 236 8 is_stmt 0 view .LVU255
+ 858 0042 7919     		adds	r1, r7, r5
+ 859 0044 8CB2     		uxth	r4, r1
+ 860              	.LVL91:
+ 237:BSP/W5500/w5500.c ****    setSn_TX_WR(sn,ptr);
+ 861              		.loc 1 237 4 is_stmt 1 view .LVU256
+ 862 0046 C1F30721 		ubfx	r1, r1, #8, #8
+ 863 004a 4046     		mov	r0, r8
+ 864 004c FFF7FEFF 		bl	WIZCHIP_WRITE
+ 865              	.LVL92:
+ 866              		.loc 1 237 4 discriminator 1 view .LVU257
+ 867 0050 E1B2     		uxtb	r1, r4
+ 868 0052 4846     		mov	r0, r9
+ 869 0054 FFF7FEFF 		bl	WIZCHIP_WRITE
+ 870              	.LVL93:
+ 871              		.loc 1 237 23 discriminator 1 view .LVU258
+ 238:BSP/W5500/w5500.c **** }
+ 872              		.loc 1 238 1 is_stmt 0 view .LVU259
+ 873 0058 BDE8F883 		pop	{r3, r4, r5, r6, r7, r8, r9, pc}
+ARM GAS  /tmp/cc9IdMPI.s 			page 22
+
+
+ 874              		.loc 1 238 1 view .LVU260
+ 875              		.cfi_endproc
+ 876              	.LFE6:
+ 878              		.section	.text.wiz_recv_data,"ax",%progbits
+ 879              		.align	1
+ 880              		.global	wiz_recv_data
+ 881              		.syntax unified
+ 882              		.thumb
+ 883              		.thumb_func
+ 885              	wiz_recv_data:
+ 886              	.LVL94:
+ 887              	.LFB7:
+ 239:BSP/W5500/w5500.c **** 
+ 240:BSP/W5500/w5500.c **** void wiz_recv_data(uint8_t sn, uint8_t *wizdata, uint16_t len)
+ 241:BSP/W5500/w5500.c **** {
+ 888              		.loc 1 241 1 is_stmt 1 view -0
+ 889              		.cfi_startproc
+ 890              		@ args = 0, pretend = 0, frame = 0
+ 891              		@ frame_needed = 0, uses_anonymous_args = 0
+ 242:BSP/W5500/w5500.c ****    uint16_t ptr = 0;
+ 892              		.loc 1 242 4 view .LVU262
+ 243:BSP/W5500/w5500.c ****    uint32_t addrsel = 0;
+ 893              		.loc 1 243 4 view .LVU263
+ 244:BSP/W5500/w5500.c ****    
+ 245:BSP/W5500/w5500.c ****    if(len == 0) return;
+ 894              		.loc 1 245 4 view .LVU264
+ 895              		.loc 1 245 6 is_stmt 0 view .LVU265
+ 896 0000 02B9     		cbnz	r2, .L56
+ 897 0002 7047     		bx	lr
+ 898              	.L56:
+ 241:BSP/W5500/w5500.c ****    uint16_t ptr = 0;
+ 899              		.loc 1 241 1 view .LVU266
+ 900 0004 2DE9F843 		push	{r3, r4, r5, r6, r7, r8, r9, lr}
+ 901              	.LCFI17:
+ 902              		.cfi_def_cfa_offset 32
+ 903              		.cfi_offset 3, -32
+ 904              		.cfi_offset 4, -28
+ 905              		.cfi_offset 5, -24
+ 906              		.cfi_offset 6, -20
+ 907              		.cfi_offset 7, -16
+ 908              		.cfi_offset 8, -12
+ 909              		.cfi_offset 9, -8
+ 910              		.cfi_offset 14, -4
+ 911 0008 0E46     		mov	r6, r1
+ 912 000a 1746     		mov	r7, r2
+ 246:BSP/W5500/w5500.c ****    ptr = getSn_RX_RD(sn);
+ 913              		.loc 1 246 4 is_stmt 1 view .LVU267
+ 914              		.loc 1 246 10 is_stmt 0 view .LVU268
+ 915 000c 8400     		lsls	r4, r0, #2
+ 916 000e 04F10109 		add	r9, r4, #1
+ 917 0012 4FEAC909 		lsl	r9, r9, #3
+ 918 0016 09F52058 		add	r8, r9, #10240
+ 919 001a 4046     		mov	r0, r8
+ 920              	.LVL95:
+ 921              		.loc 1 246 10 view .LVU269
+ 922 001c FFF7FEFF 		bl	WIZCHIP_READ
+ 923              	.LVL96:
+ARM GAS  /tmp/cc9IdMPI.s 			page 23
+
+
+ 924              		.loc 1 246 10 discriminator 1 view .LVU270
+ 925 0020 0502     		lsls	r5, r0, #8
+ 926 0022 ADB2     		uxth	r5, r5
+ 927 0024 09F52459 		add	r9, r9, #10496
+ 928 0028 4846     		mov	r0, r9
+ 929 002a FFF7FEFF 		bl	WIZCHIP_READ
+ 930              	.LVL97:
+ 931              		.loc 1 246 8 discriminator 2 view .LVU271
+ 932 002e 0544     		add	r5, r5, r0
+ 933 0030 ADB2     		uxth	r5, r5
+ 934              	.LVL98:
+ 247:BSP/W5500/w5500.c ****    //M20140501 : implict type casting -> explict type casting
+ 248:BSP/W5500/w5500.c ****    //addrsel = ((ptr << 8) + (WIZCHIP_RXBUF_BLOCK(sn) << 3);
+ 249:BSP/W5500/w5500.c ****    addrsel = ((uint32_t)ptr << 8) + (WIZCHIP_RXBUF_BLOCK(sn) << 3);
+ 935              		.loc 1 249 4 is_stmt 1 view .LVU272
+ 936              		.loc 1 249 38 is_stmt 0 view .LVU273
+ 937 0032 E01C     		adds	r0, r4, #3
+ 938              		.loc 1 249 62 view .LVU274
+ 939 0034 C000     		lsls	r0, r0, #3
+ 940              	.LVL99:
+ 250:BSP/W5500/w5500.c ****    //
+ 251:BSP/W5500/w5500.c ****    WIZCHIP_READ_BUF(addrsel, wizdata, len);
+ 941              		.loc 1 251 4 is_stmt 1 view .LVU275
+ 942 0036 3A46     		mov	r2, r7
+ 943 0038 3146     		mov	r1, r6
+ 944 003a 00EB0520 		add	r0, r0, r5, lsl #8
+ 945              	.LVL100:
+ 946              		.loc 1 251 4 is_stmt 0 view .LVU276
+ 947 003e FFF7FEFF 		bl	WIZCHIP_READ_BUF
+ 948              	.LVL101:
+ 252:BSP/W5500/w5500.c ****    ptr += len;
+ 949              		.loc 1 252 4 is_stmt 1 view .LVU277
+ 950              		.loc 1 252 8 is_stmt 0 view .LVU278
+ 951 0042 7919     		adds	r1, r7, r5
+ 952 0044 8CB2     		uxth	r4, r1
+ 953              	.LVL102:
+ 253:BSP/W5500/w5500.c ****    
+ 254:BSP/W5500/w5500.c ****    setSn_RX_RD(sn,ptr);
+ 954              		.loc 1 254 4 is_stmt 1 view .LVU279
+ 955 0046 C1F30721 		ubfx	r1, r1, #8, #8
+ 956 004a 4046     		mov	r0, r8
+ 957 004c FFF7FEFF 		bl	WIZCHIP_WRITE
+ 958              	.LVL103:
+ 959              		.loc 1 254 4 discriminator 1 view .LVU280
+ 960 0050 E1B2     		uxtb	r1, r4
+ 961 0052 4846     		mov	r0, r9
+ 962 0054 FFF7FEFF 		bl	WIZCHIP_WRITE
+ 963              	.LVL104:
+ 964              		.loc 1 254 23 discriminator 1 view .LVU281
+ 255:BSP/W5500/w5500.c **** }
+ 965              		.loc 1 255 1 is_stmt 0 view .LVU282
+ 966 0058 BDE8F883 		pop	{r3, r4, r5, r6, r7, r8, r9, pc}
+ 967              		.loc 1 255 1 view .LVU283
+ 968              		.cfi_endproc
+ 969              	.LFE7:
+ 971              		.section	.text.wiz_recv_ignore,"ax",%progbits
+ 972              		.align	1
+ARM GAS  /tmp/cc9IdMPI.s 			page 24
+
+
+ 973              		.global	wiz_recv_ignore
+ 974              		.syntax unified
+ 975              		.thumb
+ 976              		.thumb_func
+ 978              	wiz_recv_ignore:
+ 979              	.LVL105:
+ 980              	.LFB8:
+ 256:BSP/W5500/w5500.c **** 
+ 257:BSP/W5500/w5500.c **** 
+ 258:BSP/W5500/w5500.c **** void wiz_recv_ignore(uint8_t sn, uint16_t len)
+ 259:BSP/W5500/w5500.c **** {
+ 981              		.loc 1 259 1 is_stmt 1 view -0
+ 982              		.cfi_startproc
+ 983              		@ args = 0, pretend = 0, frame = 0
+ 984              		@ frame_needed = 0, uses_anonymous_args = 0
+ 985              		.loc 1 259 1 is_stmt 0 view .LVU285
+ 986 0000 F8B5     		push	{r3, r4, r5, r6, r7, lr}
+ 987              	.LCFI18:
+ 988              		.cfi_def_cfa_offset 24
+ 989              		.cfi_offset 3, -24
+ 990              		.cfi_offset 4, -20
+ 991              		.cfi_offset 5, -16
+ 992              		.cfi_offset 6, -12
+ 993              		.cfi_offset 7, -8
+ 994              		.cfi_offset 14, -4
+ 995 0002 0F46     		mov	r7, r1
+ 260:BSP/W5500/w5500.c ****    uint16_t ptr = 0;
+ 996              		.loc 1 260 4 is_stmt 1 view .LVU286
+ 997              	.LVL106:
+ 261:BSP/W5500/w5500.c **** 
+ 262:BSP/W5500/w5500.c ****    ptr = getSn_RX_RD(sn);
+ 998              		.loc 1 262 4 view .LVU287
+ 999              		.loc 1 262 10 is_stmt 0 view .LVU288
+ 1000 0004 8500     		lsls	r5, r0, #2
+ 1001 0006 0135     		adds	r5, r5, #1
+ 1002 0008 ED00     		lsls	r5, r5, #3
+ 1003 000a 05F52056 		add	r6, r5, #10240
+ 1004 000e 3046     		mov	r0, r6
+ 1005              	.LVL107:
+ 1006              		.loc 1 262 10 view .LVU289
+ 1007 0010 FFF7FEFF 		bl	WIZCHIP_READ
+ 1008              	.LVL108:
+ 1009              		.loc 1 262 10 discriminator 1 view .LVU290
+ 1010 0014 0402     		lsls	r4, r0, #8
+ 1011 0016 A4B2     		uxth	r4, r4
+ 1012 0018 05F52455 		add	r5, r5, #10496
+ 1013 001c 2846     		mov	r0, r5
+ 1014 001e FFF7FEFF 		bl	WIZCHIP_READ
+ 1015              	.LVL109:
+ 1016              		.loc 1 262 8 discriminator 2 view .LVU291
+ 1017 0022 0444     		add	r4, r4, r0
+ 1018 0024 A4B2     		uxth	r4, r4
+ 1019              	.LVL110:
+ 263:BSP/W5500/w5500.c ****    ptr += len;
+ 1020              		.loc 1 263 4 is_stmt 1 view .LVU292
+ 1021              		.loc 1 263 8 is_stmt 0 view .LVU293
+ 1022 0026 E119     		adds	r1, r4, r7
+ARM GAS  /tmp/cc9IdMPI.s 			page 25
+
+
+ 1023 0028 8CB2     		uxth	r4, r1
+ 1024              	.LVL111:
+ 264:BSP/W5500/w5500.c ****    setSn_RX_RD(sn,ptr);
+ 1025              		.loc 1 264 4 is_stmt 1 view .LVU294
+ 1026 002a C1F30721 		ubfx	r1, r1, #8, #8
+ 1027 002e 3046     		mov	r0, r6
+ 1028 0030 FFF7FEFF 		bl	WIZCHIP_WRITE
+ 1029              	.LVL112:
+ 1030              		.loc 1 264 4 discriminator 1 view .LVU295
+ 1031 0034 E1B2     		uxtb	r1, r4
+ 1032 0036 2846     		mov	r0, r5
+ 1033 0038 FFF7FEFF 		bl	WIZCHIP_WRITE
+ 1034              	.LVL113:
+ 1035              		.loc 1 264 23 discriminator 2 view .LVU296
+ 265:BSP/W5500/w5500.c **** }
+ 1036              		.loc 1 265 1 is_stmt 0 view .LVU297
+ 1037 003c F8BD     		pop	{r3, r4, r5, r6, r7, pc}
+ 1038              		.loc 1 265 1 view .LVU298
+ 1039              		.cfi_endproc
+ 1040              	.LFE8:
+ 1042              		.text
+ 1043              	.Letext0:
+ 1044              		.file 2 "/usr/lib/gcc/arm-none-eabi/13.2.1/include/stdint.h"
+ 1045              		.file 3 "BSP/wizchip_conf.h"
+ARM GAS  /tmp/cc9IdMPI.s 			page 26
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 w5500.c
+     /tmp/cc9IdMPI.s:19     .text.WIZCHIP_READ:00000000 $t
+     /tmp/cc9IdMPI.s:25     .text.WIZCHIP_READ:00000000 WIZCHIP_READ
+     /tmp/cc9IdMPI.s:141    .text.WIZCHIP_READ:00000060 $d
+     /tmp/cc9IdMPI.s:146    .text.WIZCHIP_WRITE:00000000 $t
+     /tmp/cc9IdMPI.s:152    .text.WIZCHIP_WRITE:00000000 WIZCHIP_WRITE
+     /tmp/cc9IdMPI.s:271    .text.WIZCHIP_WRITE:00000064 $d
+     /tmp/cc9IdMPI.s:276    .text.WIZCHIP_READ_BUF:00000000 $t
+     /tmp/cc9IdMPI.s:282    .text.WIZCHIP_READ_BUF:00000000 WIZCHIP_READ_BUF
+     /tmp/cc9IdMPI.s:429    .text.WIZCHIP_READ_BUF:00000078 $d
+     /tmp/cc9IdMPI.s:434    .text.WIZCHIP_WRITE_BUF:00000000 $t
+     /tmp/cc9IdMPI.s:440    .text.WIZCHIP_WRITE_BUF:00000000 WIZCHIP_WRITE_BUF
+     /tmp/cc9IdMPI.s:585    .text.WIZCHIP_WRITE_BUF:00000078 $d
+     /tmp/cc9IdMPI.s:590    .text.getSn_TX_FSR:00000000 $t
+     /tmp/cc9IdMPI.s:596    .text.getSn_TX_FSR:00000000 getSn_TX_FSR
+     /tmp/cc9IdMPI.s:688    .text.getSn_RX_RSR:00000000 $t
+     /tmp/cc9IdMPI.s:694    .text.getSn_RX_RSR:00000000 getSn_RX_RSR
+     /tmp/cc9IdMPI.s:786    .text.wiz_send_data:00000000 $t
+     /tmp/cc9IdMPI.s:792    .text.wiz_send_data:00000000 wiz_send_data
+     /tmp/cc9IdMPI.s:879    .text.wiz_recv_data:00000000 $t
+     /tmp/cc9IdMPI.s:885    .text.wiz_recv_data:00000000 wiz_recv_data
+     /tmp/cc9IdMPI.s:972    .text.wiz_recv_ignore:00000000 $t
+     /tmp/cc9IdMPI.s:978    .text.wiz_recv_ignore:00000000 wiz_recv_ignore
+
+UNDEFINED SYMBOLS
+WIZCHIP
