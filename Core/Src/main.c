@@ -95,19 +95,19 @@ int main(void)
   MX_SPI2_Init();
   /* USER CODE BEGIN 2 */
   
-  w5500_main();
+  // w5500_main();
   // UDPinit();
 
   /* USER CODE END 2 */
 
   /* Init scheduler */
-  // osKernelInitialize();
+  osKernelInitialize();
 
   /* Call init function for freertos objects (in cmsis_os2.c) */
-  // MX_FREERTOS_Init();
+  MX_FREERTOS_Init();
 
   /* Start scheduler */
-  // osKernelStart();
+  osKernelStart();
 
   /* We should never get here as control is now taken by the scheduler */
 
